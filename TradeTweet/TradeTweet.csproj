@@ -17,13 +17,14 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>C:\Users\developer\Documents\ProtraderMC %2864 bit%29\My plug-ins\TradeTweet\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <StartAction>Program</StartAction>
     <StartProgram>C:\USERS\DEVELOPER\APPDATA\LOCAL\MICROSOFT\VISUALSTUDIO\14.0\EXTENSIONS\2b45dhk2.rg1\algoagent.exe</StartProgram>
     <StartArguments>/AlgoStudioEmbedded</StartArguments>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -70,6 +71,14 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Commons, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Users\developer\AppData\Roaming\ProtraderMC (64 bit)\Commons.dll</HintPath>
+    </Reference>
+    <Reference Include="PTLRuntime, Version=1.0.6239.31278, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Users\developer\AppData\Roaming\ProtraderMC (64 bit)\PTLRuntime.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -80,14 +89,14 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <!--our libs-->
-    <Reference Include="C:\Users\developer\AppData\Roaming\ProtraderMCRelease64\PTLRuntime.dll">
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="C:\Users\developer\AppData\Roaming\ProtraderMCRelease64\Magic.dll">
-      <Private>False</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PinForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PinForm.Designer.cs">
+      <DependentUpon>PinForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="PluginForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -95,8 +104,12 @@
       <DependentUpon>PluginForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TwitterService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="PinForm.resx">
+      <DependentUpon>PinForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PluginForm.resx">
       <DependentUpon>PluginForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -104,7 +117,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties NETType="IExternalComponent" />
+      <UserProperties NETType="IExternalComponent" Symbol="&lt;property name=&quot;Symbol&quot; value=&quot;&quot; type=&quot;55&quot; group=&quot;1.Data&quot; /&gt;" TFInfo="&lt;property name=&quot;TFInfo&quot; value=&quot;Time - 1m&quot; type=&quot;-175&quot; group=&quot;General&quot; TFInfoValue=&quot;&amp;lt;?xml version=&amp;quot;1.0&amp;quot;?&amp;gt;&amp;lt;TimeFrameInfo&amp;gt;&amp;lt;Period&amp;gt;1&amp;lt;/Period&amp;gt;&amp;lt;HistoryType&amp;gt;0&amp;lt;/HistoryType&amp;gt;&amp;lt;ChartDataType&amp;gt;Default&amp;lt;/ChartDataType&amp;gt;&amp;lt;AdditionalKey&amp;gt;&amp;lt;/AdditionalKey&amp;gt;&amp;lt;/TimeFrameInfo&amp;gt;&quot; /&gt;" Range="&lt;property name=&quot;Range&quot; value=&quot;3&quot; type=&quot;185&quot; group=&quot;1.Data&quot; /&gt;" StartTime="&lt;property name=&quot;StartTime&quot; value=&quot;636211583990000000&quot; type=&quot;5&quot; group=&quot;1.Data&quot; /&gt;" StopTime="&lt;property name=&quot;StopTime&quot; value=&quot;636220223990000000&quot; type=&quot;5&quot; group=&quot;1.Data&quot; /&gt;" HistoryType="&lt;property name=&quot;HistoryType&quot; value=&quot;0&quot; type=&quot;185&quot; group=&quot;1.Data&quot; /&gt;" Modelling_x0020_shema="&lt;property name=&quot;Modelling shema&quot; value=&quot;1m - O H L C&quot; type=&quot;3&quot; group=&quot;2.Algorythm&quot; /&gt;" Balance_x002C__x0020_USD="&lt;property name=&quot;Balance, USD&quot; value=&quot;10000&quot; type=&quot;1&quot; group=&quot;3.Risk/money manager&quot; min=&quot;1&quot; max=&quot;999999999999&quot; /&gt;" Commission_x0020_by="&lt;property name=&quot;Commission by&quot; value=&quot;False&quot; type=&quot;185&quot; group=&quot;3.Risk/money manager&quot; /&gt;" Brokerage_x0020_commission_x002C__x0020_USD="&lt;property name=&quot;Brokerage commission, USD&quot; value=&quot;0&quot; type=&quot;1&quot; group=&quot;3.Risk/money manager&quot; min=&quot;0&quot; max=&quot;999999999999&quot; /&gt;" Latency="&lt;property name=&quot;Latency&quot; value=&quot;0&quot; type=&quot;0&quot; group=&quot;3.Risk/money manager&quot; min=&quot;0&quot; /&gt;" Netting="&lt;property name=&quot;Netting&quot; value=&quot;False&quot; type=&quot;4&quot; group=&quot;3.Risk/money manager&quot; /&gt;" OnlyMainSession="&lt;property name=&quot;OnlyMainSession&quot; value=&quot;False&quot; type=&quot;4&quot; group=&quot;3.Risk/money manager&quot; /&gt;" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
