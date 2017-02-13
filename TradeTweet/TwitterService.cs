@@ -79,7 +79,7 @@ namespace TradeTweet
                                             );
 
                 if (!string.IsNullOrEmpty(media))
-                    baseString = "media_ids=" + media + "&" + baseString + "&place_id=NoInput&status=" + Uri.EscapeDataString(twitt.Text);
+                    baseString = "media_ids=" + Uri.EscapeDataString(media) + "&" + baseString + "&place_id=NoInput&status=" + Uri.EscapeDataString(twitt.Text);
             }
 
 
@@ -166,7 +166,6 @@ namespace TradeTweet
 
                 if (string.IsNullOrEmpty(media))
                 {
-                    byte[] imageData = File.ReadAllBytes(twitt.Media);
                     Encoding EncodingAlgorithm = Encoding.GetEncoding("iso-8859-1");
                     string Boundary = DateTime.Now.Ticks.ToString("x");
                     string StartBoundary = string.Format("--{0}\r\n", Boundary);
@@ -175,7 +174,7 @@ namespace TradeTweet
                     string contentDisposition = "Content-Disposition: form-data; ";
                     string contenName = "name=\"media\";\r\n ";
                     string contentType = "\r\nContent-Type: application/octet-stream\r\n\r\n";
-                    string Data = EncodingAlgorithm.GetString(imageData, 0, imageData.Length);
+                    string Data = EncodingAlgorithm.GetString(twitt.Media, 0, twitt.Media.Length);
                     var contents = new System.Text.StringBuilder();
                     contents.Append(String.Format("{0}{1}{2}{3}{4}", StartBoundary, contentDisposition, contenName, contentType, Data));
                     contents.Append(EndBoundary);
@@ -252,7 +251,6 @@ namespace TradeTweet
             return responseItems;
         }
 
-
         public Response Connect( )
         {
             Response resp = new Response();
@@ -312,26 +310,43 @@ namespace TradeTweet
             return resp;
         }
 
-        public async Task<string> SendTweetAsync(Twitt twitt, CancellationToken ct)
+        public async Task<string> SendTweetAsync(Twitt twitt, string mediaIds, CancellationToken ct)
         {
             return await Task.Factory.StartNew(() => {
 
                 if (!Connected) return "Service is not verified!";
 
-                var resource_url = (twitt.Media == null) ?
-                    "https://api.twitter.com/1.1/statuses/update.json" :
-                    "https://upload.twitter.com/1.1/media/upload.json"
-                    ;
-                var res = SendPOSTRequest(twitt, resource_url);
+                var resource_url = "https://api.twitter.com/1.1/statuses/update.json";
 
-                if (twitt.Media != null)
-                {
-                    string media = res[twitt.Text].Split(new char[] { ':', ',' })[1];
-                    var res2 = SendPOSTRequest(twitt, "https://api.twitter.com/1.1/statuses/update.json", media);
-                    return res2[twitt.Text];
-                }
+                var res = SendPOSTRequest(twitt, resource_url, mediaIds);
 
                 return res[twitt.Text];
+            }, ct);
+        }
+
+        public async Task<string> SendImageAsync(System.Drawing.Image img, CancellationToken ct)
+        {
+            return await Task.Factory.StartNew(() => {
+
+                if (!Connected) return "Service is not verified!";
+
+                var resource_url = "https://upload.twitter.com/1.1/media/upload.json";
+
+                byte[] bytes = null;
+
+                using (var ms = new MemoryStream())
+                {
+                    img.Save(ms, img.RawFormat);
+                    bytes = ms.ToArray();
+                }
+
+                var key = DateTime.UtcNow.ToBinary().ToString();
+
+                Twitt twitt = new Twitt() {Media = bytes, Text = key};
+
+                var res = SendPOSTRequest(twitt, resource_url);
+
+                return res[key];
             }, ct);
         }
 
@@ -409,8 +424,9 @@ namespace TradeTweet
             return request;
         }
 
+        public event EventHandler OnNewEvent = delegate { };
 
-        public async void M(Action<string> StreamingCallbackAsync)
+        public async void M(Action<string> StreamingCallbackAsync = null)
         {
             var request = GetStreamRequest();
             request.Timeout = Timeout.Infinite;
@@ -446,6 +462,9 @@ namespace TradeTweet
 
                     string tweet = Encoding.UTF8.GetString(tweetBytes, 0, byteCount);
 
+                    if (tweet.Length > 0)
+                        OnNewEvent(tweet, EventArgs.Empty);
+
                     StreamingCallbackAsync(tweet);
 
                     memStr.Dispose();
@@ -453,7 +472,6 @@ namespace TradeTweet
                 }
             }
         }
-
 
         public void Disconnect()
         {
@@ -466,9 +484,7 @@ namespace TradeTweet
     class Twitt
     {
         public string Text;
-        public string Media;
-
-
+        public byte[] Media;
     }
 
     class Response
