@@ -12,7 +12,19 @@ namespace TradeTweet
         Button connectBtn;
         TextBox messageText;
 
+        const int MAX_TWEET_LENGTH = 140;
+        const string ENTER_TWEET = "Type here...";
+        const string BTN_TEXT = "Tweet";
+
         public string Status { get { return messageText.Text; } }
+
+        public void ToggleTweetButton()
+        {
+            connectBtn.Enabled = !connectBtn.Enabled;
+
+            connectBtn.BackColor = (connectBtn.Enabled) ? Settings.mainFontColor : Color.Gray;
+            connectBtn.ForeColor = (connectBtn.Enabled) ? Settings.mainBackColor : Color.Black;
+        }
 
         public List<Image> GetImages()
         {
@@ -20,16 +32,12 @@ namespace TradeTweet
 
             foreach (PictureBox item in picPanel.Controls.OfType<PictureBox>())
             {
-                if (item.Image != null)
-                    list.Add(item.Image);   
+                if (item.BackgroundImage != null)
+                    list.Add(item.BackgroundImage);   
             }
 
             return list;
         } 
-
-        const int maxLength = 140;
-        const string ENTER_TWEET = "Type here...";
-        const string btnText = "Tweet";
 
         public Action OnConnect = null;
 
@@ -49,8 +57,9 @@ namespace TradeTweet
             messageText.TextChanged += (o, e) =>
             {
                 var length = messageText.TextLength;
-                connectBtn.Text = btnText + " [" + (length) + "]";
-                connectBtn.Enabled = length > 0 && length <= maxLength;
+                connectBtn.Text = BTN_TEXT + " [" + (length) + "]";
+                connectBtn.Enabled = length > 0 && length <= MAX_TWEET_LENGTH;
+                connectBtn.BackColor = (connectBtn.Enabled) ? Settings.mainFontColor : Color.Gray;
             };
         }
 
@@ -65,13 +74,15 @@ namespace TradeTweet
             messageText = new TextBox()
             {
                 TabIndex = 0,
+                ScrollBars = ScrollBars.Vertical,
+                HideSelection = true,
                 ForeColor = Color.DimGray,
                 BackColor = Color.LightGray,
                 Font = Settings.mainFont,
                 Multiline = true,
                 TextAlign = HorizontalAlignment.Left,
                 Text = ENTER_TWEET,
-                MaxLength = maxLength,
+                MaxLength = MAX_TWEET_LENGTH,
                 Dock = DockStyle.Fill
             };
 
@@ -85,19 +96,18 @@ namespace TradeTweet
                 Font = Settings.mainFont,
                 DialogResult = DialogResult.OK,
                 Dock = DockStyle.Bottom,
-                Text = btnText,
+                Text = BTN_TEXT + " [0]",
                 Height = Settings.btnHeight,
-                BackColor = Settings.mainBackColor,
-                ForeColor = Settings.mainFontColor,
+                BackColor = Color.Gray,
+                ForeColor = Color.Black,
                 Enabled = false
             };
 
+            connectBtn.UseVisualStyleBackColor = true;
 
             this.Controls.Add(messageText);
             this.Controls.Add(picPanel);
             this.Controls.Add(connectBtn);
-        }
-
-        
+        } 
     }
 }

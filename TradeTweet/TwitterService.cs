@@ -31,7 +31,7 @@ namespace TradeTweet
             Connected = true;
         }
 
-        public Dictionary<string,string> SendPOSTRequest(Twitt twitt, string resource_url, string media = "", string token = "")
+        Dictionary<string,string> SendPOSTRequest(Twitt twitt, string resource_url, string media = "", string token = "")
         {
             // unique request details
             var oauth_nonce = Convert.ToBase64String(

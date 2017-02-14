@@ -16,6 +16,7 @@ namespace TradeTweet
     {
         TwittwerService ts;
         TweetPanel tw;
+        static NoticePanel noticePanel;
         CancellationToken ct;
 
         const string LOGIN = "Login";
@@ -27,6 +28,7 @@ namespace TradeTweet
             this.StartPosition = FormStartPosition.CenterScreen;
 
             CancellationTokenSource cts = new CancellationTokenSource();
+            cts.CancelAfter(3000);
             ct = cts.Token;
 
             ts = new TwittwerService("822113440844148738-s7MLex2gcSFKxzKZfBDwcwJqvJYk0LA", "8UYP6Ahmn5GjJXkr0bN3Jy2XmKBX8jT3Slxk8EhzLCEmO");
@@ -36,19 +38,24 @@ namespace TradeTweet
 
             tw.OnConnect = OnTweet;
 
-            this.Controls.Add(tw);
+            noticePanel = new NoticePanel();
 
+            this.Controls.Add(noticePanel);
+            this.Controls.Add(tw);
         }
 
         private async void OnTweet()
         {
+            tw.ToggleTweetButton();
+            noticePanel.ShowNotice("Sending...");
+
             var images = tw.GetImages();
 
             List<Task<string>> list = new List<Task<string>>();
 
             foreach (var img in images)
             {
-                list.Add(ts.SendImageAsync(img, ct));             
+                list.Add(ts.SendImageAsync(img, ct));
             }
 
             await Task.WhenAll(list);
@@ -59,11 +66,13 @@ namespace TradeTweet
 
             string mediaString = string.Join(",", mediaIds);
 
-            byte[] media = (string.IsNullOrEmpty(mediaString))?null : new byte[1];
+            byte[] media = (string.IsNullOrEmpty(mediaString)) ? null : new byte[1];
 
-            string rrr = await ts.SendTweetAsync(new Twitt { Text = tw.Status, Media = media }, mediaString, ct);
-
-            MessageBox.Show(rrr, "Tweet Sended");
+            await ts.SendTweetAsync(new Twitt { Text = tw.Status, Media = media }, mediaString, ct).ContinueWith((t) => 
+            {
+                noticePanel.ShowNotice("Done!");
+                tw.ToggleTweetButton();
+            });
         }
 
         private void Ts_NewEvents(object sender, System.EventArgs e)

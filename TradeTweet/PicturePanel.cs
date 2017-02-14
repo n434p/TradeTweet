@@ -9,10 +9,11 @@ namespace TradeTweet
     {
         const int MAX_CARDS = 4;
         const int CARD_ZIZE = 80;
+        const int MARGIN = 5;
 
         public PicturePanel()
         {
-            Height = CARD_ZIZE;
+            Height = CARD_ZIZE + 2*MARGIN;
             Dock = DockStyle.Bottom;
 
             PictureCard card = new PictureCard();
@@ -24,6 +25,7 @@ namespace TradeTweet
                     OpenImage();
                     return;
                 }
+
 
                 MessageBox.Show("Only 4 pics are allowed for one tweet!");
             };
@@ -44,7 +46,7 @@ namespace TradeTweet
 
                     if (c != null)
                     {
-                        c.Image = img;
+                        c.BackgroundImage = img; 
                         return;
                     }
 
@@ -67,6 +69,27 @@ namespace TradeTweet
             }
         }
 
+        static Image ResizeImage(Image image, int maxSize)
+        {
+            Image resizedImg = null;
+
+            var width = image.Width;
+            var height = image.Height;
+
+            var smallerSize = (int) (Math.Min(width, height) * maxSize / Math.Max(width, height));
+
+            if (width >= height)
+            {
+                resizedImg = (Image)(new Bitmap(image, maxSize, smallerSize));
+            }
+            else
+            {
+                resizedImg = (Image)(new Bitmap(image, smallerSize, maxSize));
+            }
+
+            return resizedImg;
+        }
+
         protected override void OnResize(EventArgs eventargs)
         {
             ReplaceOrder();
@@ -80,7 +103,10 @@ namespace TradeTweet
             {
                 PictureBox p = Controls[total - i] as PictureBox;
                 if (p != null)
+                {
                     p.Location = new Point((Width * (i) / (total + 1) - p.Width / 2), (Height - p.Height)/2 );
+                }
+                    
             }
         }
 
@@ -88,18 +114,12 @@ namespace TradeTweet
         {
             Label cross;
 
-            const string Add = "+";
-            const string Remove = "\u2716";
-
             public Action callback;
             public Action onClick;
 
             public PictureCard(Image img = null)
             {
                 bool imageExists = img != null;
-
-                Margin = new Padding(5);
-                Padding = new Padding(5);
 
                 int size = (imageExists) ? CARD_ZIZE : CARD_ZIZE / 2;
 
@@ -110,33 +130,30 @@ namespace TradeTweet
 
                 if (imageExists)
                 {
-                    Image = img;
+                    Image = Properties.Resources.button;
+                    BackgroundImage = img; 
+                    BackgroundImageLayout = ImageLayout.Zoom;
                     BackColor = Color.Transparent;
                 }
                 else
                 {
-                    BackColor = Color.Orange;
+                    Image = Properties.Resources.AddButton;
+                    BackColor = Color.Transparent;
                 }
 
                 cross = new Label()
                 {
+                    BackColor = Color.Transparent,
                     Width = size,
                     Height = size,
-                    Font = new Font("Arial", 14),
-                    TextAlign = ContentAlignment.TopRight,
                     Anchor = AnchorStyles.Left | AnchorStyles.Top
                 };
 
                 if (imageExists)
                 {
                     cross.Size = new Size(20, 20);
-                    cross.TextAlign = ContentAlignment.MiddleCenter;
                     cross.Location = new Point(0, 0);
                 }
-
-                cross.TextAlign = (imageExists) ? ContentAlignment.TopRight : ContentAlignment.MiddleCenter;
-                cross.Margin = (imageExists) ? new Padding(5) : new Padding(0);
-                cross.Text = (imageExists) ? Remove : Add;
 
                 cross.Click += (o, e) => {
                     if (callback != null)
