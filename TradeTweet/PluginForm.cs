@@ -16,6 +16,8 @@ namespace TradeTweet
     {
         TwittwerService ts;
         TweetPanel tw;
+        ConnectionPanel connectionPanel;
+        EnterPinPanel enterPinPanel;
         static NoticePanel noticePanel;
         CancellationToken ct;
 
@@ -28,20 +30,85 @@ namespace TradeTweet
             this.StartPosition = FormStartPosition.CenterScreen;
 
             CancellationTokenSource cts = new CancellationTokenSource();
-            cts.CancelAfter(3000);
+            //cts.CancelAfter(5000);
             ct = cts.Token;
 
-            ts = new TwittwerService("822113440844148738-s7MLex2gcSFKxzKZfBDwcwJqvJYk0LA", "8UYP6Ahmn5GjJXkr0bN3Jy2XmKBX8jT3Slxk8EhzLCEmO");
-            ts.OnNewEvent += Ts_NewEvents;
+            StartPlugin("822113440844148738-s7MLex2gcSFKxzKZfBDwcwJqvJYk0LA", "8UYP6Ahmn5GjJXkr0bN3Jy2XmKBX8jT3Slxk8EhzLCEmO");       
+        }
 
-            tw = new TweetPanel();
-
-            tw.OnConnect = OnTweet;
+        private void StartPlugin(string consumerKey = "", string token = "")
+        {
+            this.Controls.Clear();
 
             noticePanel = new NoticePanel();
-
             this.Controls.Add(noticePanel);
+
+            ts = new TwittwerService(consumerKey, token);
+
+            if (!ts.Connected)
+            {
+                connectionPanel = new ConnectionPanel();
+                connectionPanel.OnConnect = OnConnect;
+                Controls.Add(connectionPanel);
+            }
+            else
+            {
+                tw = new TweetPanel(ts);
+                tw.OnLogout = OnLogout;
+                tw.OnConnect = OnTweet;
+                this.Controls.Add(tw);
+            }
+        }
+
+        private void OnLogout()
+        {
+            ts.Disconnect();
+            StartPlugin();
+        }
+
+        private void OnConnect()
+        {
+            Response resp = ts.Connect();
+
+            if (resp.Failed)
+            {
+                noticePanel.ShowNotice("Connection error!");
+                return;
+            }
+
+            Controls.Remove(connectionPanel);
+
+            enterPinPanel = new EnterPinPanel();
+            enterPinPanel.OnPinEntered = OnPinEntered;
+
+            Controls.Add(enterPinPanel);
+        }
+
+        private void OnPinEntered(string pin)
+        {
+            var resp = ts.SetToken(pin);
+
+            if (resp.Failed)
+            {
+                noticePanel.ShowNotice("Pin error!",2000, ReturnToConnect);
+                return;
+            }
+
+
+            tw = new TweetPanel(ts);
+            tw.OnLogout = OnLogout;
+            tw.OnConnect = OnTweet;
             this.Controls.Add(tw);
+
+            Controls.Remove(enterPinPanel);
+        }
+
+        private void ReturnToConnect()
+        {
+            this.Invoke((MethodInvoker)delegate
+            {
+                StartPlugin();
+            });
         }
 
         private async void OnTweet()

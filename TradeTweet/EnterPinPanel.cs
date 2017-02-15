@@ -14,7 +14,7 @@ namespace TradeTweet
         Label connectMessage;
         MaskedTextBox maskedPin;
 
-        public Action OnConnect = null;
+        public Action<string> OnPinEntered = null;
 
         public EnterPinPanel()
         {
@@ -25,8 +25,10 @@ namespace TradeTweet
 
             connectBtn.Click += (o, e) =>
             {
-                if (OnConnect != null)
-                    OnConnect.Invoke();
+                connectBtn.Enabled = false;
+                
+                if (OnPinEntered != null)
+                    OnPinEntered.Invoke(maskedPin.Text);
             };
 
             maskedPin.GotFocus += MaskedPin_GotFocus;
@@ -47,7 +49,7 @@ namespace TradeTweet
                 }
         }
 
-        string message = $"{Settings.appName} isn't authorized. \n\n Login in Twitter via Browser prompt than click on \"Authorize App\" button and write down PIN-code that will appear after:";
+        string message = $"{Settings.appName} isn't authorized. \n\n Enter your account details in Browser prompt than click on \"Authorize App\" button.\n Write down PIN-code that will appear after:";
         string btnText = $"Authorize {Settings.appName}";
         const string ENTER_PIN = "Enter PIN here...";
 

@@ -13,9 +13,6 @@ namespace TradeTweet
 
         public PicturePanel()
         {
-            Height = CARD_ZIZE + 2*MARGIN;
-            Dock = DockStyle.Bottom;
-
             PictureCard card = new PictureCard();
 
             card.callback = () => 

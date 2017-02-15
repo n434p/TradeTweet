@@ -33,17 +33,18 @@ namespace TradeTweet
         }
 
 
-        public async void ShowNotice(string message, int miliseconds = 2000)
+        public async void ShowNotice(string message, int miliseconds = 2000, Action callback = null)
         {
             notice.Text = message;
             this.Visible = true;
 
-            await Task.Delay(miliseconds);
+            await Task.Delay(miliseconds).ContinueWith( (t) => 
+            {
+                if (callback != null)
+                    callback.Invoke(); 
+            });
+
             this.Visible = false;
         }
-
-
-
-
     }
 }

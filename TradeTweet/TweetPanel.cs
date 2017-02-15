@@ -8,13 +8,20 @@ namespace TradeTweet
 {
     class TweetPanel : Panel
     {
+        TwittwerService ts;
+        StatusPanel statusPanel;
         PicturePanel picPanel;
         Button connectBtn;
         TextBox messageText;
 
+        public Action OnLogout = null;
+
         const int MAX_TWEET_LENGTH = 140;
         const string ENTER_TWEET = "Type here...";
         const string BTN_TEXT = "Tweet";
+        const int statusPanelHeight = 40;
+        const int CARD_ZIZE = 80;
+        const int MARGIN = 5;
 
         public string Status { get { return messageText.Text; } }
 
@@ -41,9 +48,11 @@ namespace TradeTweet
 
         public Action OnConnect = null;
 
-        public TweetPanel()
+        public TweetPanel(TwittwerService ts)
         {
+            this.ts = ts;
             this.Dock = DockStyle.Fill;
+
             Populate();
 
             connectBtn.Click += (o, e) =>
@@ -73,7 +82,6 @@ namespace TradeTweet
         {
             messageText = new TextBox()
             {
-                TabIndex = 0,
                 ScrollBars = ScrollBars.Vertical,
                 HideSelection = true,
                 ForeColor = Color.DimGray,
@@ -85,12 +93,33 @@ namespace TradeTweet
                 MaxLength = MAX_TWEET_LENGTH,
                 Dock = DockStyle.Fill
             };
+            this.Controls.Add(messageText);
 
-            picPanel = new PicturePanel();
+            statusPanel = new StatusPanel(ts)
+            {
+                Height = statusPanelHeight,
+                BackColor = Settings.mainBackColor,
+                Dock = DockStyle.Top
+            };
+
+            statusPanel.onLogoutClicked = () =>
+            {
+                if (OnLogout != null)
+                    OnLogout.Invoke();
+            };
+
+            this.Controls.Add(statusPanel);
+
+
+            picPanel = new PicturePanel()
+            {
+                Height = CARD_ZIZE + 2 * MARGIN,
+                Dock = DockStyle.Bottom
+            };
+            this.Controls.Add(picPanel);
 
             connectBtn = new Button()
             {
-                TabIndex = 1,
                 FlatStyle = FlatStyle.Flat,
                 TextAlign = System.Drawing.ContentAlignment.MiddleCenter,
                 Font = Settings.mainFont,
@@ -102,12 +131,8 @@ namespace TradeTweet
                 ForeColor = Color.Black,
                 Enabled = false
             };
-
-            connectBtn.UseVisualStyleBackColor = true;
-
-            this.Controls.Add(messageText);
-            this.Controls.Add(picPanel);
             this.Controls.Add(connectBtn);
+
         } 
     }
 }

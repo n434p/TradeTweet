@@ -46,8 +46,8 @@ namespace TradeTweet
                 Dock = DockStyle.Bottom,
                 Text = btnText,
                 Height = Settings.btnHeight,
-                BackColor = Settings.mainBackColor,
-                ForeColor = Settings.mainFontColor             
+                BackColor = Settings.mainFontColor,
+                ForeColor = Settings.mainBackColor             
             };
 
             this.Controls.Add(connectMessage);
