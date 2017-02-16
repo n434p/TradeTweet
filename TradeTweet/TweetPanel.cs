@@ -3,18 +3,23 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Linq;
+using PTLRuntime.NETScript;
 
 namespace TradeTweet
 {
     class TweetPanel : Panel
     {
-        TwittwerService ts;
+        SettingsPanel settingsPanel;
+        User user;
         StatusPanel statusPanel;
         PicturePanel picPanel;
-        Button connectBtn;
-        TextBox messageText;
+        Button tweetBtn;
+        TextBox tweetText;
+        NETSDK PlatformEngine;
 
         public Action OnLogout = null;
+        public Action OnTweet = null;
+        public Action<String> OnNotice = null;
 
         const int MAX_TWEET_LENGTH = 140;
         const string ENTER_TWEET = "Type here...";
@@ -23,14 +28,14 @@ namespace TradeTweet
         const int CARD_ZIZE = 80;
         const int MARGIN = 5;
 
-        public string Status { get { return messageText.Text; } }
+        public string Status { get { return tweetText.Text; } }
 
         public void ToggleTweetButton()
         {
-            connectBtn.Enabled = !connectBtn.Enabled;
+            tweetBtn.Enabled = !tweetBtn.Enabled;
 
-            connectBtn.BackColor = (connectBtn.Enabled) ? Settings.mainFontColor : Color.Gray;
-            connectBtn.ForeColor = (connectBtn.Enabled) ? Settings.mainBackColor : Color.Black;
+            tweetBtn.BackColor = (tweetBtn.Enabled) ? Settings.mainFontColor : Color.Gray;
+            tweetBtn.ForeColor = (tweetBtn.Enabled) ? Settings.mainBackColor : Color.Black;
         }
 
         public List<Image> GetImages()
@@ -46,61 +51,33 @@ namespace TradeTweet
             return list;
         } 
 
-        public Action OnConnect = null;
-
-        public TweetPanel(TwittwerService ts)
+        public TweetPanel(User tweetUser, NETSDK platformEngine)
         {
-            this.ts = ts;
+
+            this.DoubleBuffered = true;
+
+            PlatformEngine = platformEngine;
+            this.user = tweetUser;
             this.Dock = DockStyle.Fill;
 
             Populate();
 
-            connectBtn.Click += (o, e) =>
+            tweetBtn.Click += (o, e) =>
             {
-                if (OnConnect != null)
-                    OnConnect.Invoke();
+                if (OnTweet != null)
+                    OnTweet.Invoke();
             };
 
-            messageText.KeyDown += MessageText_KeyDown;
+            tweetText.KeyDown += MessageText_KeyDown;
 
-            messageText.TextChanged += (o, e) =>
+            tweetText.TextChanged += (o, e) =>
             {
-                var length = messageText.TextLength;
-                connectBtn.Text = BTN_TEXT + " [" + (length) + "]";
-                connectBtn.Enabled = length > 0 && length <= MAX_TWEET_LENGTH;
-                connectBtn.BackColor = (connectBtn.Enabled) ? Settings.mainFontColor : Color.Gray;
+                var length = tweetText.TextLength;
+                tweetBtn.Text = BTN_TEXT + " [" + (length) + "]";
+                tweetBtn.Enabled = length > 0 && length <= MAX_TWEET_LENGTH;
+                tweetBtn.BackColor = (tweetBtn.Enabled) ? Settings.mainFontColor : Color.Gray;
             };
-        }
 
-        private void MessageText_KeyDown(object sender, KeyEventArgs e)
-        {
-            messageText.Text = string.Empty;
-            messageText.KeyDown -= MessageText_KeyDown;
-        }
-
-        private void Populate()
-        {
-            messageText = new TextBox()
-            {
-                ScrollBars = ScrollBars.Vertical,
-                HideSelection = true,
-                ForeColor = Color.DimGray,
-                BackColor = Color.LightGray,
-                Font = Settings.mainFont,
-                Multiline = true,
-                TextAlign = HorizontalAlignment.Left,
-                Text = ENTER_TWEET,
-                MaxLength = MAX_TWEET_LENGTH,
-                Dock = DockStyle.Fill
-            };
-            this.Controls.Add(messageText);
-
-            statusPanel = new StatusPanel(ts)
-            {
-                Height = statusPanelHeight,
-                BackColor = Settings.mainBackColor,
-                Dock = DockStyle.Top
-            };
 
             statusPanel.onLogoutClicked = () =>
             {
@@ -108,8 +85,51 @@ namespace TradeTweet
                     OnLogout.Invoke();
             };
 
-            this.Controls.Add(statusPanel);
+            statusPanel.onSettingsClicked = () =>
+            {
+                settingsPanel.Visible = !settingsPanel.Visible;
+            };
 
+            statusPanel.onAutoTweet = () =>
+            {
+                LinkEvents(!statusPanel.AutoTweet);
+            };
+
+        }
+
+        private void MessageText_KeyDown(object sender, KeyEventArgs e)
+        {
+            tweetText.Text = string.Empty;
+            tweetText.KeyDown -= MessageText_KeyDown;
+        }
+
+        private void Populate()
+        {
+
+            tweetText = new TextBox()
+            {
+                ScrollBars = ScrollBars.Vertical,
+                HideSelection = true,
+                ForeColor = Color.DimGray,
+                BackColor = Color.LightGray,
+                Font = Settings.mainFont,
+                Multiline = true,
+                SelectionLength = 0,
+                TextAlign = HorizontalAlignment.Left,
+                Text = ENTER_TWEET,
+                MaxLength = MAX_TWEET_LENGTH,
+                Dock = DockStyle.Fill
+            };
+            this.Controls.Add(tweetText);
+
+            statusPanel = new StatusPanel(user)
+            {
+                Height = statusPanelHeight,
+                BackColor = Settings.mainBackColor,
+                Dock = DockStyle.Top
+            };
+
+            this.Controls.Add(statusPanel);
 
             picPanel = new PicturePanel()
             {
@@ -118,7 +138,7 @@ namespace TradeTweet
             };
             this.Controls.Add(picPanel);
 
-            connectBtn = new Button()
+            tweetBtn = new Button()
             {
                 FlatStyle = FlatStyle.Flat,
                 TextAlign = System.Drawing.ContentAlignment.MiddleCenter,
@@ -131,8 +151,89 @@ namespace TradeTweet
                 ForeColor = Color.Black,
                 Enabled = false
             };
-            this.Controls.Add(connectBtn);
+            this.Controls.Add(tweetBtn);
 
-        } 
+            settingsPanel = new SettingsPanel()
+            {
+                Width = 150,
+                Dock = DockStyle.Left,
+                BackColor = Color.DimGray
+            };
+
+            this.Controls.Add(settingsPanel);
+            settingsPanel.Visible = false;
+        }
+
+        private void LinkEvents(bool autoTweet)
+        {
+            if (!autoTweet) return;
+
+            foreach (EventType item in Enum.GetValues(typeof(EventType)))
+            {
+                bool check = settingsPanel[item];
+
+                if (check)
+                {
+                    switch (item)
+                    {
+                        case EventType.OrderOpen:
+                            PlatformEngine.Orders.OrderAdded += Orders_OrderAdded;
+                            break;
+                        case EventType.OrderClose:
+                            PlatformEngine.Orders.OrderRemoved += Orders_OrderRemoved;
+                            break;
+                        case EventType.PositionOpen:
+                            PlatformEngine.Positions.PositionAdded += Positions_PositionAdded;
+                            break;
+                        case EventType.PositionClose:
+                            PlatformEngine.Positions.PositionRemoved += Positions_PositionRemoved;
+                            break;
+                    }
+                }
+                else
+                {
+                    switch (item)
+                    {
+                        case EventType.OrderOpen:
+                            PlatformEngine.Orders.OrderAdded -= Orders_OrderAdded;
+                            break;
+                        case EventType.OrderClose:
+                            PlatformEngine.Orders.OrderRemoved -= Orders_OrderRemoved;
+                            break;
+                        case EventType.PositionOpen:
+                            PlatformEngine.Positions.PositionAdded -= Positions_PositionAdded;
+                            break;
+                        case EventType.PositionClose:
+                            PlatformEngine.Positions.PositionRemoved -= Positions_PositionRemoved;
+                            break;
+                    }
+                }
+            }
+
+        }
+
+        private void Positions_PositionRemoved(Position obj)
+        {
+            string n = $"Position removed: {obj.Account} {obj.Instrument} {obj.Id}";
+            OnNotice(n);
+        }
+
+        private void Positions_PositionAdded(Position obj)
+        {
+            string n = $"Position added: {obj.Account} {obj.Instrument} {obj.Id}";
+            OnNotice(n);
+        }
+
+        private void Orders_OrderRemoved(Order obj)
+        {
+            string n = $"Order removed: {obj.Account} {obj.Instrument} {obj.Id}";
+            OnNotice(n);
+        }
+
+        private void Orders_OrderAdded(Order obj)
+        {
+            string n = $"Order removed: {obj.Account} {obj.Instrument} {obj.Id}";
+            OnNotice(n);
+        }
     }
 }

@@ -22,7 +22,7 @@ namespace TradeTweet
             notice = new Label()
             {
                 Dock = DockStyle.Fill,
-                ForeColor = Color.LightGray,
+                ForeColor = Color.DimGray,
                 Font = Settings.mainFont,
                 TextAlign = ContentAlignment.MiddleCenter
             };
@@ -36,7 +36,11 @@ namespace TradeTweet
         public async void ShowNotice(string message, int miliseconds = 2000, Action callback = null)
         {
             notice.Text = message;
-            this.Visible = true;
+
+            this.Invoke((MethodInvoker)delegate
+            {
+                this.Visible = true;
+            });
 
             await Task.Delay(miliseconds).ContinueWith( (t) => 
             {
@@ -44,7 +48,10 @@ namespace TradeTweet
                     callback.Invoke(); 
             });
 
-            this.Visible = false;
+            this.Invoke((MethodInvoker)delegate 
+            {
+                this.Visible = false;
+            });
         }
     }
 }

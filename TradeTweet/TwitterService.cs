@@ -12,8 +12,8 @@ namespace TradeTweet
 {
     class TwittwerService
     {
-        public bool Connected { get { return UserName != null; } }
-        public User UserName { get; private set; } 
+        public bool Connected { get { return User != null; } }
+        public User User { get; private set; } 
         string oauth_token = "";
         string oauth_token_secret = "";
 
@@ -335,12 +335,12 @@ namespace TradeTweet
                 {
                     string responseText = reader.ReadToEnd();
 
-                    UserName = JsonConvert.DeserializeObject<User>(responseText);
+                    User = JsonConvert.DeserializeObject<User>(responseText);
 
-                    HttpWebRequest req = (HttpWebRequest)WebRequest.Create(UserName.profile_image_url_https);
+                    HttpWebRequest req = (HttpWebRequest)WebRequest.Create(User.profile_image_url_https);
                     var resp = (HttpWebResponse)req.GetResponse();
 
-                    UserName.avatar = System.Drawing.Image.FromStream(resp.GetResponseStream());
+                    User.avatar = System.Drawing.Image.FromStream(resp.GetResponseStream());
                 }
             }
             catch (Exception ex)
@@ -546,7 +546,7 @@ namespace TradeTweet
                 await stream.ReadAsync(readByte, 0, 1);
                 byte nextByte = readByte.SingleOrDefault();
 
-                if (nextByte == -1) break;
+                //if (nextByte == -1) break;
 
                 if (nextByte != CarriageReturn && nextByte != LineFeed)
                     memStr.WriteByte(nextByte);
@@ -576,7 +576,7 @@ namespace TradeTweet
         {
             oauth_token = "";
             oauth_token_secret = "";
-            UserName = null;
+            User = null;
         }
     }
 

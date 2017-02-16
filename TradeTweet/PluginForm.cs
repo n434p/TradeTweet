@@ -28,12 +28,6 @@ namespace TradeTweet
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.CenterScreen;
-
-            CancellationTokenSource cts = new CancellationTokenSource();
-            //cts.CancelAfter(5000);
-            ct = cts.Token;
-
-            StartPlugin("822113440844148738-s7MLex2gcSFKxzKZfBDwcwJqvJYk0LA", "8UYP6Ahmn5GjJXkr0bN3Jy2XmKBX8jT3Slxk8EhzLCEmO");       
         }
 
         private void StartPlugin(string consumerKey = "", string token = "")
@@ -53,9 +47,10 @@ namespace TradeTweet
             }
             else
             {
-                tw = new TweetPanel(ts);
+                tw = new TweetPanel(ts.User, PlatformEngine);
                 tw.OnLogout = OnLogout;
-                tw.OnConnect = OnTweet;
+                tw.OnTweet = OnTweet;
+                tw.OnNotice = (n) => { noticePanel.ShowNotice(n,2000, null); };
                 this.Controls.Add(tw);
             }
         }
@@ -94,10 +89,10 @@ namespace TradeTweet
                 return;
             }
 
-
-            tw = new TweetPanel(ts);
+            tw = new TweetPanel(ts.User, PlatformEngine);
+            tw.OnNotice = (n) => { noticePanel.ShowNotice(n, 2000, null); };
             tw.OnLogout = OnLogout;
-            tw.OnConnect = OnTweet;
+            tw.OnTweet = OnTweet;
             this.Controls.Add(tw);
 
             Controls.Remove(enterPinPanel);
@@ -142,38 +137,23 @@ namespace TradeTweet
             });
         }
 
+        private async void OnAutoTweet(string status)
+        {
+            noticePanel.ShowNotice("AutoTweet...");
+
+            string mediaString = "";
+
+            byte[] media = (string.IsNullOrEmpty(mediaString)) ? null : new byte[1];
+
+            await ts.SendTweetAsync(new Twitt { Text = tw.Status, Media = media }, mediaString, ct).ContinueWith((t) =>
+            {
+                noticePanel.ShowNotice("Done!");
+            });
+        }
+
         private void Ts_NewEvents(object sender, System.EventArgs e)
         {
             
-        }
-
-        private async void cheersBtn_Click(object sender, System.EventArgs e)
-        {
-            //if (ts == null) return;
-
-            ////OpenFileDialog ofd = new OpenFileDialog();
-
-            //string media = null;
-
-            ////if (ofd.ShowDialog() == DialogResult.OK)
-            ////{
-            ////    media = ofd.FileName;
-            ////}
-
-            //var text = messageTB.Text;
-            //Twitt t = new Twitt() { Text = text, Media = media };
-
-            //CancellationTokenSource cts = new CancellationTokenSource();
-            //cts.CancelAfter(3000);
-
-            //var task = ts.SendTweetAsync(t, cts.Token);
-            //var res = await task;
-
-            //if (task.IsCompleted)
-            //{
-            //    MessageBox.Show("Result: \n"+res);
-            //    messageTB.Text = string.Empty;
-            //}
         }
 
         #region IExternalComponent
@@ -205,54 +185,16 @@ namespace TradeTweet
 
         public void Populate()
         {
-            
+            if (PlatformEngine != null)
+            {
+                CancellationTokenSource cts = new CancellationTokenSource();
+                //cts.CancelAfter(5000);
+                ct = cts.Token;
+
+                StartPlugin("822113440844148738-s7MLex2gcSFKxzKZfBDwcwJqvJYk0LA", "8UYP6Ahmn5GjJXkr0bN3Jy2XmKBX8jT3Slxk8EhzLCEmO");
+            }
         }
 
         #endregion
-
-        //private void loginLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        //{
-        //    if (ts.Connected)
-        //    {
-        //        ts.Disconnect();
-        //        loginLabel.Text = LOGIN;
-        //        loginLabel.LinkArea = new LinkArea(0, LOGIN.Length);
-        //    }
-        //    else
-        //    {
-        //        Response resp = ts.Connect();
-
-        //        if (resp.Failed)
-        //        {
-        //            MessageBox.Show(resp.Text, "Connection error:");
-        //            return;
-        //        }
-
-        //        var pin = PinForm.ShowForm();
-
-        //        resp = ts.SetToken(pin);
-
-        //        if (resp.Failed)
-        //        {
-        //            MessageBox.Show(resp.Text, "Pin error:");
-        //            return;
-        //        }
-
-        //        loginLabel.Text = ts.UserName +", "+ LOGOUT;
-        //        loginLabel.LinkArea = new LinkArea(loginLabel.Text.Length - LOGOUT.Length, LOGOUT.Length);
-        //    }
-        //}
-
-        //private async void button1_Click(object sender, System.EventArgs e)
-        //{
-        //    messageTB.MaxLength = int.MaxValue;
-        //    messageTB.Multiline = true;
-        //    messageTB.ScrollBars = ScrollBars.Vertical;
-        //    ts.M( mes => 
-        //    { 
-        //        messageTB.Text += mes + "\n";
-        //    });
-  
-        //}
     }
 }

@@ -94,6 +94,9 @@
     <!--our libs-->
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SettingsPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="ConnectionPanel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -128,6 +131,7 @@
     <Compile Include="StatusPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="TradeEvents.cs" />
     <Compile Include="TweetPanel.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -162,6 +166,21 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\avatar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\settings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\settingsPanelBack.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\autoTweet.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\autoTweetGrey.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\settingsClose.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
