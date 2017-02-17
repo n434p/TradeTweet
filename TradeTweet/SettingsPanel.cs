@@ -14,6 +14,9 @@ namespace TradeTweet
     class SettingsPanel: Panel
     {
         Label caption;
+        Button applyBtn;
+
+        public Action OnApply;
 
         Dictionary<EventType, string> names = new Dictionary<EventType, string>()
         {
@@ -24,10 +27,16 @@ namespace TradeTweet
         };
 
         Dictionary<EventType, CheckBox> eventsList;
+        Dictionary<EventType, bool> set = new Dictionary<EventType, bool>();
 
-        public SettingsPanel()
+        public SettingsPanel(Dictionary<EventType, bool> Set = null)
         {
             eventsList = new Dictionary<EventType, CheckBox>();
+
+            Width = 150;
+            Dock = DockStyle.Left;
+            BackColor = Color.DimGray;
+            Visible = false;
 
             BackgroundImageLayout = ImageLayout.Tile;
             BackgroundImage = Properties.Resources.settingsPanelBack;
@@ -51,26 +60,91 @@ namespace TradeTweet
 
             foreach (EventType item in Enum.GetValues(typeof(EventType)))
             {
+                set[item] = (Set != null) ? Set[item] : false;
+
                 eventsList[item] = new CheckBox()
                 {
                     Tag = item,
+                    Checked = set[item],
                     Text = names[item],
                     ForeColor = Settings.mainFontColor,
                     Location = new Point(10, indent)
                 };
 
+                eventsList[item].CheckedChanged += SettingsPanel_CheckedChanged;
+
                 this.Controls.Add(eventsList[item]);
                 indent += 20;
             }
+
+            applyBtn = new Button()
+            {
+                FlatStyle = FlatStyle.Flat,
+                TextAlign = System.Drawing.ContentAlignment.MiddleCenter,
+                Font = Settings.mainFont,
+                DialogResult = DialogResult.OK,
+                Anchor = AnchorStyles.Bottom | AnchorStyles.Left,
+                Text = "Apply",
+                Height = Settings.btnHeight,
+                Width = 150-2,
+                Location = new Point(0,this.Height - Settings.btnHeight),
+                BackColor = Color.Gray,
+                ForeColor = Color.Black,
+                Enabled = false,
+            };
+
+            applyBtn.Click += (o, e) =>
+            {
+                foreach (EventType item in Enum.GetValues(typeof(EventType)))
+                {
+                    set[item] = eventsList[item].Checked;
+                }
+
+                applyBtn.Enabled = false;
+                applyBtn.BackColor = Color.Gray;
+
+                if (OnApply != null)
+                    OnApply.Invoke();
+            };
+
+            this.Controls.Add(applyBtn);
         }
 
-        public bool HasEvents { get { return eventsList.Values.Any(c => c.Checked); } }
+        private void SettingsPanel_CheckedChanged(object sender, EventArgs e)
+        {
+            bool check = false;
+
+            foreach (EventType type in Enum.GetValues(typeof(EventType)))
+            {
+                if (eventsList[type].Checked != set[type])
+                {
+                    check = true;
+                    break;
+                }
+            }
+
+            applyBtn.Enabled = check;
+            applyBtn.BackColor = (check) ? Settings.mainFontColor : Color.Gray;
+        }
+
+        public void ShowSet()
+        {
+            foreach (EventType item in Enum.GetValues(typeof(EventType)))
+            {
+                bool check = (set != null) ? set[item] : false;
+                eventsList[item].Checked = check;
+            }
+
+            this.Visible = !this.Visible;
+        }
+
+        public bool HasEvents { get { return set.Values.Any(v => v); } }
 
         public bool this[EventType type]
         {
             get
             {
-                return eventsList[type].Checked;
+                return set[type];
             }
         }       
     }

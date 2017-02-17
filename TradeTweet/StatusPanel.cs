@@ -20,7 +20,7 @@ namespace TradeTweet
 
         public Action onLogoutClicked = null;
         public Action onSettingsClicked = null;
-        public Action onAutoTweet = null;
+        public Action onAutoTweetClicked = null;
 
         public StatusPanel(User user)
         {
@@ -64,12 +64,13 @@ namespace TradeTweet
                 Image = Properties.Resources.autoTweetGrey,
                 Size = new Size(panelHeight, panelHeight),
                 SizeMode = PictureBoxSizeMode.Zoom,
-                Dock = DockStyle.Left
+                Dock = DockStyle.Left,
+                Cursor = Cursors.Hand
             };
 
             autoTweet.Click += (o, e) => {
-                if (onAutoTweet != null)
-                    onAutoTweet.Invoke();
+                if (onAutoTweetClicked != null)
+                    onAutoTweetClicked.Invoke();
 
                 AutoTweet = !AutoTweet;
                 autoTweet.Image = (AutoTweet) ? Properties.Resources.autoTweet : Properties.Resources.autoTweetGrey;
@@ -82,7 +83,8 @@ namespace TradeTweet
                 Image = Properties.Resources.settings,
                 Size = new Size(panelHeight, panelHeight),
                 SizeMode = PictureBoxSizeMode.Zoom,
-                Dock = DockStyle.Left
+                Dock = DockStyle.Left,
+                Cursor = Cursors.Hand
             };
 
             settings.Click += (o, e) => {

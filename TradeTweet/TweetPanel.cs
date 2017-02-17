@@ -17,9 +17,12 @@ namespace TradeTweet
         TextBox tweetText;
         NETSDK PlatformEngine;
 
+        Dictionary<EventType, bool> settings = null;
+
         public Action OnLogout = null;
         public Action OnTweet = null;
-        public Action<String> OnNotice = null;
+        public Action<String> OnAutoTweet = null;
+        public Action<String> OnNewNotice = null;
 
         const int MAX_TWEET_LENGTH = 140;
         const string ENTER_TWEET = "Type here...";
@@ -87,15 +90,76 @@ namespace TradeTweet
 
             statusPanel.onSettingsClicked = () =>
             {
-                settingsPanel.Visible = !settingsPanel.Visible;
+                settingsPanel.ShowSet();
+                M();
             };
 
-            statusPanel.onAutoTweet = () =>
+            statusPanel.onAutoTweetClicked = () =>
             {
+                if (OnNewNotice != null)
+                        OnNewNotice.Invoke((!statusPanel.AutoTweet) ? "AutoTweet Enabled!" : "AutoTweet Disabled!");
+
+
+                LinkEvents(!statusPanel.AutoTweet && settingsPanel.HasEvents);
+            };
+
+            settingsPanel.OnApply = () => 
+            {
+                if (OnNewNotice != null)
+                    OnNewNotice.Invoke("Settings applied!");
+
                 LinkEvents(!statusPanel.AutoTweet);
             };
 
+            picPanel.OnMaxPics = () => 
+            {
+                if (OnNewNotice != null)
+                    OnNewNotice.Invoke("Only 4 pics are allowed for one tweet!");
+            };
         }
+
+        private void M()
+        {
+            var sett = new TradeTweetSettings()
+            {
+                //Set = new Dictionary<EventType, bool>()
+                //{
+                //    { EventType.OrderClose, true},
+                //    { EventType.PositionOpen, false}
+                //},
+                autotweet = false,
+                ast = "abcd",
+                atn = "123"
+            };
+
+            var str = string.Empty;
+
+            using (var ms = new System.IO.MemoryStream())
+            {
+                var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                formatter.Serialize(ms, sett);
+                var data = ms.ToArray();
+                str = System.Text.Encoding.ASCII.GetString(data);
+            }
+
+            byte[] buffer = System.Text.Encoding.ASCII.GetBytes(str);
+
+            try
+            {
+                using (var ms = new System.IO.MemoryStream(buffer))
+                {
+                    var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                    var res = formatter.Deserialize(ms);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+
+        }
+
 
         private void MessageText_KeyDown(object sender, KeyEventArgs e)
         {
@@ -153,16 +217,13 @@ namespace TradeTweet
             };
             this.Controls.Add(tweetBtn);
 
-            settingsPanel = new SettingsPanel()
-            {
-                Width = 150,
-                Dock = DockStyle.Left,
-                BackColor = Color.DimGray
-            };
+            settingsPanel = new SettingsPanel(settings);
 
             this.Controls.Add(settingsPanel);
             settingsPanel.Visible = false;
         }
+
+        #region Trade Events
 
         private void LinkEvents(bool autoTweet)
         {
@@ -215,25 +276,37 @@ namespace TradeTweet
         private void Positions_PositionRemoved(Position obj)
         {
             string n = $"Position removed: {obj.Account} {obj.Instrument} {obj.Id}";
-            OnNotice(n);
+            OnAutoTweet(n);
         }
 
         private void Positions_PositionAdded(Position obj)
         {
             string n = $"Position added: {obj.Account} {obj.Instrument} {obj.Id}";
-            OnNotice(n);
+            OnAutoTweet(n);
         }
 
         private void Orders_OrderRemoved(Order obj)
         {
             string n = $"Order removed: {obj.Account} {obj.Instrument} {obj.Id}";
-            OnNotice(n);
+            OnAutoTweet(n);
         }
 
         private void Orders_OrderAdded(Order obj)
         {
-            string n = $"Order removed: {obj.Account} {obj.Instrument} {obj.Id}";
-            OnNotice(n);
+            string n = $"Order added: {obj.Account} {obj.Instrument} {obj.Id}";
+            OnAutoTweet(n);
         }
+
+
+        [Serializable]
+        public class TradeTweetSettings
+        {
+            //  public Dictionary<EventType, bool> Set;
+            public bool autotweet = false;
+            public string atn = "";
+            public string ast = "";
+        }
+
+        #endregion
     }
 }

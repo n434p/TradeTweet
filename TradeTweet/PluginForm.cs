@@ -8,6 +8,8 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
+using PTLRuntime.NETScript.Settings;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace TradeTweet
 {
@@ -47,12 +49,22 @@ namespace TradeTweet
             }
             else
             {
-                tw = new TweetPanel(ts.User, PlatformEngine);
-                tw.OnLogout = OnLogout;
-                tw.OnTweet = OnTweet;
-                tw.OnNotice = (n) => { noticePanel.ShowNotice(n,2000, null); };
-                this.Controls.Add(tw);
+                this.Controls.Add(CreateTweetPanel());
             }
+        }
+
+        private TweetPanel CreateTweetPanel()
+        {
+            tw = new TweetPanel(ts.User, PlatformEngine);
+            tw.OnLogout = OnLogout;
+            tw.OnTweet = OnTweet;
+            tw.OnAutoTweet = (n) =>
+            {
+                noticePanel.ShowNotice(n, 2000, null);
+                OnAutoTweet(n);
+            };
+            tw.OnNewNotice = (n) => { noticePanel.ShowNotice(n, 1000, null); };
+            return tw;
         }
 
         private void OnLogout()
@@ -89,11 +101,7 @@ namespace TradeTweet
                 return;
             }
 
-            tw = new TweetPanel(ts.User, PlatformEngine);
-            tw.OnNotice = (n) => { noticePanel.ShowNotice(n, 2000, null); };
-            tw.OnLogout = OnLogout;
-            tw.OnTweet = OnTweet;
-            this.Controls.Add(tw);
+            this.Controls.Add(CreateTweetPanel());
 
             Controls.Remove(enterPinPanel);
         }
@@ -141,11 +149,7 @@ namespace TradeTweet
         {
             noticePanel.ShowNotice("AutoTweet...");
 
-            string mediaString = "";
-
-            byte[] media = (string.IsNullOrEmpty(mediaString)) ? null : new byte[1];
-
-            await ts.SendTweetAsync(new Twitt { Text = tw.Status, Media = media }, mediaString, ct).ContinueWith((t) =>
+            await ts.SendTweetAsync(new Twitt { Text = status, Media = null}, null, ct).ContinueWith((t) =>
             {
                 noticePanel.ShowNotice("Done!");
             });
@@ -197,4 +201,5 @@ namespace TradeTweet
 
         #endregion
     }
+
 }

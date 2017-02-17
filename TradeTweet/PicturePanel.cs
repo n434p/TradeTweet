@@ -11,6 +11,8 @@ namespace TradeTweet
         const int CARD_ZIZE = 80;
         const int MARGIN = 5;
 
+        public Action OnMaxPics = null;
+
         public PicturePanel()
         {
             PictureCard card = new PictureCard();
@@ -23,8 +25,8 @@ namespace TradeTweet
                     return;
                 }
 
-
-                MessageBox.Show("Only 4 pics are allowed for one tweet!");
+                if (OnMaxPics != null)
+                    OnMaxPics.Invoke();
             };
 
             this.Controls.Add(card);
@@ -122,6 +124,7 @@ namespace TradeTweet
 
                 Width = size;
                 Height = size;
+                Cursor = Cursors.Hand;
 
                 this.SizeMode = PictureBoxSizeMode.Zoom;
 

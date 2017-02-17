@@ -589,8 +589,8 @@ namespace TradeTweet
 
     class Twitt
     {
-        public string Text;
-        public byte[] Media;
+        public string Text = string.Empty;
+        public byte[] Media = null;
     }
 
     class Response
