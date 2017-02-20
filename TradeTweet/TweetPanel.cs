@@ -17,12 +17,17 @@ namespace TradeTweet
         TextBox tweetText;
         NETSDK PlatformEngine;
 
-        Dictionary<EventType, bool> settings = null;
+        Dictionary<EventType, bool> settings = new Dictionary<EventType, bool>();
+
+        public bool autoTweetEnabled { get { return statusPanel.AutoTweet; } }
+        public string Status { get { return tweetText.Text; } }
 
         public Action OnLogout = null;
         public Action OnTweet = null;
-        public Action<String> OnAutoTweet = null;
-        public Action<String> OnNewNotice = null;
+        public Action<Dictionary<EventType, bool>> OnSettingsApplied = null;
+        public Action<bool> OnAutoTweetToggle = null;
+        public Action<string> OnAutoTweetAction = null;
+        public Action<string> OnNewNotice = null;
 
         const int MAX_TWEET_LENGTH = 140;
         const string ENTER_TWEET = "Type here...";
@@ -30,8 +35,6 @@ namespace TradeTweet
         const int statusPanelHeight = 40;
         const int CARD_ZIZE = 80;
         const int MARGIN = 5;
-
-        public string Status { get { return tweetText.Text; } }
 
         public void ToggleTweetButton()
         {
@@ -54,7 +57,7 @@ namespace TradeTweet
             return list;
         } 
 
-        public TweetPanel(User tweetUser, NETSDK platformEngine)
+        public TweetPanel(User tweetUser, NETSDK platformEngine,  Dictionary<EventType, bool> set)
         {
 
             this.DoubleBuffered = true;
@@ -62,6 +65,9 @@ namespace TradeTweet
             PlatformEngine = platformEngine;
             this.user = tweetUser;
             this.Dock = DockStyle.Fill;
+
+            if (set != null)
+                settings = set;
 
             Populate();
 
@@ -91,20 +97,29 @@ namespace TradeTweet
             statusPanel.onSettingsClicked = () =>
             {
                 settingsPanel.ShowSet();
-                M();
             };
 
             statusPanel.onAutoTweetClicked = () =>
             {
+                if (OnAutoTweetToggle != null)
+                    OnAutoTweetToggle.Invoke(autoTweetEnabled);
+
                 if (OnNewNotice != null)
                         OnNewNotice.Invoke((!statusPanel.AutoTweet) ? "AutoTweet Enabled!" : "AutoTweet Disabled!");
-
 
                 LinkEvents(!statusPanel.AutoTweet && settingsPanel.HasEvents);
             };
 
             settingsPanel.OnApply = () => 
             {
+                foreach (EventType item in Enum.GetValues(typeof(EventType)))
+                {
+                    settings[item] = settingsPanel[item];
+                }
+
+                if (OnSettingsApplied != null)
+                    OnSettingsApplied.Invoke(settings);
+
                 if (OnNewNotice != null)
                     OnNewNotice.Invoke("Settings applied!");
 
@@ -117,49 +132,6 @@ namespace TradeTweet
                     OnNewNotice.Invoke("Only 4 pics are allowed for one tweet!");
             };
         }
-
-        private void M()
-        {
-            var sett = new TradeTweetSettings()
-            {
-                //Set = new Dictionary<EventType, bool>()
-                //{
-                //    { EventType.OrderClose, true},
-                //    { EventType.PositionOpen, false}
-                //},
-                autotweet = false,
-                ast = "abcd",
-                atn = "123"
-            };
-
-            var str = string.Empty;
-
-            using (var ms = new System.IO.MemoryStream())
-            {
-                var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                formatter.Serialize(ms, sett);
-                var data = ms.ToArray();
-                str = System.Text.Encoding.ASCII.GetString(data);
-            }
-
-            byte[] buffer = System.Text.Encoding.ASCII.GetBytes(str);
-
-            try
-            {
-                using (var ms = new System.IO.MemoryStream(buffer))
-                {
-                    var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                    var res = formatter.Deserialize(ms);
-                }
-            }
-            catch (Exception ex)
-            {
-
-            }
-
-
-        }
-
 
         private void MessageText_KeyDown(object sender, KeyEventArgs e)
         {
@@ -276,37 +248,29 @@ namespace TradeTweet
         private void Positions_PositionRemoved(Position obj)
         {
             string n = $"Position removed: {obj.Account} {obj.Instrument} {obj.Id}";
-            OnAutoTweet(n);
+            OnAutoTweetAction(n);
         }
 
         private void Positions_PositionAdded(Position obj)
         {
             string n = $"Position added: {obj.Account} {obj.Instrument} {obj.Id}";
-            OnAutoTweet(n);
+            OnAutoTweetAction(n);
         }
 
         private void Orders_OrderRemoved(Order obj)
         {
             string n = $"Order removed: {obj.Account} {obj.Instrument} {obj.Id}";
-            OnAutoTweet(n);
+            OnAutoTweetAction(n);
         }
 
         private void Orders_OrderAdded(Order obj)
         {
             string n = $"Order added: {obj.Account} {obj.Instrument} {obj.Id}";
-            OnAutoTweet(n);
+            OnAutoTweetAction(n);
         }
 
-
-        [Serializable]
-        public class TradeTweetSettings
-        {
-            //  public Dictionary<EventType, bool> Set;
-            public bool autotweet = false;
-            public string atn = "";
-            public string ast = "";
-        }
 
         #endregion
+
     }
 }

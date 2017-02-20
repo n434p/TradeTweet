@@ -17,6 +17,8 @@ namespace TradeTweet
         string oauth_token = "";
         string oauth_token_secret = "";
 
+        public Action<string, string> onAuthorized = null;
+
         // oauth implementation details
         const string oauth_consumer_key = "wjuqr6fFh08Mbk5cGg0h3nc70";
         const string oauth_consumer_secret = "neCI38D28I2ar7yxalV0y6itpAtNGTEig3dhGKwuuOkouKXIyb";
@@ -401,6 +403,9 @@ namespace TradeTweet
             // access_token_secret
             this.oauth_token = response["oauth_token"];
             this.oauth_token_secret = response["oauth_token_secret"];
+
+            if (onAuthorized != null)
+                onAuthorized.Invoke(oauth_token, oauth_token_secret);
 
             GetCredentials();
 

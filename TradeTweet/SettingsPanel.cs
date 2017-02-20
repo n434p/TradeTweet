@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace TradeTweet
 {
-    enum EventType { OrderOpen, OrderClose, PositionOpen, PositionClose }
+    public enum EventType { OrderOpen, OrderClose, PositionOpen, PositionClose }
 
     class SettingsPanel: Panel
     {
@@ -60,7 +60,7 @@ namespace TradeTweet
 
             foreach (EventType item in Enum.GetValues(typeof(EventType)))
             {
-                set[item] = (Set != null) ? Set[item] : false;
+                set[item] = (Set != null && Set.Count == Enum.GetValues(typeof(EventType)).Length) ? Set[item] : false;
 
                 eventsList[item] = new CheckBox()
                 {
