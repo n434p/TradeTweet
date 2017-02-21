@@ -15,17 +15,16 @@ namespace TradeTweet
         {
             get
             {
-                return at;
+                return Settings.autoTweet;
             }
             set
             {
                 if(autoTweet != null)
                     autoTweet.Image = (value) ? Properties.Resources.autoTweet : Properties.Resources.autoTweetGrey;
 
-                at = value;
+                Settings.autoTweet = value;
             }
         }
-        bool at = false;
 
         public bool SettingsOpen
         {

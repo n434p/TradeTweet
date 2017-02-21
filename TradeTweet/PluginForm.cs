@@ -18,7 +18,6 @@ namespace TradeTweet
     [Exportable]
     public partial class TradeTweet : Form, IExternalComponent, ITradeComponent
     {
-        TradeTweetSettings tts;
         TwittwerService ts;
         TweetPanel tw;
         ConnectionPanel connectionPanel;
@@ -42,14 +41,13 @@ namespace TradeTweet
             noticePanel = new NoticePanel();
             this.Controls.Add(noticePanel);
 
-            tts = new TradeTweetSettings();
-            tts.GetSettings();
+            Settings.LoadSettings();
 
-            ts = new TwittwerService(tts.ast, tts.atn);
+            ts = new TwittwerService(Settings.ast, Settings.atn);
 
             ts.onAuthorized += (s1, s2) => {
-                tts.ast = s1;
-                tts.atn = s2;
+                Settings.ast = s1;
+                Settings.atn = s2;
             };
 
             if (!ts.Connected)
@@ -72,7 +70,7 @@ namespace TradeTweet
 
         private TweetPanel CreateTweetPanel()
         {
-            tw = new TweetPanel(ts.User, PlatformEngine, tts.GetCurrentSet(), tts.autoTweet);
+            tw = new TweetPanel(ts.User, PlatformEngine, Settings.GetCurrentSet());
             tw.OnLogout = OnLogout;
             tw.OnTweet = OnTweet;
 
@@ -84,14 +82,14 @@ namespace TradeTweet
 
             tw.OnAutoTweetToggle = (autoTweet) =>
             {
-                tts.autoTweet = autoTweet;
-                tts.SetSettings();
+                Settings.autoTweet = autoTweet;
+                Settings.SaveSettings();
             };
 
             tw.OnSettingsApplied = (set) =>
             {
-                tts.subSet = set.Values.ToList();
-                tts.SetSettings();
+                Settings.subSet = set.Values.ToList();
+                Settings.SaveSettings();
             };
 
             tw.OnNewNotice = (n) => { ShowNotice(n, 1000, null); };
@@ -101,6 +99,7 @@ namespace TradeTweet
         private void OnLogout()
         {
             ts.Disconnect();
+            Settings.ClearSettings();
             StartPlugin();
         }
 
@@ -233,118 +232,6 @@ namespace TradeTweet
         }
 
         #endregion
-
-        private void M()
-        {
-            tts = new TradeTweetSettings();
-
-            tts.ast = "1234";
-            tts.atn = "abcd";
-            tts.autoTweet = true;
-            tts.subSet = new List<bool>() { true,false,false,true} ;
-
-            GlobalVariablesManager.RemoveAll();
-            
-
-            tts.SetSettings();
-            tts.GetSettings();
-        }
-
-        [DataContract]
-        class TradeTweetSettings
-        {
-            [DataMember]
-            public Dictionary<EventType,bool> dic = new Dictionary<EventType, bool>();
-            [DataMember]
-            public List<bool> subSet = new List<bool>();
-            [DataMember]
-            public string key = "default_set1";
-            [DataMember]
-            public bool autoTweet = false;
-            [DataMember]
-            public string atn = "";
-            [DataMember]
-            public string ast = "";
-
-            public Dictionary<EventType, bool> GetCurrentSet()
-            {
-                
-                if (subSet == null || subSet.Count != Enum.GetValues(typeof(EventType)).Length)
-                    return null;
-
-                Dictionary<EventType, bool> res = new Dictionary<EventType, bool>();
-
-                foreach (EventType item in Enum.GetValues(typeof(EventType)))
-                {
-                    res[item] = subSet[(int)item];
-                }
-
-                return res;
-                
-            }
-
-            sealed class AllowAllAssemblyVersionsDeserializationBinder : System.Runtime.Serialization.SerializationBinder
-            {
-                public override Type BindToType(string assemblyName, string typeName)
-                {
-                    Type typeToDeserialize = null;
-
-                    String currentAssembly = System.Reflection.Assembly.GetExecutingAssembly().FullName;
-
-                    // In this case we are always using the current assembly
-                    assemblyName = currentAssembly;
-
-                    // Get the type using the typeName and assemblyName
-                    typeToDeserialize = Type.GetType(String.Format("{0}, {1}",
-                        typeName, assemblyName));
-
-                    return typeToDeserialize;
-                }
-            }
-
-            public void SetSettings()
-            {
-                var str = string.Empty;
-
-                using (MemoryStream memoryStream = new MemoryStream())
-                using (StreamReader reader = new StreamReader(memoryStream))
-                {
-                    DataContractSerializer serializer = new DataContractSerializer(this.GetType());
-                    serializer.WriteObject(memoryStream, this);
-                    memoryStream.Position = 0;
-                    string res = reader.ReadToEnd();
-
-                    GlobalVariablesManager.SetValue(key, res, VariableLifetime.SaveFile);
-                }
-            }
-
-            public void GetSettings()
-            {
-                if (!GlobalVariablesManager.Exists(key)) return;
-
-                string str = (string)GlobalVariablesManager.GetValue(key);
-
-                byte[] buffer = System.Text.Encoding.Default.GetBytes(str);
-
-                TradeTweetSettings ts = null;
-
-                using (Stream stream = new MemoryStream())
-                {
-                    stream.Write(buffer, 0, buffer.Length);
-                    stream.Position = 0;
-                    DataContractSerializer deserializer = new DataContractSerializer(typeof(TradeTweetSettings));
-                    ts = deserializer.ReadObject(stream) as TradeTweetSettings;
-                }
-
-                if (ts != null)
-                {
-                    ast = ts.ast;
-                    atn = ts.atn;
-                    autoTweet = ts.autoTweet;
-                    subSet = ts.subSet;
-                }
-            }
-        }
     }
 
 }

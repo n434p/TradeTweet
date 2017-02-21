@@ -56,7 +56,7 @@ namespace TradeTweet
             return list;
         } 
 
-        public TweetPanel(User tweetUser, NETSDK platformEngine,  Dictionary<EventType, bool> set, bool AT)
+        public TweetPanel(User tweetUser, NETSDK platformEngine,  Dictionary<EventType, bool> set)
         {
             this.DoubleBuffered = true;
 
@@ -65,11 +65,9 @@ namespace TradeTweet
             this.Dock = DockStyle.Fill;
 
             if (set != null)
-                settings = set;
+                settings = Settings.GetCurrentSet();
 
             Populate();
-
-            statusPanel.AutoTweet = AT;
 
             LinkEvents();
 
