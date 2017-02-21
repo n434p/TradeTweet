@@ -19,7 +19,6 @@ namespace TradeTweet
 
         Dictionary<EventType, bool> settings = new Dictionary<EventType, bool>();
 
-        public bool autoTweetEnabled { get { return statusPanel.AutoTweet; } }
         public string Status { get { return tweetText.Text; } }
 
         public Action OnLogout = null;
@@ -57,9 +56,8 @@ namespace TradeTweet
             return list;
         } 
 
-        public TweetPanel(User tweetUser, NETSDK platformEngine,  Dictionary<EventType, bool> set)
+        public TweetPanel(User tweetUser, NETSDK platformEngine,  Dictionary<EventType, bool> set, bool AT)
         {
-
             this.DoubleBuffered = true;
 
             PlatformEngine = platformEngine;
@@ -70,6 +68,10 @@ namespace TradeTweet
                 settings = set;
 
             Populate();
+
+            statusPanel.AutoTweet = AT;
+
+            LinkEvents();
 
             tweetBtn.Click += (o, e) =>
             {
@@ -87,7 +89,6 @@ namespace TradeTweet
                 tweetBtn.BackColor = (tweetBtn.Enabled) ? Settings.mainFontColor : Color.Gray;
             };
 
-
             statusPanel.onLogoutClicked = () =>
             {
                 if (OnLogout != null)
@@ -101,17 +102,34 @@ namespace TradeTweet
 
             statusPanel.onAutoTweetClicked = () =>
             {
+                if (!settingsPanel.HasEvents)
+                {
+                    statusPanel.AutoTweet = false;
+                    TradeTweet.ShowNotice("There is no events to tweet!");
+                    return;
+                }
+
+                statusPanel.AutoTweet = !statusPanel.AutoTweet;
+
                 if (OnAutoTweetToggle != null)
-                    OnAutoTweetToggle.Invoke(autoTweetEnabled);
+                    OnAutoTweetToggle.Invoke(statusPanel.AutoTweet);
 
-                if (OnNewNotice != null)
-                        OnNewNotice.Invoke((!statusPanel.AutoTweet) ? "AutoTweet Enabled!" : "AutoTweet Disabled!");
+                TradeTweet.ShowNotice((statusPanel.AutoTweet) ? "AutoTweet Enabled!" : "AutoTweet Disabled!");
 
-                LinkEvents(!statusPanel.AutoTweet && settingsPanel.HasEvents);
+                LinkEvents();
             };
 
             settingsPanel.OnApply = () => 
             {
+                LinkEvents();
+
+                if (!settingsPanel.HasEvents)
+                {
+                    statusPanel.AutoTweet = false;
+                    TradeTweet.ShowNotice("AutoTweet Stopped!");
+                    return;
+                }
+
                 foreach (EventType item in Enum.GetValues(typeof(EventType)))
                 {
                     settings[item] = settingsPanel[item];
@@ -120,16 +138,12 @@ namespace TradeTweet
                 if (OnSettingsApplied != null)
                     OnSettingsApplied.Invoke(settings);
 
-                if (OnNewNotice != null)
-                    OnNewNotice.Invoke("Settings applied!");
-
-                LinkEvents(!statusPanel.AutoTweet);
+                TradeTweet.ShowNotice("Settings applied!");
             };
 
             picPanel.OnMaxPics = () => 
             {
-                if (OnNewNotice != null)
-                    OnNewNotice.Invoke("Only 4 pics are allowed for one tweet!");
+                TradeTweet.ShowNotice("Only 4 pics are allowed for one tweet!");
             };
         }
 
@@ -197,13 +211,11 @@ namespace TradeTweet
 
         #region Trade Events
 
-        private void LinkEvents(bool autoTweet)
+        private void LinkEvents(bool unlinkAll = false)
         {
-            if (!autoTweet) return;
-
             foreach (EventType item in Enum.GetValues(typeof(EventType)))
             {
-                bool check = settingsPanel[item];
+                bool check = (unlinkAll)? false: settingsPanel[item];
 
                 if (check)
                 {
@@ -247,28 +259,45 @@ namespace TradeTweet
 
         private void Positions_PositionRemoved(Position obj)
         {
+            if (!settingsPanel.HasEvents)
+                return;
+
             string n = $"Position removed: {obj.Account} {obj.Instrument} {obj.Id}";
             OnAutoTweetAction(n);
         }
 
         private void Positions_PositionAdded(Position obj)
         {
+            if (!settingsPanel.HasEvents)
+                return;
+
             string n = $"Position added: {obj.Account} {obj.Instrument} {obj.Id}";
             OnAutoTweetAction(n);
         }
 
         private void Orders_OrderRemoved(Order obj)
         {
+            if (!settingsPanel.HasEvents)
+                return;
+
             string n = $"Order removed: {obj.Account} {obj.Instrument} {obj.Id}";
             OnAutoTweetAction(n);
         }
 
         private void Orders_OrderAdded(Order obj)
         {
+            if (!settingsPanel.HasEvents)
+                return;
+
             string n = $"Order added: {obj.Account} {obj.Instrument} {obj.Id}";
             OnAutoTweetAction(n);
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            LinkEvents(true);
+            base.Dispose(disposing);
+        }
 
         #endregion
 

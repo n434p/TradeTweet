@@ -11,9 +11,34 @@ namespace TradeTweet
         PictureBox settings;
         PictureBox autoTweet;
 
-        public bool AutoTweet { get; private set; }
+        public bool AutoTweet
+        {
+            get
+            {
+                return at;
+            }
+            set
+            {
+                if(autoTweet != null)
+                    autoTweet.Image = (value) ? Properties.Resources.autoTweet : Properties.Resources.autoTweetGrey;
 
-        public bool SettingsOpen { get; private set; }
+                at = value;
+            }
+        }
+        bool at = false;
+
+        public bool SettingsOpen
+        {
+            get { return so; }
+            set
+            {
+                if (settings != null)
+                    settings.Image = (value) ? Properties.Resources.settings : Properties.Resources.settingsClose;
+
+                so = value;
+            }
+        }
+        bool so = true;
 
         const string LOGOUT = "Logout";
         const int panelHeight = 40;
@@ -61,7 +86,6 @@ namespace TradeTweet
 
             autoTweet = new PictureBox()
             {
-                Image = Properties.Resources.autoTweetGrey,
                 Size = new Size(panelHeight, panelHeight),
                 SizeMode = PictureBoxSizeMode.Zoom,
                 Dock = DockStyle.Left,
@@ -71,9 +95,6 @@ namespace TradeTweet
             autoTweet.Click += (o, e) => {
                 if (onAutoTweetClicked != null)
                     onAutoTweetClicked.Invoke();
-
-                AutoTweet = !AutoTweet;
-                autoTweet.Image = (AutoTweet) ? Properties.Resources.autoTweet : Properties.Resources.autoTweetGrey;
             };
 
             this.Controls.Add(autoTweet);
@@ -92,7 +113,6 @@ namespace TradeTweet
                     onSettingsClicked.Invoke();
 
                 SettingsOpen = !SettingsOpen;
-                settings.Image = (!SettingsOpen) ? Properties.Resources.settings : Properties.Resources.settingsClose;
             };
 
 

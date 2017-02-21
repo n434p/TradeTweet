@@ -11,6 +11,7 @@ using System.Linq;
 using PTLRuntime.NETScript.Settings;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Reflection;
+using System.Runtime.Serialization;
 
 namespace TradeTweet
 {
@@ -63,15 +64,21 @@ namespace TradeTweet
             }
         }
 
+        public static void ShowNotice(string text, int delay = 1000, Action callback = null)
+        {
+            if(noticePanel != null)
+                noticePanel.ShowNotice(text, delay, callback);
+        }
+
         private TweetPanel CreateTweetPanel()
         {
-            tw = new TweetPanel(ts.User, PlatformEngine, tts.GetCurrentSet());
+            tw = new TweetPanel(ts.User, PlatformEngine, tts.GetCurrentSet(), tts.autoTweet);
             tw.OnLogout = OnLogout;
             tw.OnTweet = OnTweet;
 
             tw.OnAutoTweetAction = (n) =>
             {
-                noticePanel.ShowNotice(n, 2000, null);
+                ShowNotice(n, 2000, null);
                 OnAutoTweet(n);
             };
 
@@ -87,7 +94,7 @@ namespace TradeTweet
                 tts.SetSettings();
             };
 
-            tw.OnNewNotice = (n) => { noticePanel.ShowNotice(n, 1000, null); };
+            tw.OnNewNotice = (n) => { ShowNotice(n, 1000, null); };
             return tw;
         }
 
@@ -103,7 +110,7 @@ namespace TradeTweet
 
             if (resp.Failed)
             {
-                noticePanel.ShowNotice("Connection error!");
+                ShowNotice("Connection error!");
                 return;
             }
 
@@ -121,7 +128,7 @@ namespace TradeTweet
 
             if (resp.Failed)
             {
-                noticePanel.ShowNotice("Pin error!",2000, ReturnToConnect);
+                ShowNotice("Pin error!",2000, ReturnToConnect);
                 return;
             }
 
@@ -141,7 +148,7 @@ namespace TradeTweet
         private async void OnTweet()
         {
             tw.ToggleTweetButton();
-            noticePanel.ShowNotice("Sending...");
+            ShowNotice("Sending...");
 
             var images = tw.GetImages();
 
@@ -164,18 +171,18 @@ namespace TradeTweet
 
             await ts.SendTweetAsync(new Twitt { Text = tw.Status, Media = media }, mediaString, ct).ContinueWith((t) => 
             {
-                noticePanel.ShowNotice("Done!");
+                ShowNotice("Done!");
                 tw.ToggleTweetButton();
             });
         }
 
         private async void OnAutoTweet(string status)
         {
-            noticePanel.ShowNotice("AutoTweet...");
+            ShowNotice("AutoTweet...");
 
             await ts.SendTweetAsync(new Twitt { Text = status, Media = null}, null, ct).ContinueWith((t) =>
             {
-                noticePanel.ShowNotice("Done!");
+                ShowNotice("Done!");
             });
         }
 
@@ -219,9 +226,9 @@ namespace TradeTweet
                 //cts.CancelAfter(5000);
                 ct = cts.Token;
 
-                M();
+                //M();
 
-                //StartPlugin(); // "822113440844148738-s7MLex2gcSFKxzKZfBDwcwJqvJYk0LA", "8UYP6Ahmn5GjJXkr0bN3Jy2XmKBX8jT3Slxk8EhzLCEmO");
+                StartPlugin(); // "822113440844148738-s7MLex2gcSFKxzKZfBDwcwJqvJYk0LA", "8UYP6Ahmn5GjJXkr0bN3Jy2XmKBX8jT3Slxk8EhzLCEmO");
             }
         }
 
@@ -243,11 +250,21 @@ namespace TradeTweet
             tts.GetSettings();
         }
 
-        [Serializable]
-        public class TradeTweetSettings
+        [DataContract]
+        class TradeTweetSettings
         {
-            [NonSerialized]
+            [DataMember]
+            public Dictionary<EventType,bool> dic = new Dictionary<EventType, bool>();
+            [DataMember]
             public List<bool> subSet = new List<bool>();
+            [DataMember]
+            public string key = "default_set1";
+            [DataMember]
+            public bool autoTweet = false;
+            [DataMember]
+            public string atn = "";
+            [DataMember]
+            public string ast = "";
 
             public Dictionary<EventType, bool> GetCurrentSet()
             {
@@ -265,11 +282,6 @@ namespace TradeTweet
                 return res;
                 
             }
-
-            public string key = "set";
-            public bool autoTweet = false;
-            public string atn = "";
-            public string ast = "";
 
             sealed class AllowAllAssemblyVersionsDeserializationBinder : System.Runtime.Serialization.SerializationBinder
             {
@@ -294,14 +306,15 @@ namespace TradeTweet
             {
                 var str = string.Empty;
 
-                using (var ms = new System.IO.MemoryStream())
+                using (MemoryStream memoryStream = new MemoryStream())
+                using (StreamReader reader = new StreamReader(memoryStream))
                 {
-                    var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                    formatter.Binder = new AllowAllAssemblyVersionsDeserializationBinder();
-                    formatter.Serialize(ms, this);
-                    var data = ms.ToArray();
-                    str = System.Text.Encoding.Default.GetString(data);
-                    GlobalVariablesManager.SetValue(key, str, VariableLifetime.SaveFile);
+                    DataContractSerializer serializer = new DataContractSerializer(this.GetType());
+                    serializer.WriteObject(memoryStream, this);
+                    memoryStream.Position = 0;
+                    string res = reader.ReadToEnd();
+
+                    GlobalVariablesManager.SetValue(key, res, VariableLifetime.SaveFile);
                 }
             }
 
@@ -313,43 +326,23 @@ namespace TradeTweet
 
                 byte[] buffer = System.Text.Encoding.Default.GetBytes(str);
 
+                TradeTweetSettings ts = null;
 
-                using (var ms = new System.IO.MemoryStream(buffer))
+                using (Stream stream = new MemoryStream())
                 {
-                    var formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                    formatter.Binder = new AllowAllAssemblyVersionsDeserializationBinder();
-
-                    AppDomain.CurrentDomain.AssemblyResolve +=
-                    new ResolveEventHandler(CurrentDomain_AssemblyResolve);
-
-                    var ts = formatter.Deserialize(ms) as TradeTweetSettings;
-
-                    AppDomain.CurrentDomain.AssemblyResolve -= new ResolveEventHandler(CurrentDomain_AssemblyResolve);
-
-                    if (ts != null)
-                    {
-                        ast = ts.ast;
-                        atn = ts.atn;
-                        autoTweet = ts.autoTweet;
-                        subSet = ts.subSet;
-                    }
-
+                    stream.Write(buffer, 0, buffer.Length);
+                    stream.Position = 0;
+                    DataContractSerializer deserializer = new DataContractSerializer(typeof(TradeTweetSettings));
+                    ts = deserializer.ReadObject(stream) as TradeTweetSettings;
                 }
 
-
-            }
-
-            private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
-            {
-                try
+                if (ts != null)
                 {
-                    Assembly assembly = System.Reflection.Assembly.Load(args.Name);
-                    if (assembly != null)
-                        return assembly;
+                    ast = ts.ast;
+                    atn = ts.atn;
+                    autoTweet = ts.autoTweet;
+                    subSet = ts.subSet;
                 }
-                catch {; }
-
-                return Assembly.GetExecutingAssembly();
             }
         }
     }
