@@ -18,6 +18,7 @@ namespace TradeTweet
             Dock = DockStyle.Top;
             Height = panelHeight;
             BackColor = Settings.mainFontColor;
+            Visible = false;
 
             notice = new Label()
             {
@@ -27,18 +28,14 @@ namespace TradeTweet
                 TextAlign = ContentAlignment.MiddleCenter
             };
 
-            Visible = false;
-
             this.Controls.Add(notice);
         }
 
-
-        public async void ShowNotice(string message, int miliseconds = 2000, Action callback = null)
+        public async void ShowNotice(Control control, string message, int miliseconds = 2000, Action callback = null)
         {
-            notice.Text = message;
-
-            this.Invoke((MethodInvoker)delegate
+            control.Invoke((MethodInvoker)delegate
             {
+                this.notice.Text = message;
                 this.Visible = true;
             });
 
@@ -48,7 +45,7 @@ namespace TradeTweet
                     callback.Invoke(); 
             });
 
-            this.Invoke((MethodInvoker)delegate 
+            control.Invoke((MethodInvoker)delegate 
             {
                 this.Visible = false;
             });

@@ -19,28 +19,13 @@ namespace TradeTweet
         static internal Color mainBackColor = Color.DimGray;
         static internal int btnHeight = 35;
 
-        static internal Dictionary<EventType, bool> dic;
-        static internal List<bool> subSet;
+        static internal Dictionary<EventType, bool> Set;
         static internal string key;
         static internal bool autoTweet;
         static internal string atn;
         static internal string ast;
 
-        public static Dictionary<EventType, bool> GetCurrentSet()
-        {
-
-            if (subSet == null || subSet.Count != Enum.GetValues(typeof(EventType)).Length)
-                return null;
-
-            Dictionary<EventType, bool> res = new Dictionary<EventType, bool>();
-
-            foreach (EventType item in Enum.GetValues(typeof(EventType)))
-            {
-                res[item] = subSet[(int)item];
-            }
-
-            return res;
-        }
+        public static Action onLogInOut;
 
         static Settings()
         {
@@ -52,9 +37,16 @@ namespace TradeTweet
             ast = "";
             atn = "";
             autoTweet = false;
-            subSet = new List<bool>();
-            dic = new Dictionary<EventType, bool>();
-            key = "default_set";
+            Set = new Dictionary<EventType, bool>();
+            key = "default_set11";
+
+            Refresh();
+        }
+
+        public static void Refresh()
+        {
+            if (onLogInOut != null)
+                onLogInOut.Invoke();
         }
 
         public static void SaveSettings()
@@ -64,10 +56,9 @@ namespace TradeTweet
                 ast = ast,
                 atn = atn,
                 autoTweet = autoTweet,
-                dic = dic,
-                key = key,
-                subSet = subSet
-            };
+                Set = Set,
+                key = key
+            };  
 
             var str = string.Empty;
 
@@ -107,8 +98,7 @@ namespace TradeTweet
                 ast = ts.ast;
                 atn = ts.atn;
                 autoTweet = ts.autoTweet;
-                subSet = ts.subSet;
-                dic = ts.dic;
+                Set = ts.Set;
                 key = ts.key;
             }
         }
@@ -117,17 +107,15 @@ namespace TradeTweet
         class TradeTweetSettings
         {
             [DataMember]
-            public Dictionary<EventType, bool> dic = Settings.dic;
+            public Dictionary<EventType, bool> Set;
             [DataMember]
-            public List<bool> subSet = new List<bool>();
+            public string key;
             [DataMember]
-            public string key = "default_set1";
+            public bool autoTweet;
             [DataMember]
-            public bool autoTweet = false;
+            public string atn;
             [DataMember]
-            public string atn = "";
-            [DataMember]
-            public string ast = "";
+            public string ast;
         }
     }
 

@@ -27,9 +27,9 @@ namespace TradeTweet
         };
 
         Dictionary<EventType, CheckBox> eventsList;
-        Dictionary<EventType, bool> set = new Dictionary<EventType, bool>();
+        Dictionary<EventType, bool> set = Settings.Set;
 
-        public SettingsPanel(Dictionary<EventType, bool> Set = null)
+        public SettingsPanel()
         {
             eventsList = new Dictionary<EventType, CheckBox>();
 
@@ -60,7 +60,7 @@ namespace TradeTweet
 
             foreach (EventType item in Enum.GetValues(typeof(EventType)))
             {
-                set[item] = (Set != null && Set.Count == Enum.GetValues(typeof(EventType)).Length) ? Set[item] : false;
+                set[item] =  (set.Count == Enum.GetValues(typeof(EventType)).Length) ? set[item] : false;
 
                 eventsList[item] = new CheckBox()
                 {
@@ -129,6 +129,8 @@ namespace TradeTweet
 
         public void ShowSet()
         {
+
+
             foreach (EventType item in Enum.GetValues(typeof(EventType)))
             {
                 bool check = (set != null) ? set[item] : false;

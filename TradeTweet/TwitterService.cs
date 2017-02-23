@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace TradeTweet
 {
@@ -32,10 +33,16 @@ namespace TradeTweet
             oauth_token = token;
             oauth_token_secret = secret_token;
 
-            GetCredentials();
+            var r1 = GetCredentials("https://api.twitter.com/1.1/account/verify_credentials.json");
+
+            if (r1.Failed) return;
+
+            User = new User(r1.Text);
+
+            var r2 = GetCredentials("https://api.twitter.com/1.1/application/rate_limit_status.json");
         }
 
-        Dictionary<string, string> SendPOSTRequest(Twitt twitt, string resource_url, string media = "", string token = "")
+        Response SendPOSTRequest(Twitt twitt, string resource_url, string media = "", string token = "")
         {
             // unique request details
             var oauth_nonce = Convert.ToBase64String(
@@ -146,13 +153,14 @@ namespace TradeTweet
             }
 
             HttpWebRequest request = null;
+            
 
             if (twitt.Media == null)
             {
                 request = (HttpWebRequest)WebRequest.Create(resource_url);
                 request.Headers.Add("Authorization", authHeader);
                 request.Method = "POST";
-
+                request.Accept = "application/json";
 
                 // make the request
                 string postBody = "status=" + Uri.EscapeDataString(twitt.Text);
@@ -200,6 +208,7 @@ namespace TradeTweet
                 {
                     request = (HttpWebRequest)WebRequest.Create(resource_url);
                     request.Method = "POST";
+                    request.Accept = "application/json";
                     request.ContentType = "application/x-www-form-urlencoded; charset=utf-8";
                     request.UseDefaultCredentials = true;
                     request.Headers.Add("Authorization", authHeader);
@@ -225,6 +234,7 @@ namespace TradeTweet
             }
 
             Dictionary<string, string> responseItems = new Dictionary<string, string>();
+            Response res = new Response();
 
             try
             {
@@ -233,33 +243,40 @@ namespace TradeTweet
                 using (var reader = new System.IO.StreamReader(response.GetResponseStream(), ASCIIEncoding.ASCII))
                 {
                     string responseText = reader.ReadToEnd();
-                    string[] tokens = responseText.Split(new char[] { '&', '=' });
 
-                    if (tokens.Length % 2 == 0) // token's response
-                    {
-                        for (int i = 0; i < tokens.Length; i += 2)
-                        {
-                            responseItems[tokens[i]] = tokens[i + 1];
-                        }
-                    }
-                    else // twitts response
-                    {
-                        responseItems[twitt.Text] = responseText;
-                    }
+                    res.Text = responseText;
+
+                    //string[] tokens = responseText.Split(new char[] { '&', '=' });
+
+                    //if (tokens.Length % 2 == 0) // token's response
+                    //{
+                    //    for (int i = 0; i < tokens.Length; i += 2)
+                    //    {
+                    //        responseItems[tokens[i]] = tokens[i + 1];
+                    //    }
+                    //}
+                    //else // twitts response
+                    //{
+                    //    responseItems[twitt.Text] = responseText;
+
+                    //}
                 }
             }
-            catch (Exception ex)
+            catch (WebException ex)
             {
-                responseItems["Error"] = ex.Message;
+                var resp = new StreamReader(ex.Response.GetResponseStream()).ReadToEnd();
+
+                string error = (string)JObject.Parse(resp).SelectToken("errors[0].message");
+
+                res.Failed = true;
+                res.Text = (error == null)? ex.Message : error;
             }
 
-            return responseItems;
+            return res;
         }
 
-        void GetCredentials()
+        Response GetCredentials(string resource_url)
         {
-            var resource_url = "https://api.twitter.com/1.1/account/verify_credentials.json";
-
             // unique request details
             var oauth_nonce = Convert.ToBase64String(
                 new ASCIIEncoding().GetBytes(DateTime.Now.Ticks.ToString()));
@@ -329,6 +346,8 @@ namespace TradeTweet
             ServicePointManager.Expect100Continue = false;
             request.KeepAlive = true;
 
+            Response respon = new Response();
+
             try
             {
                 var response = (HttpWebResponse)request.GetResponse();
@@ -337,43 +356,34 @@ namespace TradeTweet
                 {
                     string responseText = reader.ReadToEnd();
 
-                    User = JsonConvert.DeserializeObject<User>(responseText);
-
-                    HttpWebRequest req = (HttpWebRequest)WebRequest.Create(User.profile_image_url_https);
-                    var resp = (HttpWebResponse)req.GetResponse();
-
-                    User.avatar = System.Drawing.Image.FromStream(resp.GetResponseStream());
+                    respon.Text = responseText;
                 }
             }
             catch (Exception ex)
             {
-                
+                respon.Failed = true;
+                respon.Text = ex.Message;
             }
+
+            return respon;
         }
 
         public Response Connect()
         {
-            Response resp = new Response();
-
             var request_url = "https://api.twitter.com/oauth/request_token";
             Twitt empty = new Twitt() { Text = "", Media = null };
             var response = SendPOSTRequest(empty, request_url);
 
-            if (response.Keys.Contains("Error"))
-            {
-                resp.Failed = true;
-                resp.Text = response["Error"];
-                return resp;
-            }
+            OauthMembers set = new OauthMembers(response.Text);
 
             // oauth token
-            this.oauth_token = response["oauth_token"];
-            this.oauth_token_secret = response["oauth_token_secret"];
+            this.oauth_token = set.oauth_token;
+            this.oauth_token_secret = set.oauth_token_secret;
 
             string verifier_url = "https://api.twitter.com/oauth/authorize?oauth_token=" + oauth_token;
             System.Diagnostics.Process.Start(verifier_url);
 
-            return resp;
+            return response;
         }
 
         public Response SetToken(string oauth_verifier)
@@ -393,46 +403,44 @@ namespace TradeTweet
 
             var response = SendPOSTRequest(verify, access_url, null, oauth_token);
 
-            if (response.Keys.Contains("Error"))
-            {
-                resp.Failed = true;
-                resp.Text = response["Error"];
-                return resp;
-            }
+            OauthMembers set = new OauthMembers(response.Text);
 
             // access_token_secret
-            this.oauth_token = response["oauth_token"];
-            this.oauth_token_secret = response["oauth_token_secret"];
+            this.oauth_token = set.oauth_token;
+            this.oauth_token_secret = set.oauth_token_secret;
 
             if (onAuthorized != null)
                 onAuthorized.Invoke(oauth_token, oauth_token_secret);
 
-            GetCredentials();
+            var res = GetCredentials("https://api.twitter.com/1.1/account/verify_credentials.json");
+
+            User = new User(res.Text);
 
             return resp;
         }
 
-        public async Task<string> SendTweetAsync(Twitt twitt, string mediaIds, CancellationToken ct)
+        public async Task<Response> SendTweetAsync(Twitt twitt, string mediaIds, CancellationToken ct)
         {
             return await Task.Factory.StartNew(() =>
             {
 
-                if (!Connected) return "Service is not verified!";
+                if (!Connected) return new Response() { Text = "Service is not verified!" , Failed = true};
 
                 var resource_url = "https://api.twitter.com/1.1/statuses/update.json";
 
                 var res = SendPOSTRequest(twitt, resource_url, mediaIds);
 
-                return res[twitt.Text];
+                return res;
+
             }, ct);
         }
 
-        public async Task<string> SendImageAsync(System.Drawing.Image img, CancellationToken ct)
+        public async Task<Response> SendImageAsync(System.Drawing.Image img, CancellationToken ct)
         {
             return await Task.Factory.StartNew(() =>
             {
 
-                if (!Connected) return "Service is not verified!";
+                if (!Connected) return new Response() { Text = "Service is not verified!", Failed = true };
 
                 var resource_url = "https://upload.twitter.com/1.1/media/upload.json";
 
@@ -440,7 +448,7 @@ namespace TradeTweet
 
                 using (var ms = new MemoryStream())
                 {
-                    img.Save(ms, img.RawFormat);
+                    img.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
                     bytes = ms.ToArray();
                 }
 
@@ -450,7 +458,8 @@ namespace TradeTweet
 
                 var res = SendPOSTRequest(twitt, resource_url);
 
-                return res[key];
+                return res;
+
             }, ct);
         }
 
@@ -585,11 +594,64 @@ namespace TradeTweet
         }
     }
 
+    class OauthMembers
+    {
+        public string oauth_token;
+        public string oauth_token_secret;
+
+        public OauthMembers(string response)
+        {
+            if (response == null) return;
+
+            try
+            {
+                string[] tokens = response.Split(new char[] { '&', '=' });
+
+                Dictionary<string, string> responseItems = new Dictionary<string, string>();
+
+                if (tokens.Length % 2 == 0) // token's response
+                {
+                    for (int i = 0; i < tokens.Length; i += 2)
+                    {
+                        responseItems[tokens[i]] = tokens[i + 1];
+                    }
+
+                    oauth_token = responseItems["oauth_token"];
+                    oauth_token_secret = responseItems["oauth_token_secret"];
+                }
+            }
+            catch
+            {
+                
+            }
+        }
+    }
+
     class User
     {
         public string screen_name;
         public System.Drawing.Image avatar;
         public string profile_image_url_https;
+
+        public User(string res)
+        {
+            if (res == null) return;
+
+            try
+            {
+                User user = JsonConvert.DeserializeObject<User>(res);
+                HttpWebRequest req = (HttpWebRequest)WebRequest.Create(user.profile_image_url_https);
+                var r = (HttpWebResponse)req.GetResponse();
+
+                avatar = System.Drawing.Image.FromStream(r.GetResponseStream());
+                profile_image_url_https = user.profile_image_url_https;
+                screen_name = user.screen_name;
+            }
+            catch
+            {
+                
+            }
+        }
     }
 
     class Twitt

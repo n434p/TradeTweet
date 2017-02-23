@@ -6,6 +6,7 @@ namespace TradeTweet
 {
     class StatusPanel : Panel
     {
+        ToolTip tip;
         LinkLabel login;
         PictureBox avatar;
         PictureBox settings;
@@ -50,6 +51,9 @@ namespace TradeTweet
         {
             this.Padding = new Padding(0,5,0,5);
 
+            tip = new ToolTip();
+            tip.ShowAlways = true;
+
             string text = user.screen_name + ", " + LOGOUT;
 
             login = new LinkLabel()
@@ -66,6 +70,8 @@ namespace TradeTweet
                 TextAlign = System.Drawing.ContentAlignment.BottomCenter,
                 VisitedLinkColor = System.Drawing.Color.DarkOrange
             };
+
+            tip.SetToolTip(login, "Click to logout");
 
             avatar = new PictureBox()
             {
@@ -88,8 +94,11 @@ namespace TradeTweet
                 Size = new Size(panelHeight, panelHeight),
                 SizeMode = PictureBoxSizeMode.Zoom,
                 Dock = DockStyle.Left,
-                Cursor = Cursors.Hand
+                Image = (AutoTweet) ? Properties.Resources.autoTweet : Properties.Resources.autoTweetGrey,
+                Cursor = Cursors.Hand,                
             };
+
+            tip.SetToolTip(autoTweet, "AutoTweet turn on/off");
 
             autoTweet.Click += (o, e) => {
                 if (onAutoTweetClicked != null)
@@ -106,6 +115,8 @@ namespace TradeTweet
                 Dock = DockStyle.Left,
                 Cursor = Cursors.Hand
             };
+
+            tip.SetToolTip(settings, "AutoTweet Settings");
 
             settings.Click += (o, e) => {
                 if (onSettingsClicked != null)

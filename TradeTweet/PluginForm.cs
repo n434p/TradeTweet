@@ -18,12 +18,13 @@ namespace TradeTweet
     [Exportable]
     public partial class TradeTweet : Form, IExternalComponent, ITradeComponent
     {
+        ToolTip tip; 
         TwittwerService ts;
         TweetPanel tw;
         ConnectionPanel connectionPanel;
         EnterPinPanel enterPinPanel;
-        static NoticePanel noticePanel;
         CancellationToken ct;
+        NoticePanel noticePanel;
 
         const string LOGIN = "Login";
         const string LOGOUT = "Logout";
@@ -38,10 +39,12 @@ namespace TradeTweet
         {
             this.Controls.Clear();
 
-            noticePanel = new NoticePanel();
-            this.Controls.Add(noticePanel);
+            tip = new ToolTip();
 
             Settings.LoadSettings();
+
+            noticePanel = new NoticePanel();
+            this.Controls.Add(noticePanel);
 
             ts = new TwittwerService(Settings.ast, Settings.atn);
 
@@ -62,15 +65,14 @@ namespace TradeTweet
             }
         }
 
-        public static void ShowNotice(string text, int delay = 1000, Action callback = null)
+        public void ShowNotice(string text, int delay = 1000, Action callback = null)
         {
-            if(noticePanel != null)
-                noticePanel.ShowNotice(text, delay, callback);
+            noticePanel.ShowNotice(this, text, delay,callback);
         }
 
         private TweetPanel CreateTweetPanel()
         {
-            tw = new TweetPanel(ts.User, PlatformEngine, Settings.GetCurrentSet());
+            tw = new TweetPanel(ts.User, PlatformEngine, Settings.Set);
             tw.OnLogout = OnLogout;
             tw.OnTweet = OnTweet;
 
@@ -88,7 +90,7 @@ namespace TradeTweet
 
             tw.OnSettingsApplied = (set) =>
             {
-                Settings.subSet = set.Values.ToList();
+                Settings.Set = set;
                 Settings.SaveSettings();
             };
 
@@ -132,8 +134,9 @@ namespace TradeTweet
             }
 
             this.Controls.Add(CreateTweetPanel());
-
             Controls.Remove(enterPinPanel);
+
+            Settings.Refresh();
         }
 
         private void ReturnToConnect()
@@ -144,14 +147,14 @@ namespace TradeTweet
             });
         }
 
-        private async void OnTweet()
+        private async Task<Response> OnTweet()
         {
             tw.ToggleTweetButton();
             ShowNotice("Sending...");
 
             var images = tw.GetImages();
 
-            List<Task<string>> list = new List<Task<string>>();
+            List<Task<Response>> list = new List<Task<Response>>();
 
             foreach (var img in images)
             {
@@ -160,19 +163,24 @@ namespace TradeTweet
 
             await Task.WhenAll(list);
 
+            if (list.Any(l => l.Result.Failed)) return new Response() { Failed = true, Text = "Image sending error" };
+
             var mediaIds =
                 (from tsk in list
-                 select tsk.Result.Split(new char[] { ':', ',' })[1]);
+                 select tsk.Result.Text.Split(new char[] { ':', ',' })[1]);
 
             string mediaString = string.Join(",", mediaIds);
 
             byte[] media = (string.IsNullOrEmpty(mediaString)) ? null : new byte[1];
 
-            await ts.SendTweetAsync(new Twitt { Text = tw.Status, Media = media }, mediaString, ct).ContinueWith((t) => 
-            {
-                ShowNotice("Done!");
-                tw.ToggleTweetButton();
-            });
+            var ttt = await ts.SendTweetAsync(new Twitt { Text = tw.Status, Media = media }, mediaString, ct);
+
+
+            ShowNotice((!ttt.Failed)?"Done...":ttt.Text);
+
+            tw.ToggleTweetButton();
+
+            return ttt;
         }
 
         private async void OnAutoTweet(string status)
@@ -225,7 +233,7 @@ namespace TradeTweet
                 //cts.CancelAfter(5000);
                 ct = cts.Token;
 
-                //M();
+                Settings.onLogInOut += () => StartPlugin();
 
                 StartPlugin(); // "822113440844148738-s7MLex2gcSFKxzKZfBDwcwJqvJYk0LA", "8UYP6Ahmn5GjJXkr0bN3Jy2XmKBX8jT3Slxk8EhzLCEmO");
             }

@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Linq;
 using PTLRuntime.NETScript;
+using System.Threading.Tasks;
 
 namespace TradeTweet
 {
@@ -17,12 +18,16 @@ namespace TradeTweet
         TextBox tweetText;
         NETSDK PlatformEngine;
 
+        System.Threading.CancellationTokenSource ctss;
+        System.Threading.CancellationToken ct;
+
         Dictionary<EventType, bool> settings = new Dictionary<EventType, bool>();
 
         public string Status { get { return tweetText.Text; } }
 
         public Action OnLogout = null;
-        public Action OnTweet = null;
+        public Func<Task<Response>> OnTweet = null;
+      //  public Action OnTweet = null;
         public Action<Dictionary<EventType, bool>> OnSettingsApplied = null;
         public Action<bool> OnAutoTweetToggle = null;
         public Action<string> OnAutoTweetAction = null;
@@ -64,8 +69,11 @@ namespace TradeTweet
             this.user = tweetUser;
             this.Dock = DockStyle.Fill;
 
+            ctss = new System.Threading.CancellationTokenSource();
+            ct = ctss.Token;
+
             if (set != null)
-                settings = Settings.GetCurrentSet();
+                settings = Settings.Set;
 
             Populate();
 
@@ -74,7 +82,9 @@ namespace TradeTweet
             tweetBtn.Click += (o, e) =>
             {
                 if (OnTweet != null)
-                    OnTweet.Invoke();
+                {
+                    MM();
+                }
             };
 
             tweetText.KeyDown += MessageText_KeyDown;
@@ -93,9 +103,10 @@ namespace TradeTweet
                     OnLogout.Invoke();
             };
 
-            statusPanel.onSettingsClicked = () =>
+            statusPanel.onSettingsClicked = async () =>
             {
-                settingsPanel.ShowSet();
+                   settingsPanel.ShowSet();
+                // await M();
             };
 
             statusPanel.onAutoTweetClicked = () =>
@@ -103,7 +114,7 @@ namespace TradeTweet
                 if (!settingsPanel.HasEvents)
                 {
                     statusPanel.AutoTweet = false;
-                    TradeTweet.ShowNotice("There is no events to tweet!");
+                    ShowNotice("There is no events to tweet!");
                     return;
                 }
 
@@ -112,7 +123,7 @@ namespace TradeTweet
                 if (OnAutoTweetToggle != null)
                     OnAutoTweetToggle.Invoke(statusPanel.AutoTweet);
 
-                TradeTweet.ShowNotice((statusPanel.AutoTweet) ? "AutoTweet Enabled!" : "AutoTweet Disabled!");
+                ShowNotice((statusPanel.AutoTweet) ? "AutoTweet Enabled!" : "AutoTweet Disabled!");
 
                 LinkEvents();
             };
@@ -124,7 +135,7 @@ namespace TradeTweet
                 if (!settingsPanel.HasEvents)
                 {
                     statusPanel.AutoTweet = false;
-                    TradeTweet.ShowNotice("AutoTweet Stopped!");
+                    ShowNotice("AutoTweet Stopped!");
                     return;
                 }
 
@@ -136,13 +147,46 @@ namespace TradeTweet
                 if (OnSettingsApplied != null)
                     OnSettingsApplied.Invoke(settings);
 
-                TradeTweet.ShowNotice("Settings applied!");
+                ShowNotice("Settings applied!");
             };
 
             picPanel.OnMaxPics = () => 
             {
-                TradeTweet.ShowNotice("Only 4 pics are allowed for one tweet!");
+                ShowNotice("Only 4 pics are allowed for one tweet!");
             };
+        }
+
+        private async Task M()
+        {
+            await Task.Factory.StartNew(async () =>
+            {
+                for (int i = 0; i <= 500; i++)
+                {
+                    tweetText.Text = "#4 Counting: " + i;
+
+                    await Task.Delay(1000);
+
+                    MM();
+                }
+            }, ct);
+        }
+
+        private async void MM()
+        {
+            var rrr = await OnTweet.Invoke();
+
+            if (!rrr.Failed)
+            {
+                ctss.Cancel();
+                tweetText.Text = "";
+                picPanel.Clear();
+            }
+        }
+
+        private void ShowNotice(string text)
+        {
+            if (OnNewNotice != null)
+                OnNewNotice(text);
         }
 
         private void MessageText_KeyDown(object sender, KeyEventArgs e)
@@ -201,7 +245,7 @@ namespace TradeTweet
             };
             this.Controls.Add(tweetBtn);
 
-            settingsPanel = new SettingsPanel(settings);
+            settingsPanel = new SettingsPanel();
 
             this.Controls.Add(settingsPanel);
             settingsPanel.Visible = false;

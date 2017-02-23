@@ -1,5 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using PTLRuntime.NETScript.Application;
+using System;
+using System.Linq;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -13,13 +14,21 @@ namespace TradeTweet
 
         public Action OnMaxPics = null;
 
+        public void Clear()
+        {
+            foreach (var item in this.Controls.OfType<PictureCard>().Skip(2))
+            {
+                Controls.Remove(item);
+            }
+        }
+
         public PicturePanel()
         {
-            PictureCard card = new PictureCard();
+            PictureCard addImageCard = new PictureCard(onToolTip: "Add Image");
 
-            card.callback = () => 
+            addImageCard.callback = () => 
             {
-                if (Controls.Count <= MAX_CARDS)
+                if (Controls.Count <= MAX_CARDS+1)
                 {
                     OpenImage();
                     return;
@@ -29,7 +38,56 @@ namespace TradeTweet
                     OnMaxPics.Invoke();
             };
 
-            this.Controls.Add(card);
+            this.Controls.Add(addImageCard);
+
+            PictureCard screenshotCard = new PictureCard(onToolTip: "Make Screenshot");
+
+            screenshotCard.Image = Properties.Resources.screenShot;
+
+            screenshotCard.callback = () =>
+            {
+                if (Controls.Count <= MAX_CARDS+1)
+                {
+                    MakeScreen();
+                    return;
+                }
+
+                if (OnMaxPics != null)
+                    OnMaxPics.Invoke();
+            };
+
+
+            this.Controls.Add(screenshotCard);
+
+            ReplaceOrder();
+        }
+
+        private void MakeScreen(PictureCard c = null)
+        {
+            Image img = Terminal.MakeScreenshot( Form.ActiveForm.DisplayRectangle, Size.Empty);
+
+            if (img == null) return;
+
+            if (c != null)
+            {
+                c.BackgroundImage = img;
+                return;
+            }
+
+            PictureCard pc = new PictureCard(img);
+
+            pc.callback = () =>
+            {
+                this.Controls.Remove(pc);
+                ReplaceOrder();
+            };
+
+            pc.onClick = () =>
+            {
+                MakeScreen(pc);
+            };
+
+            this.Controls.Add(pc);
             ReplaceOrder();
         }
 
@@ -111,12 +169,13 @@ namespace TradeTweet
 
         class PictureCard : PictureBox
         {
+            ToolTip tip;
             Label cross;
 
             public Action callback;
             public Action onClick;
 
-            public PictureCard(Image img = null)
+            public PictureCard(Image img = null, string onToolTip = null)
             {
                 bool imageExists = img != null;
 
@@ -159,6 +218,13 @@ namespace TradeTweet
                     if (callback != null)
                         callback.Invoke();
                 };
+
+                if (!string.IsNullOrEmpty(onToolTip))
+                {
+                    tip = new ToolTip();
+                    tip.ShowAlways = true;
+                    tip.SetToolTip(cross, onToolTip);
+                }
 
                 this.Controls.Add(cross);
             }
