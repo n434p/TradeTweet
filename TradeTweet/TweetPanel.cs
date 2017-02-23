@@ -50,15 +50,7 @@ namespace TradeTweet
 
         public List<Image> GetImages()
         {
-            List<Image> list = new List<Image>();
-
-            foreach (PictureBox item in picPanel.Controls.OfType<PictureBox>())
-            {
-                if (item.BackgroundImage != null)
-                    list.Add(item.BackgroundImage);   
-            }
-
-            return list;
+            return picPanel.GetImages();
         } 
 
         public TweetPanel(User tweetUser, NETSDK platformEngine,  Dictionary<EventType, bool> set)
@@ -103,7 +95,7 @@ namespace TradeTweet
                     OnLogout.Invoke();
             };
 
-            statusPanel.onSettingsClicked = async () =>
+            statusPanel.onSettingsClicked = () =>
             {
                    settingsPanel.ShowSet();
                 // await M();
@@ -156,20 +148,20 @@ namespace TradeTweet
             };
         }
 
-        private async Task M()
-        {
-            await Task.Factory.StartNew(async () =>
-            {
-                for (int i = 0; i <= 500; i++)
-                {
-                    tweetText.Text = "#4 Counting: " + i;
+        //private async Task M()
+        //{
+        //    await Task.Factory.StartNew(async () =>
+        //    {
+        //        for (int i = 0; i <= 500; i++)
+        //        {
+        //            tweetText.Text = "#4 Counting: " + i;
 
-                    await Task.Delay(1000);
+        //            await Task.Delay(1000);
 
-                    MM();
-                }
-            }, ct);
-        }
+        //            MM();
+        //        }
+        //    }, ct);
+        //}
 
         private async void MM()
         {
@@ -225,7 +217,7 @@ namespace TradeTweet
 
             picPanel = new PicturePanel()
             {
-                Height = CARD_ZIZE + 2 * MARGIN,
+                Height = 3*CARD_ZIZE/2 + 3 * MARGIN,
                 Dock = DockStyle.Bottom
             };
             this.Controls.Add(picPanel);

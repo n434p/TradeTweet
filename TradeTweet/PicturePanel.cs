@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace TradeTweet
 {
@@ -16,51 +17,79 @@ namespace TradeTweet
 
         public void Clear()
         {
-            foreach (var item in this.Controls.OfType<PictureCard>().Skip(2))
+            p2.Controls.Clear();
+        }
+
+        Panel p2;
+
+        public List<Image> GetImages()
+        {
+            List<Image> list = new List<Image>();
+
+            foreach (Control item in p2.Controls)
             {
-                Controls.Remove(item);
+                if (item.BackgroundImage != null)
+                    list.Add(item.BackgroundImage);
             }
+
+            return list;
         }
 
         public PicturePanel()
         {
-            PictureCard addImageCard = new PictureCard(onToolTip: "Add Image");
+            Padding = new Padding(5, 5, 5, 5);
 
-            addImageCard.callback = () => 
+            Panel p = new Panel()
             {
-                if (Controls.Count <= MAX_CARDS+1)
-                {
-                    OpenImage();
-                    return;
-                }
-
-                if (OnMaxPics != null)
-                    OnMaxPics.Invoke();
+                Margin = new Padding(5, 5, 5, 5),
+                Padding = new Padding(0,0,10,0),
+                Height = CARD_ZIZE / 2,
+                Dock = DockStyle.Bottom
             };
 
-            this.Controls.Add(addImageCard);
+            p2 = new Panel()
+            {
+                Height = CARD_ZIZE,
+                Dock = DockStyle.Top
+            };
 
-            PictureCard screenshotCard = new PictureCard(onToolTip: "Make Screenshot");
+            PicturePanelButton addImageCard = new PicturePanelButton("Add Image");
+            addImageCard.Image = Properties.Resources.AddButton;
+            addImageCard.Dock = DockStyle.Left;
 
+            addImageCard.onClick = () => 
+            {
+                ProcessClick(OpenImage);
+            };
+
+            p.Controls.Add(addImageCard);
+
+            PicturePanelButton screenshotCard = new PicturePanelButton("Make Screenshot");
             screenshotCard.Image = Properties.Resources.screenShot;
+            screenshotCard.Dock = DockStyle.Left;
 
-            screenshotCard.callback = () =>
+            screenshotCard.onClick = () =>
             {
-                if (Controls.Count <= MAX_CARDS+1)
-                {
-                    MakeScreen();
-                    return;
-                }
-
-                if (OnMaxPics != null)
-                    OnMaxPics.Invoke();
+                ProcessClick(MakeScreen);
             };
 
+            p.Controls.Add(screenshotCard);
 
-            this.Controls.Add(screenshotCard);
-
-            ReplaceOrder();
+            this.Controls.Add(p2);
+            this.Controls.Add(p);
         }
+
+        void ProcessClick(Action<PictureCard> act)
+        {
+            if (p2.Controls.Count < MAX_CARDS)
+            {
+                act.Invoke(null);
+                return;
+            }
+
+            if (OnMaxPics != null)
+                OnMaxPics.Invoke();
+        } 
 
         private void MakeScreen(PictureCard c = null)
         {
@@ -78,7 +107,7 @@ namespace TradeTweet
 
             pc.callback = () =>
             {
-                this.Controls.Remove(pc);
+                p2.Controls.Remove(pc);
                 ReplaceOrder();
             };
 
@@ -87,7 +116,7 @@ namespace TradeTweet
                 MakeScreen(pc);
             };
 
-            this.Controls.Add(pc);
+            p2.Controls.Add(pc);
             ReplaceOrder();
         }
 
@@ -111,7 +140,7 @@ namespace TradeTweet
 
                     pc.callback = () =>
                     {
-                        this.Controls.Remove(pc);
+                        p2.Controls.Remove(pc);
                         ReplaceOrder();
                     };
 
@@ -120,7 +149,7 @@ namespace TradeTweet
                         OpenImage(pc);
                     };
 
-                    this.Controls.Add(pc);
+                    p2.Controls.Add(pc);
                     ReplaceOrder();
                 }
             }
@@ -150,20 +179,58 @@ namespace TradeTweet
         protected override void OnResize(EventArgs eventargs)
         {
             ReplaceOrder();
+
+            base.OnResize(eventargs);
         }
 
         void ReplaceOrder()
         {
-            int total = Controls.Count;
+            int total = p2.Controls.Count;
 
             for (int i = total; i > 0; i--)
             {
-                PictureBox p = Controls[total - i] as PictureBox;
+                PictureBox p = p2.Controls[total - i] as PictureBox;
                 if (p != null)
                 {
-                    p.Location = new Point((Width * (i) / (total + 1) - p.Width / 2), (Height - p.Height)/2 );
+                    p.Location = new Point((Width * (i) / (total + 1) - p.Width / 2), 0);
                 }
-                    
+
+            }
+        }
+
+        class PicturePanelButton : Label
+        {
+            ToolTip tip;
+            public Action onClick;
+
+            public PicturePanelButton(string onToolTip)
+            {
+                int size = CARD_ZIZE / 2;
+
+                //Margin = new Padding(5,5,5,5);
+  
+                Width = size + 10;
+                Height = size;
+                Cursor = Cursors.Hand;
+
+                FlatStyle = FlatStyle.Flat;
+                this.BackgroundImageLayout = ImageLayout.Zoom;
+
+                Image = Properties.Resources.AddButton;
+                BackColor = Color.Transparent;
+
+                if (!string.IsNullOrEmpty(onToolTip))
+                {
+                    tip = new ToolTip();
+                    tip.ShowAlways = true;
+                    tip.SetToolTip(this, onToolTip);
+                }
+            }
+
+            protected override void OnClick(EventArgs e)
+            {
+                if (onClick != null)
+                    onClick.Invoke();
             }
         }
 
