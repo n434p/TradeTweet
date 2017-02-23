@@ -62,6 +62,7 @@ namespace TradeTweet
             else
             {
                 this.Controls.Add(CreateTweetPanel());
+                AutoTweet.Run(PlatformEngine);
             }
         }
 

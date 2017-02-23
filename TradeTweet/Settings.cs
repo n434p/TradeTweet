@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace TradeTweet
@@ -38,7 +39,7 @@ namespace TradeTweet
             atn = "";
             autoTweet = false;
             Set = new Dictionary<EventType, bool>();
-            key = "default_set11";
+            key = "default_set13";
 
             Refresh();
         }
@@ -119,5 +120,120 @@ namespace TradeTweet
         }
     }
 
+    static class AutoTweet
+    {
+        public static bool isRunning { get { return ts != null && ts.Connected && PlatformEngine != null; } }
+        static TwittwerService ts;
+        static CancellationToken ct;
+        static CancellationTokenSource cts;
 
+        static internal NETSDK PlatformEngine;
+        public static Action<string> OnAutoTweetSend = null;
+        public static Action<string> OnAutoTweetRespond = null;
+
+        public static bool Run(NETSDK engine)
+        {
+            if (isRunning) return true;
+
+            cts = new CancellationTokenSource();
+            ct = cts.Token;
+
+            PlatformEngine = engine;
+            ts = new TwittwerService(Settings.ast, Settings.atn);
+
+            LinkEvents();
+
+            return ts.Connected;
+        }
+
+        public static void Stop()
+        {
+            ts.Disconnect();
+            ts = null;
+        }
+
+        public static void LinkEvents(bool unlinkAll = false)
+        {
+            foreach (EventType item in Enum.GetValues(typeof(EventType)))
+            {
+                bool check = (unlinkAll) ? false : Settings.Set[item];
+
+                if (check)
+                {
+                    switch (item)
+                    {
+                        case EventType.OrderOpen:
+                            PlatformEngine.Orders.OrderAdded += Orders_OrderAdded;
+                            break;
+                        case EventType.OrderClose:
+                            PlatformEngine.Orders.OrderRemoved += Orders_OrderRemoved;
+                            break;
+                        case EventType.PositionOpen:
+                            PlatformEngine.Positions.PositionAdded += Positions_PositionAdded;
+                            break;
+                        case EventType.PositionClose:
+                            PlatformEngine.Positions.PositionRemoved += Positions_PositionRemoved;
+                            break;
+                    }
+                }
+                else
+                {
+                    switch (item)
+                    {
+                        case EventType.OrderOpen:
+                            PlatformEngine.Orders.OrderAdded -= Orders_OrderAdded;
+                            break;
+                        case EventType.OrderClose:
+                            PlatformEngine.Orders.OrderRemoved -= Orders_OrderRemoved;
+                            break;
+                        case EventType.PositionOpen:
+                            PlatformEngine.Positions.PositionAdded -= Positions_PositionAdded;
+                            break;
+                        case EventType.PositionClose:
+                            PlatformEngine.Positions.PositionRemoved -= Positions_PositionRemoved;
+                            break;
+                    }
+                }
+            }
+
+        }
+
+        private static async void SendAutoTweet(string text)
+        {
+            if (ts == null || !ts.Connected)
+                return;
+
+            OnAutoTweetSend?.Invoke(text);
+
+            await ts.SendTweetAsync(new Twitt { Text = text, Media = null }, null, ct).ContinueWith((t) =>
+            {
+                OnAutoTweetRespond?.Invoke("Done!");
+            });
+        }
+
+        private static void Positions_PositionRemoved(Position obj)
+        {
+            string text = $"Position removed: {obj.Account} {obj.Instrument} {obj.Id}";
+            SendAutoTweet(text);
+        }
+
+        private static void Positions_PositionAdded(Position obj)
+        {
+            string text = $"Position added: {obj.Account} {obj.Instrument} {obj.Id}";
+            SendAutoTweet(text);
+        }
+
+        private static void Orders_OrderRemoved(Order obj)
+        {
+            string text = $"Order removed: {obj.Account} {obj.Instrument} {obj.Id}";
+            SendAutoTweet(text);
+        }
+
+        private static void Orders_OrderAdded(Order obj)
+        {
+            string text = $"Order added: {obj.Account} {obj.Instrument} {obj.Id}";
+            SendAutoTweet(text);
+        }
+
+    }
 }

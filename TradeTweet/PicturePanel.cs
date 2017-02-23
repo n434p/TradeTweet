@@ -37,11 +37,10 @@ namespace TradeTweet
 
         public PicturePanel()
         {
-            Padding = new Padding(5, 5, 5, 5);
+            Padding = new Padding(0, 5, 0, 5);
 
             Panel p = new Panel()
             {
-                Margin = new Padding(5, 5, 5, 5),
                 Padding = new Padding(0,0,10,0),
                 Height = CARD_ZIZE / 2,
                 Dock = DockStyle.Bottom
@@ -214,7 +213,7 @@ namespace TradeTweet
                 Cursor = Cursors.Hand;
 
                 FlatStyle = FlatStyle.Flat;
-                this.BackgroundImageLayout = ImageLayout.Zoom;
+                this.BackgroundImageLayout = ImageLayout.Stretch;
 
                 Image = Properties.Resources.AddButton;
                 BackColor = Color.Transparent;

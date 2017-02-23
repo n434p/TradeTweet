@@ -69,8 +69,6 @@ namespace TradeTweet
 
             Populate();
 
-            LinkEvents();
-
             tweetBtn.Click += (o, e) =>
             {
                 if (OnTweet != null)
@@ -117,12 +115,21 @@ namespace TradeTweet
 
                 ShowNotice((statusPanel.AutoTweet) ? "AutoTweet Enabled!" : "AutoTweet Disabled!");
 
-                LinkEvents();
+                if (statusPanel.AutoTweet)
+                {
+                    AutoTweet.OnAutoTweetSend += ShowNotice;
+                    AutoTweet.OnAutoTweetRespond += ShowNotice;
+                }
+                else
+                {
+                    AutoTweet.OnAutoTweetSend -= ShowNotice;
+                    AutoTweet.OnAutoTweetRespond -= ShowNotice;
+                }
             };
 
             settingsPanel.OnApply = () => 
             {
-                LinkEvents();
+                AutoTweet.LinkEvents();
 
                 if (!settingsPanel.HasEvents)
                 {
@@ -217,7 +224,7 @@ namespace TradeTweet
 
             picPanel = new PicturePanel()
             {
-                Height = 3*CARD_ZIZE/2 + 3 * MARGIN,
+                Height = 3*CARD_ZIZE/2 + 2 * MARGIN,
                 Dock = DockStyle.Bottom
             };
             this.Controls.Add(picPanel);
@@ -242,98 +249,6 @@ namespace TradeTweet
             this.Controls.Add(settingsPanel);
             settingsPanel.Visible = false;
         }
-
-        #region Trade Events
-
-        private void LinkEvents(bool unlinkAll = false)
-        {
-            foreach (EventType item in Enum.GetValues(typeof(EventType)))
-            {
-                bool check = (unlinkAll)? false: settingsPanel[item];
-
-                if (check)
-                {
-                    switch (item)
-                    {
-                        case EventType.OrderOpen:
-                            PlatformEngine.Orders.OrderAdded += Orders_OrderAdded;
-                            break;
-                        case EventType.OrderClose:
-                            PlatformEngine.Orders.OrderRemoved += Orders_OrderRemoved;
-                            break;
-                        case EventType.PositionOpen:
-                            PlatformEngine.Positions.PositionAdded += Positions_PositionAdded;
-                            break;
-                        case EventType.PositionClose:
-                            PlatformEngine.Positions.PositionRemoved += Positions_PositionRemoved;
-                            break;
-                    }
-                }
-                else
-                {
-                    switch (item)
-                    {
-                        case EventType.OrderOpen:
-                            PlatformEngine.Orders.OrderAdded -= Orders_OrderAdded;
-                            break;
-                        case EventType.OrderClose:
-                            PlatformEngine.Orders.OrderRemoved -= Orders_OrderRemoved;
-                            break;
-                        case EventType.PositionOpen:
-                            PlatformEngine.Positions.PositionAdded -= Positions_PositionAdded;
-                            break;
-                        case EventType.PositionClose:
-                            PlatformEngine.Positions.PositionRemoved -= Positions_PositionRemoved;
-                            break;
-                    }
-                }
-            }
-
-        }
-
-        private void Positions_PositionRemoved(Position obj)
-        {
-            if (!settingsPanel.HasEvents)
-                return;
-
-            string n = $"Position removed: {obj.Account} {obj.Instrument} {obj.Id}";
-            OnAutoTweetAction(n);
-        }
-
-        private void Positions_PositionAdded(Position obj)
-        {
-            if (!settingsPanel.HasEvents)
-                return;
-
-            string n = $"Position added: {obj.Account} {obj.Instrument} {obj.Id}";
-            OnAutoTweetAction(n);
-        }
-
-        private void Orders_OrderRemoved(Order obj)
-        {
-            if (!settingsPanel.HasEvents)
-                return;
-
-            string n = $"Order removed: {obj.Account} {obj.Instrument} {obj.Id}";
-            OnAutoTweetAction(n);
-        }
-
-        private void Orders_OrderAdded(Order obj)
-        {
-            if (!settingsPanel.HasEvents)
-                return;
-
-            string n = $"Order added: {obj.Account} {obj.Instrument} {obj.Id}";
-            OnAutoTweetAction(n);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            LinkEvents(true);
-            base.Dispose(disposing);
-        }
-
-        #endregion
 
     }
 }
