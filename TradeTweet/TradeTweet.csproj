@@ -127,6 +127,12 @@
     <Compile Include="StatusPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="TPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TPanel.Designer.cs">
+      <DependentUpon>TPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="TradeEvents.cs" />
     <Compile Include="TweetPanel.cs">
       <SubType>Component</SubType>
@@ -152,6 +158,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ConnectionPanel.resx">
       <DependentUpon>ConnectionPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TPanel.resx">
+      <DependentUpon>TPanel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
