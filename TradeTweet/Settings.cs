@@ -39,7 +39,7 @@ namespace TradeTweet
             atn = "";
             autoTweet = false;
             Set = new Dictionary<EventType, bool>();
-            key = "default_set13";
+            key = "default_set14";
 
             Refresh();
         }
@@ -131,19 +131,20 @@ namespace TradeTweet
         public static Action<string> OnAutoTweetSend = null;
         public static Action<string> OnAutoTweetRespond = null;
 
-        public static bool Run(NETSDK engine)
+        public static TwittwerService Run(NETSDK engine)
         {
-            if (isRunning) return true;
+            if (isRunning) return ts;
 
             cts = new CancellationTokenSource();
             ct = cts.Token;
 
             PlatformEngine = engine;
+
             ts = new TwittwerService(Settings.ast, Settings.atn);
 
-            LinkEvents();
+            //LinkEvents();
 
-            return ts.Connected;
+            return ts;
         }
 
         public static void Stop()

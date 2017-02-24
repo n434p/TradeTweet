@@ -43,17 +43,27 @@ namespace TradeTweet
 
             Settings.LoadSettings();
 
+            ts = AutoTweet.Run(PlatformEngine);
+
+            AutoTweet.OnAutoTweetSend += (s) =>
+            {
+                ShowNotice(s);
+            };
+
+            AutoTweet.OnAutoTweetRespond += (s) =>
+            {
+                ShowNotice(s);
+            };
+
             noticePanel = new NoticePanel();
             this.Controls.Add(noticePanel);
 
-            ts = new TwittwerService("822113440844148738-s7MLex2gcSFKxzKZfBDwcwJqvJYk0LA", "8UYP6Ahmn5GjJXkr0bN3Jy2XmKBX8jT3Slxk8EhzLCEmO"); //   (Settings.ast, Settings.atn);
-
-            ts.onAuthorized += (s1, s2) => {
+            ts.onAuthorized = (s1, s2) => {
                 Settings.ast = s1;
                 Settings.atn = s2;
             };
 
-            if (!ts.Connected)
+            if (!AutoTweet.isRunning)
             {
                 connectionPanel = new ConnectionPanel();
                 connectionPanel.OnConnect = OnConnect;
@@ -62,7 +72,6 @@ namespace TradeTweet
             else
             {
                 this.Controls.Add(CreateTweetPanel());
-                AutoTweet.Run(PlatformEngine);
             }
         }
 
@@ -79,8 +88,8 @@ namespace TradeTweet
 
             tw.OnAutoTweetAction = (n) =>
             {
-                ShowNotice(n, 2000, null);
-                OnAutoTweet(n);
+                //ShowNotice(n, 2000, null);
+                //OnAutoTweet(n);
             };
 
             tw.OnAutoTweetToggle = (autoTweet) =>

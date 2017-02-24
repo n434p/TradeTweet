@@ -104,7 +104,7 @@ namespace TradeTweet
 
             PictureCard pc = new PictureCard(img);
 
-            pc.callback = () =>
+            pc.onClose = () =>
             {
                 p2.Controls.Remove(pc);
                 ReplaceOrder();
@@ -137,7 +137,7 @@ namespace TradeTweet
 
                     PictureCard pc = new PictureCard(img);
 
-                    pc.callback = () =>
+                    pc.onClose = () =>
                     {
                         p2.Controls.Remove(pc);
                         ReplaceOrder();
@@ -154,25 +154,32 @@ namespace TradeTweet
             }
         }
 
-        static Image ResizeImage(Image image, int maxSize)
+        static Image ResizeImage(Image image, int minSize)
         {
             Image resizedImg = null;
 
             var width = image.Width;
             var height = image.Height;
 
-            var smallerSize = (int) (Math.Min(width, height) * maxSize / Math.Max(width, height));
+            var biggestSide = (int)(Math.Max(width, height) * minSize / Math.Min(width, height));
 
             if (width >= height)
             {
-                resizedImg = (Image)(new Bitmap(image, maxSize, smallerSize));
+                resizedImg = (Image)(new Bitmap(image, biggestSide, minSize));
             }
             else
             {
-                resizedImg = (Image)(new Bitmap(image, smallerSize, maxSize));
+                resizedImg = (Image)(new Bitmap(image, minSize, biggestSide));
             }
 
-            return resizedImg;
+            var part = new Bitmap(minSize, minSize);
+
+            using (var g = Graphics.FromImage(part))
+            {
+                g.DrawImageUnscaled(resizedImg, (minSize - resizedImg.Width) / 2, (minSize - resizedImg.Height) / 2);
+            }
+
+            return part;
         }
 
         protected override void OnResize(EventArgs eventargs)
@@ -238,51 +245,34 @@ namespace TradeTweet
             ToolTip tip;
             Label cross;
 
-            public Action callback;
+            public Action onClose;
             public Action onClick;
 
             public PictureCard(Image img = null, string onToolTip = null)
             {
-                bool imageExists = img != null;
-
-                int size = (imageExists) ? CARD_ZIZE : CARD_ZIZE / 2;
-
-                Width = size;
-                Height = size;
+                Width = CARD_ZIZE;
+                Height = CARD_ZIZE;
                 Cursor = Cursors.Hand;
 
                 this.SizeMode = PictureBoxSizeMode.Zoom;
 
-                if (imageExists)
-                {
-                    Image = Properties.Resources.button;
-                    BackgroundImage = img; 
-                    BackgroundImageLayout = ImageLayout.Zoom;
-                    BackColor = Color.Transparent;
-                }
-                else
-                {
-                    Image = Properties.Resources.AddButton;
-                    BackColor = Color.Transparent;
-                }
+                Image = Properties.Resources.button;
+                BackgroundImage = ResizeImage(img, CARD_ZIZE); 
+                BackgroundImageLayout = ImageLayout.Center;
+                BackColor = Color.Transparent;
+
 
                 cross = new Label()
                 {
                     BackColor = Color.Transparent,
-                    Width = size,
-                    Height = size,
+                    Size = new Size(20, 20),
+                    Location = new Point(0, 0),
                     Anchor = AnchorStyles.Left | AnchorStyles.Top
                 };
 
-                if (imageExists)
-                {
-                    cross.Size = new Size(20, 20);
-                    cross.Location = new Point(0, 0);
-                }
-
                 cross.Click += (o, e) => {
-                    if (callback != null)
-                        callback.Invoke();
+                    if (onClose != null)
+                        onClose.Invoke();
                 };
 
                 if (!string.IsNullOrEmpty(onToolTip))

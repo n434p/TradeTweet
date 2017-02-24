@@ -33,13 +33,19 @@ namespace TradeTweet
             oauth_token = token;
             oauth_token_secret = secret_token;
 
+            User = GetUser();
+
+            //var r2 = GetCredentials("https://api.twitter.com/1.1/application/rate_limit_status.json");
+        }
+
+        public User GetUser()
+        {
             var r1 = GetCredentials("https://api.twitter.com/1.1/account/verify_credentials.json");
 
-            if (r1.Failed) return;
+            if (r1.Failed)
+                return null;
 
-            User = new User(r1.Text);
-
-            var r2 = GetCredentials("https://api.twitter.com/1.1/application/rate_limit_status.json");
+            return new User(r1.Text);
         }
 
         Response SendPOSTRequest(Twitt twitt, string resource_url, string media = "", string token = "")
@@ -266,10 +272,18 @@ namespace TradeTweet
             {
                 var resp = new StreamReader(ex.Response.GetResponseStream()).ReadToEnd();
 
-                string error = (string)JObject.Parse(resp).SelectToken("errors[0].message");
+                string error = null;
+                try
+                {
+                    error = (string)JObject.Parse(resp).SelectToken("errors[0].message");
+                }
+                catch
+                {
+                    error = ex.Message;
+                }
 
                 res.Failed = true;
-                res.Text = (error == null)? ex.Message : error;
+                res.Text = error;
             }
 
             return res;
@@ -402,6 +416,9 @@ namespace TradeTweet
             string access_url = "https://api.twitter.com/oauth/access_token";
 
             var response = SendPOSTRequest(verify, access_url, null, oauth_token);
+
+            if (response.Failed)
+                return response;
 
             OauthMembers set = new OauthMembers(response.Text);
 
