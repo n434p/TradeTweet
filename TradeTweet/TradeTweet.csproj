@@ -96,13 +96,13 @@
     <!--our libs-->
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SettingsPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="ConnectionPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="EnterPinPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="EnterPinPanel.Designer.cs">
+      <DependentUpon>EnterPinPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SettingsPanel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="NoticePanel.cs">
@@ -132,14 +132,26 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="TwitterService.cs" />
+    <Compile Include="ConnectionPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ConnectionPanel.Designer.cs">
+      <DependentUpon>ConnectionPanel.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="EnterPinPanel.resx">
+      <DependentUpon>EnterPinPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PluginForm.resx">
       <DependentUpon>PluginForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ConnectionPanel.resx">
+      <DependentUpon>ConnectionPanel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -178,10 +190,91 @@
   <ItemGroup>
     <None Include="Resources\screenShot.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TradeTweet-05.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TradeTweet-06.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TradeTweet-07.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TradeTweet-08.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TradeTweet-09.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TradeTweet-10.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TradeTweet-11.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TradeTweet-12.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TradeTweet-13.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TradeTweet-14.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TradeTweet-15.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TradeTweet-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TradeTweet-17.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TradeTweet-18.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TradeTweet-19.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TradeTweet-20.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TradeTweet-21.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TradeTweet-22.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TradeTweet-23.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TradeTweet-24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TradeTweet-25.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TradeTweet-26.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TradeTweet-27.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TradeTweet-28.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TradeTweet-29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TradeTweet-30.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TradeTweet-31.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties NETType="IExternalComponent" Symbol="&lt;property name=&quot;Symbol&quot; value=&quot;&quot; type=&quot;55&quot; group=&quot;1.Data&quot; /&gt;" TFInfo="&lt;property name=&quot;TFInfo&quot; value=&quot;Time - 1m&quot; type=&quot;-175&quot; group=&quot;General&quot; TFInfoValue=&quot;&amp;lt;?xml version=&amp;quot;1.0&amp;quot;?&amp;gt;&amp;lt;TimeFrameInfo&amp;gt;&amp;lt;Period&amp;gt;1&amp;lt;/Period&amp;gt;&amp;lt;HistoryType&amp;gt;0&amp;lt;/HistoryType&amp;gt;&amp;lt;ChartDataType&amp;gt;Default&amp;lt;/ChartDataType&amp;gt;&amp;lt;AdditionalKey&amp;gt;&amp;lt;/AdditionalKey&amp;gt;&amp;lt;/TimeFrameInfo&amp;gt;&quot; /&gt;" Range="&lt;property name=&quot;Range&quot; value=&quot;3&quot; type=&quot;185&quot; group=&quot;1.Data&quot; /&gt;" StartTime="&lt;property name=&quot;StartTime&quot; value=&quot;636223679990000000&quot; type=&quot;5&quot; group=&quot;1.Data&quot; /&gt;" StopTime="&lt;property name=&quot;StopTime&quot; value=&quot;636232319990000000&quot; type=&quot;5&quot; group=&quot;1.Data&quot; /&gt;" HistoryType="&lt;property name=&quot;HistoryType&quot; value=&quot;0&quot; type=&quot;185&quot; group=&quot;1.Data&quot; /&gt;" Modelling_x0020_shema="&lt;property name=&quot;Modelling shema&quot; value=&quot;1m - O H L C&quot; type=&quot;3&quot; group=&quot;2.Algorythm&quot; /&gt;" Balance_x002C__x0020_USD="&lt;property name=&quot;Balance, USD&quot; value=&quot;10000&quot; type=&quot;1&quot; group=&quot;3.Risk/money manager&quot; min=&quot;1&quot; max=&quot;999999999999&quot; /&gt;" Commission_x0020_by="&lt;property name=&quot;Commission by&quot; value=&quot;False&quot; type=&quot;185&quot; group=&quot;3.Risk/money manager&quot; /&gt;" Brokerage_x0020_commission_x002C__x0020_USD="&lt;property name=&quot;Brokerage commission, USD&quot; value=&quot;0&quot; type=&quot;1&quot; group=&quot;3.Risk/money manager&quot; min=&quot;0&quot; max=&quot;999999999999&quot; /&gt;" Latency="&lt;property name=&quot;Latency&quot; value=&quot;0&quot; type=&quot;0&quot; group=&quot;3.Risk/money manager&quot; min=&quot;0&quot; /&gt;" Netting="&lt;property name=&quot;Netting&quot; value=&quot;False&quot; type=&quot;4&quot; group=&quot;3.Risk/money manager&quot; /&gt;" OnlyMainSession="&lt;property name=&quot;OnlyMainSession&quot; value=&quot;False&quot; type=&quot;4&quot; group=&quot;3.Risk/money manager&quot; /&gt;" />
+      <UserProperties OnlyMainSession="&lt;property name=&quot;OnlyMainSession&quot; value=&quot;False&quot; type=&quot;4&quot; group=&quot;3.Risk/money manager&quot; /&gt;" Netting="&lt;property name=&quot;Netting&quot; value=&quot;False&quot; type=&quot;4&quot; group=&quot;3.Risk/money manager&quot; /&gt;" Latency="&lt;property name=&quot;Latency&quot; value=&quot;0&quot; type=&quot;0&quot; group=&quot;3.Risk/money manager&quot; min=&quot;0&quot; /&gt;" Brokerage_x0020_commission_x002C__x0020_USD="&lt;property name=&quot;Brokerage commission, USD&quot; value=&quot;0&quot; type=&quot;1&quot; group=&quot;3.Risk/money manager&quot; min=&quot;0&quot; max=&quot;999999999999&quot; /&gt;" Commission_x0020_by="&lt;property name=&quot;Commission by&quot; value=&quot;False&quot; type=&quot;185&quot; group=&quot;3.Risk/money manager&quot; /&gt;" Balance_x002C__x0020_USD="&lt;property name=&quot;Balance, USD&quot; value=&quot;10000&quot; type=&quot;1&quot; group=&quot;3.Risk/money manager&quot; min=&quot;1&quot; max=&quot;999999999999&quot; /&gt;" Modelling_x0020_shema="&lt;property name=&quot;Modelling shema&quot; value=&quot;1m - O H L C&quot; type=&quot;3&quot; group=&quot;2.Algorythm&quot; /&gt;" HistoryType="&lt;property name=&quot;HistoryType&quot; value=&quot;0&quot; type=&quot;185&quot; group=&quot;1.Data&quot; /&gt;" StopTime="&lt;property name=&quot;StopTime&quot; value=&quot;636232319990000000&quot; type=&quot;5&quot; group=&quot;1.Data&quot; /&gt;" StartTime="&lt;property name=&quot;StartTime&quot; value=&quot;636223679990000000&quot; type=&quot;5&quot; group=&quot;1.Data&quot; /&gt;" Range="&lt;property name=&quot;Range&quot; value=&quot;3&quot; type=&quot;185&quot; group=&quot;1.Data&quot; /&gt;" TFInfo="&lt;property name=&quot;TFInfo&quot; value=&quot;Time - 1m&quot; type=&quot;-175&quot; group=&quot;General&quot; TFInfoValue=&quot;&amp;lt;?xml version=&amp;quot;1.0&amp;quot;?&amp;gt;&amp;lt;TimeFrameInfo&amp;gt;&amp;lt;Period&amp;gt;1&amp;lt;/Period&amp;gt;&amp;lt;HistoryType&amp;gt;0&amp;lt;/HistoryType&amp;gt;&amp;lt;ChartDataType&amp;gt;Default&amp;lt;/ChartDataType&amp;gt;&amp;lt;AdditionalKey&amp;gt;&amp;lt;/AdditionalKey&amp;gt;&amp;lt;/TimeFrameInfo&amp;gt;&quot; /&gt;" Symbol="&lt;property name=&quot;Symbol&quot; value=&quot;&quot; type=&quot;55&quot; group=&quot;1.Data&quot; /&gt;" NETType="IExternalComponent" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

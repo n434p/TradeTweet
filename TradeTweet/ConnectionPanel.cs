@@ -1,9 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using TradeTweet.Properties;
 
 namespace TradeTweet
 {
-    class ConnectionPanel: Panel
+    public partial class ConnectionPanel : UserControl
     {
         Button connectBtn;
         Label connectMessage;
@@ -11,47 +19,15 @@ namespace TradeTweet
 
         public ConnectionPanel()
         {
+            InitializeComponent();
+
             this.Dock = DockStyle.Fill;
-           // this.Anchor = AnchorStyles.None;
 
-            Populate();
-
-            connectBtn.Click += (o,e) => 
+            connectBtn.Click += (o, e) =>
             {
                 if (OnConnect != null)
                     OnConnect.Invoke();
             };
-        }
-
-        string message = $"{Settings.appName} is offline \n You need to connect to Twitter.";
-        const string btnText = "Connect";
-
-        private void Populate()
-        {
-            connectMessage = new Label()
-            {
-                Text = message,
-                Dock = DockStyle.Fill,
-                TextAlign = System.Drawing.ContentAlignment.MiddleCenter,
-                Font = Settings.mainFont,
-                ForeColor = Settings.mainFontColor
-            };
-
-            connectBtn = new Button()
-            {
-                FlatStyle = FlatStyle.Flat,
-                TextAlign = System.Drawing.ContentAlignment.MiddleCenter,
-                Font = Settings.mainFont,
-                DialogResult = DialogResult.OK,
-                Dock = DockStyle.Bottom,
-                Text = btnText,
-                Height = Settings.btnHeight,
-                BackColor = Settings.mainFontColor,
-                ForeColor = Settings.mainBackColor             
-            };
-
-            this.Controls.Add(connectMessage);
-            this.Controls.Add(connectBtn);
         }
     }
 }

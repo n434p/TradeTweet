@@ -39,7 +39,7 @@ namespace TradeTweet
             atn = "";
             autoTweet = false;
             Set = new Dictionary<EventType, bool>();
-            key = "default_set14";
+            key = "default_set15";
 
             Refresh();
         }

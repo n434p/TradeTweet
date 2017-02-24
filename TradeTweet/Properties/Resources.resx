@@ -145,4 +145,85 @@
   <data name="settingsPanelBack" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\settingsPanelBack.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="TradeTweet_05" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TradeTweet-05.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TradeTweet_06" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TradeTweet-06.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TradeTweet_07" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TradeTweet-07.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TradeTweet_08" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TradeTweet-08.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TradeTweet_09" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TradeTweet-09.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TradeTweet_10" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TradeTweet-10.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TradeTweet_11" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TradeTweet-11.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TradeTweet_12" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TradeTweet-12.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TradeTweet_13" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TradeTweet-13.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TradeTweet_14" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TradeTweet-14.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TradeTweet_15" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TradeTweet-15.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TradeTweet_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TradeTweet-16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TradeTweet_17" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TradeTweet-17.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TradeTweet_18" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TradeTweet-18.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TradeTweet_19" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TradeTweet-19.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TradeTweet_20" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TradeTweet-20.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TradeTweet_21" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TradeTweet-21.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TradeTweet_22" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TradeTweet-22.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TradeTweet_23" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TradeTweet-23.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TradeTweet_24" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TradeTweet-24.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TradeTweet_25" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TradeTweet-25.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TradeTweet_26" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TradeTweet-26.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TradeTweet_27" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TradeTweet-27.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TradeTweet_28" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TradeTweet-28.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TradeTweet_29" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TradeTweet-29.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TradeTweet_30" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TradeTweet-30.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TradeTweet_31" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TradeTweet-31.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>
