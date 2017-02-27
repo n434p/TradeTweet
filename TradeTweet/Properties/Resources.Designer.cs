@@ -123,6 +123,16 @@ namespace TradeTweet.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap factura {
+            get {
+                object obj = ResourceManager.GetObject("factura", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ld_corner {
             get {
                 object obj = ResourceManager.GetObject("ld_corner", resourceCulture);
@@ -466,6 +476,26 @@ namespace TradeTweet.Properties {
         internal static System.Drawing.Bitmap TradeTweet_31 {
             get {
                 object obj = ResourceManager.GetObject("TradeTweet_31", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap transp_left_corner {
+            get {
+                object obj = ResourceManager.GetObject("transp_left_corner", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap transp_right_corner {
+            get {
+                object obj = ResourceManager.GetObject("transp_right_corner", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

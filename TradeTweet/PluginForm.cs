@@ -80,32 +80,39 @@ namespace TradeTweet
             noticePanel.ShowNotice(this, text, delay,callback);
         }
 
-        private TweetPanel CreateTweetPanel()
+        private TPanel CreateTweetPanel()
         {
-            tw = new TweetPanel(ts.User, PlatformEngine, Settings.Set);
-            tw.OnLogout = OnLogout;
-            tw.OnTweet = OnTweet;
+            var tt = new TPanel();
+            tt.TweetPanel(PlatformEngine);
 
-            tw.OnAutoTweetAction = (n) =>
-            {
-                //ShowNotice(n, 2000, null);
-                //OnAutoTweet(n);
-            };
+            tt.Dock = DockStyle.Fill;
 
-            tw.OnAutoTweetToggle = (autoTweet) =>
-            {
-                Settings.autoTweet = autoTweet;
-                Settings.SaveSettings();
-            };
+            return tt;
 
-            tw.OnSettingsApplied = (set) =>
-            {
-                Settings.Set = set;
-                Settings.SaveSettings();
-            };
+            //tw = new TweetPanel(ts.User, PlatformEngine, Settings.Set);
+            //tw.OnLogout = OnLogout;
+            //tw.OnTweet = OnTweet;
 
-            tw.OnNewNotice = (n) => { ShowNotice(n, 1000, null); };
-            return tw;
+            //tw.OnAutoTweetAction = (n) =>
+            //{
+            //    //ShowNotice(n, 2000, null);
+            //    //OnAutoTweet(n);
+            //};
+
+            //tw.OnAutoTweetToggle = (autoTweet) =>
+            //{
+            //    Settings.autoTweet = autoTweet;
+            //    Settings.SaveSettings();
+            //};
+
+            //tw.OnSettingsApplied = (set) =>
+            //{
+            //    Settings.Set = set;
+            //    Settings.SaveSettings();
+            //};
+
+            //tw.OnNewNotice = (n) => { ShowNotice(n, 1000, null); };
+            //return tw;
         }
 
         private void OnLogout()
@@ -154,52 +161,6 @@ namespace TradeTweet
             this.Invoke((MethodInvoker)delegate
             {
                 StartPlugin();
-            });
-        }
-
-        private async Task<Response> OnTweet()
-        {
-            tw.ToggleTweetButton();
-            ShowNotice("Sending...");
-
-            var images = tw.GetImages();
-
-            List<Task<Response>> list = new List<Task<Response>>();
-
-            foreach (var img in images)
-            {
-                list.Add(ts.SendImageAsync(img, ct));
-            }
-
-            await Task.WhenAll(list);
-
-            if (list.Any(l => l.Result.Failed)) return new Response() { Failed = true, Text = "Image sending error" };
-
-            var mediaIds =
-                (from tsk in list
-                 select tsk.Result.Text.Split(new char[] { ':', ',' })[1]);
-
-            string mediaString = string.Join(",", mediaIds);
-
-            byte[] media = (string.IsNullOrEmpty(mediaString)) ? null : new byte[1];
-
-            var ttt = await ts.SendTweetAsync(new Twitt { Text = tw.Status, Media = media }, mediaString, ct);
-
-
-            ShowNotice((!ttt.Failed)?"Done...":ttt.Text);
-
-            tw.ToggleTweetButton();
-
-            return ttt;
-        }
-
-        private async void OnAutoTweet(string status)
-        {
-            ShowNotice("AutoTweet...");
-
-            await ts.SendTweetAsync(new Twitt { Text = status, Media = null}, null, ct).ContinueWith((t) =>
-            {
-                ShowNotice("Done!");
             });
         }
 

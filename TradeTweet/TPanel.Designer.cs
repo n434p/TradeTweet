@@ -28,171 +28,219 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.gridPanel = new System.Windows.Forms.TableLayoutPanel();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.label6 = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.label12 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.settingsBtn = new System.Windows.Forms.Label();
+            this.autoTweetBtn = new System.Windows.Forms.Label();
+            this.logoutLink = new System.Windows.Forms.LinkLabel();
+            this.avatar = new System.Windows.Forms.PictureBox();
+            this.accountName = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.panel4 = new System.Windows.Forms.Panel();
+            this.label16 = new System.Windows.Forms.Label();
+            this.tweetText = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.label11 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.tableLayoutPanel1.SuspendLayout();
+            this.label5 = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.tweetBtn = new System.Windows.Forms.Label();
+            this.makeScreenshotBtn = new System.Windows.Forms.Label();
+            this.addImageBtn = new System.Windows.Forms.Label();
+            this.tweetLengthLabel = new System.Windows.Forms.Label();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.separatorLine = new System.Windows.Forms.Panel();
+            this.leftCorner = new System.Windows.Forms.Label();
+            this.rightCorner = new System.Windows.Forms.Label();
+            this.picPanelBase = new System.Windows.Forms.Panel();
+            this.label15 = new System.Windows.Forms.Label();
+            this.picPanelContainer = new System.Windows.Forms.Label();
+            this.historyPanel = new System.Windows.Forms.Panel();
+            this.gridPanel.SuspendLayout();
             this.panel2.SuspendLayout();
-            this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.avatar)).BeginInit();
             this.panel3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.panel1.SuspendLayout();
+            this.panel5.SuspendLayout();
+            this.separatorLine.SuspendLayout();
+            this.picPanelBase.SuspendLayout();
             this.SuspendLayout();
             // 
-            // tableLayoutPanel1
+            // gridPanel
             // 
-            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.gridPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.ColumnCount = 3;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 405F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Controls.Add(this.panel3, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.panel2, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.panel4, 1, 3);
-            this.tableLayoutPanel1.Controls.Add(this.panel1, 1, 4);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 4);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 5;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 48F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 65F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 103F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 62F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(667, 381);
-            this.tableLayoutPanel1.TabIndex = 0;
+            this.gridPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
+            this.gridPanel.ColumnCount = 3;
+            this.gridPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.gridPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 400F));
+            this.gridPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.gridPanel.Controls.Add(this.panel2, 1, 0);
+            this.gridPanel.Controls.Add(this.panel3, 1, 2);
+            this.gridPanel.Controls.Add(this.panel1, 1, 5);
+            this.gridPanel.Controls.Add(this.panel5, 1, 4);
+            this.gridPanel.Controls.Add(this.picPanelBase, 1, 3);
+            this.gridPanel.Controls.Add(this.historyPanel, 1, 1);
+            this.gridPanel.Location = new System.Drawing.Point(3, 4);
+            this.gridPanel.Name = "gridPanel";
+            this.gridPanel.RowCount = 6;
+            this.gridPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 48F));
+            this.gridPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.gridPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 96F));
+            this.gridPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.gridPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 6F));
+            this.gridPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 76F));
+            this.gridPanel.Size = new System.Drawing.Size(505, 430);
+            this.gridPanel.TabIndex = 0;
             // 
             // panel2
             // 
-            this.panel2.Controls.Add(this.label8);
-            this.panel2.Controls.Add(this.label7);
-            this.panel2.Controls.Add(this.linkLabel1);
-            this.panel2.Controls.Add(this.pictureBox1);
-            this.panel2.Controls.Add(this.label6);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(134, 3);
+            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
+            this.panel2.Controls.Add(this.label2);
+            this.panel2.Controls.Add(this.settingsBtn);
+            this.panel2.Controls.Add(this.autoTweetBtn);
+            this.panel2.Controls.Add(this.logoutLink);
+            this.panel2.Controls.Add(this.avatar);
+            this.panel2.Controls.Add(this.accountName);
+            this.panel2.Location = new System.Drawing.Point(52, 0);
+            this.panel2.Margin = new System.Windows.Forms.Padding(0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(399, 42);
+            this.panel2.Size = new System.Drawing.Size(400, 48);
             this.panel2.TabIndex = 2;
             // 
-            // linkLabel1
+            // label2
             // 
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(204)));
-            this.linkLabel1.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
-            this.linkLabel1.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(161)))), ((int)(((byte)(242)))));
-            this.linkLabel1.Location = new System.Drawing.Point(51, 23);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(40, 13);
-            this.linkLabel1.TabIndex = 4;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "Logout";
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label2.BackColor = System.Drawing.Color.Black;
+            this.label2.Location = new System.Drawing.Point(0, 47);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(400, 1);
+            this.label2.TabIndex = 7;
             // 
-            // label6
+            // settingsBtn
             // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(204)));
-            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(116)))), ((int)(((byte)(116)))), ((int)(((byte)(116)))));
-            this.label6.Location = new System.Drawing.Point(51, 7);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(62, 13);
-            this.label6.TabIndex = 3;
-            this.label6.Text = "nazar_ptmc";
+            this.settingsBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.settingsBtn.Image = global::TradeTweet.Properties.Resources.TradeTweet_24;
+            this.settingsBtn.Location = new System.Drawing.Point(344, 9);
+            this.settingsBtn.Name = "settingsBtn";
+            this.settingsBtn.Size = new System.Drawing.Size(31, 30);
+            this.settingsBtn.TabIndex = 6;
+            this.settingsBtn.Click += new System.EventHandler(this.settingsBtn_Click);
             // 
-            // panel1
+            // autoTweetBtn
             // 
-            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
-            this.panel1.Controls.Add(this.label11);
-            this.panel1.Controls.Add(this.label10);
-            this.panel1.Controls.Add(this.label9);
-            this.panel1.Controls.Add(this.label3);
-            this.panel1.Controls.Add(this.label12);
-            this.panel1.Controls.Add(this.label2);
-            this.panel1.Location = new System.Drawing.Point(134, 303);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(399, 75);
-            this.panel1.TabIndex = 1;
+            this.autoTweetBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.autoTweetBtn.Image = global::TradeTweet.Properties.Resources.TradeTweet_21;
+            this.autoTweetBtn.Location = new System.Drawing.Point(213, 9);
+            this.autoTweetBtn.Name = "autoTweetBtn";
+            this.autoTweetBtn.Size = new System.Drawing.Size(131, 31);
+            this.autoTweetBtn.TabIndex = 5;
+            this.autoTweetBtn.Click += new System.EventHandler(this.autoTweetBtn_Click);
             // 
-            // label12
+            // logoutLink
             // 
-            this.label12.AutoSize = true;
-            this.label12.Font = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(204)));
-            this.label12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(116)))), ((int)(((byte)(116)))), ((int)(((byte)(116)))));
-            this.label12.Location = new System.Drawing.Point(237, 32);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(32, 16);
-            this.label12.TabIndex = 3;
-            this.label12.Text = "140";
+            this.logoutLink.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.logoutLink.AutoSize = true;
+            this.logoutLink.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(204)));
+            this.logoutLink.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
+            this.logoutLink.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(161)))), ((int)(((byte)(242)))));
+            this.logoutLink.Location = new System.Drawing.Point(54, 26);
+            this.logoutLink.Name = "logoutLink";
+            this.logoutLink.Size = new System.Drawing.Size(33, 12);
+            this.logoutLink.TabIndex = 4;
+            this.logoutLink.TabStop = true;
+            this.logoutLink.Text = "Logout";
+            this.logoutLink.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(161)))), ((int)(((byte)(242)))));
+            this.logoutLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.logoutLink_LinkClicked);
             // 
-            // textBox1
+            // avatar
             // 
-            this.textBox1.BackColor = System.Drawing.Color.Black;
-            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox1.Font = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(204)));
-            this.textBox1.ForeColor = System.Drawing.Color.White;
-            this.textBox1.Location = new System.Drawing.Point(36, 32);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(5);
-            this.textBox1.MaxLength = 140;
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(329, 49);
-            this.textBox1.TabIndex = 0;
-            this.textBox1.Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque interdum ru" +
-    "trum sodales. Nullam mattis fermentum libero, non volutpat.";
+            this.avatar.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.avatar.Image = global::TradeTweet.Properties.Resources.avatar;
+            this.avatar.Location = new System.Drawing.Point(20, 10);
+            this.avatar.Margin = new System.Windows.Forms.Padding(5);
+            this.avatar.Name = "avatar";
+            this.avatar.Size = new System.Drawing.Size(28, 28);
+            this.avatar.TabIndex = 0;
+            this.avatar.TabStop = false;
             // 
-            // label5
+            // accountName
             // 
-            this.label5.BackColor = System.Drawing.Color.Black;
-            this.label5.Location = new System.Drawing.Point(21, 19);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(358, 78);
-            this.label5.TabIndex = 5;
+            this.accountName.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.accountName.AutoSize = true;
+            this.accountName.Font = new System.Drawing.Font("Arial", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(204)));
+            this.accountName.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(116)))), ((int)(((byte)(116)))), ((int)(((byte)(116)))));
+            this.accountName.Location = new System.Drawing.Point(52, 10);
+            this.accountName.Name = "accountName";
+            this.accountName.Size = new System.Drawing.Size(64, 14);
+            this.accountName.TabIndex = 3;
+            this.accountName.Text = "nazar_ptmc";
             // 
             // panel3
             // 
             this.panel3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
-            this.panel3.Controls.Add(this.textBox1);
+            this.panel3.Controls.Add(this.label16);
+            this.panel3.Controls.Add(this.tweetText);
             this.panel3.Controls.Add(this.label1);
             this.panel3.Controls.Add(this.label4);
             this.panel3.Controls.Add(this.label5);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(134, 116);
+            this.panel3.Location = new System.Drawing.Point(52, 179);
+            this.panel3.Margin = new System.Windows.Forms.Padding(0);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(399, 97);
+            this.panel3.Size = new System.Drawing.Size(400, 96);
             this.panel3.TabIndex = 3;
             // 
-            // panel4
+            // label16
             // 
-            this.panel4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
-            this.panel4.BackgroundImage = global::TradeTweet.Properties.Resources.back_gray;
-            this.panel4.Location = new System.Drawing.Point(134, 219);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(399, 78);
-            this.panel4.TabIndex = 4;
+            this.label16.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.label16.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(71)))), ((int)(((byte)(71)))));
+            this.label16.Location = new System.Drawing.Point(0, 0);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(400, 1);
+            this.label16.TabIndex = 8;
+            // 
+            // tweetText
+            // 
+            this.tweetText.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tweetText.BackColor = System.Drawing.Color.Black;
+            this.tweetText.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.tweetText.Font = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(204)));
+            this.tweetText.ForeColor = System.Drawing.Color.White;
+            this.tweetText.Location = new System.Drawing.Point(36, 32);
+            this.tweetText.Margin = new System.Windows.Forms.Padding(5);
+            this.tweetText.MaxLength = 140;
+            this.tweetText.Multiline = true;
+            this.tweetText.Name = "tweetText";
+            this.tweetText.Size = new System.Drawing.Size(335, 54);
+            this.tweetText.TabIndex = 0;
+            this.tweetText.Text = "Type here...";
+            this.tweetText.TextChanged += new System.EventHandler(this.tweetText_TextChanged);
+            this.tweetText.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tweetText_KeyDown);
             // 
             // label1
             // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.BackColor = System.Drawing.Color.Black;
             this.label1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.label1.Image = global::TradeTweet.Properties.Resources.rd_corner;
-            this.label1.Location = new System.Drawing.Point(376, 18);
+            this.label1.Location = new System.Drawing.Point(376, 20);
             this.label1.Margin = new System.Windows.Forms.Padding(0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(4, 4);
@@ -203,124 +251,224 @@
             this.label4.BackColor = System.Drawing.Color.Black;
             this.label4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.label4.Image = global::TradeTweet.Properties.Resources.lu_corner;
-            this.label4.Location = new System.Drawing.Point(20, 18);
+            this.label4.Location = new System.Drawing.Point(20, 20);
             this.label4.Margin = new System.Windows.Forms.Padding(0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(4, 4);
             this.label4.TabIndex = 3;
             // 
-            // label8
+            // label5
             // 
-            this.label8.Image = global::TradeTweet.Properties.Resources.TradeTweet_24;
-            this.label8.Location = new System.Drawing.Point(348, 6);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(31, 30);
-            this.label8.TabIndex = 6;
+            this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label5.BackColor = System.Drawing.Color.Black;
+            this.label5.Location = new System.Drawing.Point(20, 20);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(360, 76);
+            this.label5.TabIndex = 5;
             // 
-            // label7
+            // panel1
             // 
-            this.label7.Image = global::TradeTweet.Properties.Resources.TradeTweet_21;
-            this.label7.Location = new System.Drawing.Point(217, 6);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(131, 30);
-            this.label7.TabIndex = 5;
+            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
+            this.panel1.Controls.Add(this.tweetBtn);
+            this.panel1.Controls.Add(this.makeScreenshotBtn);
+            this.panel1.Controls.Add(this.addImageBtn);
+            this.panel1.Controls.Add(this.tweetLengthLabel);
+            this.panel1.Location = new System.Drawing.Point(52, 354);
+            this.panel1.Margin = new System.Windows.Forms.Padding(0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(400, 76);
+            this.panel1.TabIndex = 1;
             // 
-            // pictureBox1
+            // tweetBtn
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(20, 7);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(5);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(28, 28);
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
+            this.tweetBtn.Enabled = false;
+            this.tweetBtn.Image = global::TradeTweet.Properties.Resources.TradeTweet_13;
+            this.tweetBtn.Location = new System.Drawing.Point(277, 24);
+            this.tweetBtn.Name = "tweetBtn";
+            this.tweetBtn.Size = new System.Drawing.Size(102, 30);
+            this.tweetBtn.TabIndex = 6;
+            this.tweetBtn.Click += new System.EventHandler(this.tweetBtn_Click);
             // 
-            // label11
+            // makeScreenshotBtn
             // 
-            this.label11.Image = global::TradeTweet.Properties.Resources.TradeTweet_13;
-            this.label11.Location = new System.Drawing.Point(277, 25);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(102, 30);
-            this.label11.TabIndex = 6;
+            this.makeScreenshotBtn.Image = global::TradeTweet.Properties.Resources.TradeTweet_06;
+            this.makeScreenshotBtn.Location = new System.Drawing.Point(74, 24);
+            this.makeScreenshotBtn.Name = "makeScreenshotBtn";
+            this.makeScreenshotBtn.Size = new System.Drawing.Size(48, 30);
+            this.makeScreenshotBtn.TabIndex = 6;
+            this.makeScreenshotBtn.Click += new System.EventHandler(this.makeScreenshotBtn_Click);
+            this.makeScreenshotBtn.MouseEnter += new System.EventHandler(this.makeScreenshotBtn_MouseEnter);
+            this.makeScreenshotBtn.MouseLeave += new System.EventHandler(this.makeScreenshotBtn_MouseLeave);
             // 
-            // label10
+            // addImageBtn
             // 
-            this.label10.Image = global::TradeTweet.Properties.Resources.TradeTweet_06;
-            this.label10.Location = new System.Drawing.Point(74, 25);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(47, 30);
-            this.label10.TabIndex = 6;
+            this.addImageBtn.Image = global::TradeTweet.Properties.Resources.TradeTweet_05;
+            this.addImageBtn.Location = new System.Drawing.Point(21, 24);
+            this.addImageBtn.Name = "addImageBtn";
+            this.addImageBtn.Size = new System.Drawing.Size(48, 30);
+            this.addImageBtn.TabIndex = 6;
+            this.addImageBtn.Click += new System.EventHandler(this.addImageBtn_Click);
+            this.addImageBtn.MouseEnter += new System.EventHandler(this.addImageBtn_MouseEnter);
+            this.addImageBtn.MouseLeave += new System.EventHandler(this.addImageBtn_MouseLeave);
             // 
-            // label9
+            // tweetLengthLabel
             // 
-            this.label9.Image = global::TradeTweet.Properties.Resources.TradeTweet_05;
-            this.label9.Location = new System.Drawing.Point(21, 25);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(47, 30);
-            this.label9.TabIndex = 6;
+            this.tweetLengthLabel.Font = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(204)));
+            this.tweetLengthLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(116)))), ((int)(((byte)(116)))), ((int)(((byte)(116)))));
+            this.tweetLengthLabel.Location = new System.Drawing.Point(225, 30);
+            this.tweetLengthLabel.Name = "tweetLengthLabel";
+            this.tweetLengthLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.tweetLengthLabel.Size = new System.Drawing.Size(40, 16);
+            this.tweetLengthLabel.TabIndex = 3;
+            this.tweetLengthLabel.Text = "140";
+            this.tweetLengthLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // label3
+            // panel5
             // 
-            this.label3.BackColor = System.Drawing.Color.Black;
-            this.label3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.label3.Image = global::TradeTweet.Properties.Resources.ld_corner;
-            this.label3.Location = new System.Drawing.Point(20, 5);
-            this.label3.Margin = new System.Windows.Forms.Padding(0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(4, 4);
-            this.label3.TabIndex = 4;
+            this.panel5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
+            this.panel5.Controls.Add(this.separatorLine);
+            this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel5.Location = new System.Drawing.Point(52, 348);
+            this.panel5.Margin = new System.Windows.Forms.Padding(0);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(400, 6);
+            this.panel5.TabIndex = 5;
             // 
-            // label2
+            // separatorLine
             // 
-            this.label2.BackColor = System.Drawing.Color.Black;
-            this.label2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.label2.Image = global::TradeTweet.Properties.Resources.ru_corner;
-            this.label2.Location = new System.Drawing.Point(376, 5);
-            this.label2.Margin = new System.Windows.Forms.Padding(0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(4, 4);
-            this.label2.TabIndex = 2;
+            this.separatorLine.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.separatorLine.BackColor = System.Drawing.Color.Black;
+            this.separatorLine.Controls.Add(this.leftCorner);
+            this.separatorLine.Controls.Add(this.rightCorner);
+            this.separatorLine.Location = new System.Drawing.Point(20, 0);
+            this.separatorLine.Margin = new System.Windows.Forms.Padding(0);
+            this.separatorLine.Name = "separatorLine";
+            this.separatorLine.Size = new System.Drawing.Size(360, 4);
+            this.separatorLine.TabIndex = 8;
+            // 
+            // leftCorner
+            // 
+            this.leftCorner.BackColor = System.Drawing.Color.Transparent;
+            this.leftCorner.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.leftCorner.Image = global::TradeTweet.Properties.Resources.ld_corner;
+            this.leftCorner.Location = new System.Drawing.Point(0, 0);
+            this.leftCorner.Margin = new System.Windows.Forms.Padding(0);
+            this.leftCorner.Name = "leftCorner";
+            this.leftCorner.Size = new System.Drawing.Size(4, 4);
+            this.leftCorner.TabIndex = 4;
+            // 
+            // rightCorner
+            // 
+            this.rightCorner.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.rightCorner.BackColor = System.Drawing.Color.Transparent;
+            this.rightCorner.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.rightCorner.Image = global::TradeTweet.Properties.Resources.ru_corner;
+            this.rightCorner.Location = new System.Drawing.Point(356, 0);
+            this.rightCorner.Margin = new System.Windows.Forms.Padding(0);
+            this.rightCorner.Name = "rightCorner";
+            this.rightCorner.Size = new System.Drawing.Size(4, 4);
+            this.rightCorner.TabIndex = 2;
+            // 
+            // picPanelBase
+            // 
+            this.picPanelBase.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
+            this.picPanelBase.Controls.Add(this.label15);
+            this.picPanelBase.Controls.Add(this.picPanelContainer);
+            this.picPanelBase.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.picPanelBase.Location = new System.Drawing.Point(52, 275);
+            this.picPanelBase.Margin = new System.Windows.Forms.Padding(0);
+            this.picPanelBase.Name = "picPanelBase";
+            this.picPanelBase.Size = new System.Drawing.Size(400, 73);
+            this.picPanelBase.TabIndex = 6;
+            // 
+            // label15
+            // 
+            this.label15.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label15.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
+            this.label15.Location = new System.Drawing.Point(20, 0);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(360, 1);
+            this.label15.TabIndex = 8;
+            // 
+            // picPanelContainer
+            // 
+            this.picPanelContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.picPanelContainer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
+            this.picPanelContainer.Location = new System.Drawing.Point(20, 0);
+            this.picPanelContainer.Name = "picPanelContainer";
+            this.picPanelContainer.Size = new System.Drawing.Size(360, 73);
+            this.picPanelContainer.TabIndex = 7;
+            // 
+            // historyPanel
+            // 
+            this.historyPanel.BackColor = System.Drawing.Color.Black;
+            this.historyPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.historyPanel.Location = new System.Drawing.Point(52, 48);
+            this.historyPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.historyPanel.Name = "historyPanel";
+            this.historyPanel.Size = new System.Drawing.Size(400, 131);
+            this.historyPanel.TabIndex = 7;
             // 
             // TPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.gridPanel);
+            this.DoubleBuffered = true;
+            this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "TPanel";
-            this.Size = new System.Drawing.Size(673, 387);
-            this.tableLayoutPanel1.ResumeLayout(false);
+            this.Size = new System.Drawing.Size(511, 437);
+            this.gridPanel.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.avatar)).EndInit();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.panel1.ResumeLayout(false);
+            this.panel5.ResumeLayout(false);
+            this.separatorLine.ResumeLayout(false);
+            this.picPanelBase.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel gridPanel;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox tweetText;
+        private System.Windows.Forms.Label leftCorner;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label rightCorner;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.LinkLabel linkLabel1;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.PictureBox avatar;
+        private System.Windows.Forms.Label accountName;
+        private System.Windows.Forms.LinkLabel logoutLink;
+        private System.Windows.Forms.Label settingsBtn;
+        private System.Windows.Forms.Label autoTweetBtn;
+        private System.Windows.Forms.Label makeScreenshotBtn;
+        private System.Windows.Forms.Label addImageBtn;
+        private System.Windows.Forms.Label tweetBtn;
+        private System.Windows.Forms.Label tweetLengthLabel;
         private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.Label picPanelContainer;
+        private System.Windows.Forms.Panel picPanelBase;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Panel separatorLine;
+        private System.Windows.Forms.Panel historyPanel;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label label2;
     }
 }

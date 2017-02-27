@@ -35,8 +35,8 @@ namespace TradeTweet
 
         public static void ClearSettings()
         {
-            ast = "";
-            atn = "";
+            ast = "822113440844148738-s7MLex2gcSFKxzKZfBDwcwJqvJYk0LA";
+            atn = "8UYP6Ahmn5GjJXkr0bN3Jy2XmKBX8jT3Slxk8EhzLCEmO";
             autoTweet = false;
             Set = new Dictionary<EventType, bool>();
             key = "default_set15";

@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace TradeTweet
 {
-    public enum EventType { OrderOpen, OrderClose, PositionOpen, PositionClose }
+    public enum EventType { Empty, OrderOpen, OrderClose, PositionOpen, PositionClose }
 
     class SettingsPanel: Panel
     {
