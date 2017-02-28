@@ -98,20 +98,26 @@ namespace TradeTweet
             picPanelContainer.Controls.Add(picPanel);
 
             noticePanel = new NoticeP(historyPanel);
-            this.Controls.Add(noticePanel);
-            noticePanel.BringToFront();
 
             settingsPanel = new AutoSettings();
             settingsPanel.Visible = false;
 
             this.Controls.Add(settingsPanel);
             settingsPanel.BringToFront();
+
+            historyPanel.AutoScroll = true;
+
+            historyPanel.HorizontalScroll.Enabled = false;
+            historyPanel.HorizontalScroll.Visible = false;
         }
 
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
+
             RelocationSettingsPanel();
+
+       
         }
 
         void RelocationSettingsPanel()
@@ -119,11 +125,6 @@ namespace TradeTweet
             if (settingsPanel != null && settingsPanel.Visible)
             {
                 settingsPanel.Location = new Point(headerPanel.Left + autoTweetBtn.Left + 3, headerPanel.Bottom - 3);
-            }
-
-            if (noticePanel != null)
-            {
-                noticePanel.Location = new Point(historyPanel.Left +3, historyPanel.Top + 3) ;
             }
         }
 
@@ -298,7 +299,7 @@ namespace TradeTweet
             //if (OnAutoTweetToggle != null)
             //    OnAutoTweetToggle.Invoke(AutoTweetFlag);
 
-            noticePanel.ShowNotice((AutoTweetFlag) ? "AutoTweet Enabled!" : "AutoTweet Disabled!", 1000, NoticeType.Info);
+            noticePanel.ShowNotice((AutoTweetFlag) ? "AutoTweet Enabled!" : "AutoTweet Disabled!", 0, NoticeType.Info);
 
             //if (AutoTweetFlag)
             //{
@@ -532,5 +533,6 @@ namespace TradeTweet
         {
             addImageBtn.Image = Properties.Resources.TradeTweet_05;
         }
+
     }
 }

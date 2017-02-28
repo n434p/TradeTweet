@@ -74,6 +74,10 @@
     <Reference Include="Commons">
       <HintPath>C:\Users\nazar\AppData\Roaming\ProtraderMCTest\Commons.dll</HintPath>
     </Reference>
+    <Reference Include="Magic, Version=10.0.6197.23731, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\projects\Protrader2SVN\trunc\ProTrader\bin\Debug\Magic.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>C:\Users\nazar\AppData\Roaming\ProtraderMCTest\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -99,6 +103,7 @@
     <Compile Include="AutoSettings.Designer.cs">
       <DependentUpon>AutoSettings.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomPanel.cs" />
     <Compile Include="EnterPinPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -245,12 +250,6 @@
     <None Include="Resources\factura.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\middle.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\select.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\TradeTweet-05.png" />
   </ItemGroup>
   <ItemGroup>
@@ -330,6 +329,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\TradeTweet-31.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\middle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\select.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\unselect.png" />

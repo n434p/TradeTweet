@@ -19,51 +19,51 @@ namespace TradeTweet
         public NoticeP(Control attachTo)
         {
             InitializeComponent();
-
-            Visible = false;
+            DoubleBuffered = true;
             ParentWindow = attachTo;
         }
 
         internal async void ShowNotice(string message, int miliseconds = 2000, NoticeType type = NoticeType.Info, EventType evType = EventType.Empty, Action callback = null)
         {
+            NoticeP notice = new NoticeP(ParentWindow);
+            notice.noticeText.Text = message;
+
+            switch (type)
+            {
+                case NoticeType.Info:
+                    notice.statusPic.Image = Properties.Resources.TradeTweet_09;
+                    break;
+                case NoticeType.Error:
+                    notice.statusPic.Image = Properties.Resources.TradeTweet_10;
+                    break;
+                case NoticeType.Success:
+                    notice.statusPic.Image = Properties.Resources.TradeTweet_11;
+                    break;
+            }
+
+            switch (evType)
+            {
+                case EventType.Empty:
+                    notice.sidePic.Image = null;
+                    break;
+                case EventType.OrderOpen:
+                    notice.sidePic.Image = Properties.Resources.TradeTweet_16;
+                    break;
+                case EventType.OrderClose:
+                    notice.sidePic.Image = Properties.Resources.TradeTweet_17;
+                    break;
+                case EventType.PositionClose:
+                    notice.sidePic.Image = Properties.Resources.TradeTweet_18;
+                    break;
+                case EventType.PositionOpen:
+                    notice.sidePic.Image = Properties.Resources.TradeTweet_19;
+                    break;
+            }
+
+
             ParentWindow.Invoke((MethodInvoker)delegate
             {
-                this.noticeText.Text = message;
-
-                this.Visible = true;
-
-                switch (type)
-                {
-                    case NoticeType.Info:
-                        this.statusPic.Image = Properties.Resources.TradeTweet_09;
-                        break;
-                    case NoticeType.Error:
-                        this.statusPic.Image = Properties.Resources.TradeTweet_10;
-                        break;
-                    case NoticeType.Success:
-                        this.statusPic.Image = Properties.Resources.TradeTweet_11;
-                        break;
-                }
-
-                switch (evType)
-                {
-                    case EventType.Empty:
-                        this.sidePic.Image = null;
-                        break;
-                    case EventType.OrderOpen:
-                        this.sidePic.Image = Properties.Resources.TradeTweet_16;
-                        break;
-                    case EventType.OrderClose:
-                        this.sidePic.Image = Properties.Resources.TradeTweet_17;
-                        break;
-                    case EventType.PositionClose:
-                        this.sidePic.Image = Properties.Resources.TradeTweet_18;
-                        break;
-                    case EventType.PositionOpen:
-                        this.sidePic.Image = Properties.Resources.TradeTweet_19;
-                        break;
-                }
-
+                ParentWindow.Controls.Add(notice);
             });
 
             await Task.Delay(miliseconds).ContinueWith((t) =>
@@ -74,7 +74,8 @@ namespace TradeTweet
 
             ParentWindow.Invoke((MethodInvoker)delegate
             {
-                this.Visible = false;
+                if(miliseconds != 0)
+                    ParentWindow.Controls.Remove(notice);
             });
         }
     }

@@ -28,9 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.settingsTree = new System.Windows.Forms.TreeView();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.panel1.SuspendLayout();
+            this.settingsTree = new TradeTweet.TriStateTreeView();
             this.SuspendLayout();
             // 
             // settingsTree
@@ -47,18 +45,6 @@
             this.settingsTree.Name = "settingsTree";
             this.settingsTree.Size = new System.Drawing.Size(162, 162);
             this.settingsTree.TabIndex = 0;
-            this.settingsTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
-            // 
-            // panel1
-            // 
-            this.panel1.BackColor = System.Drawing.Color.Transparent;
-            this.panel1.Controls.Add(this.settingsTree);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Margin = new System.Windows.Forms.Padding(0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(162, 162);
-            this.panel1.TabIndex = 2;
             // 
             // AutoSettings
             // 
@@ -66,20 +52,18 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.Disable;
             this.BackColor = System.Drawing.Color.Transparent;
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.settingsTree);
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(204)));
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "AutoSettings";
             this.Size = new System.Drawing.Size(162, 162);
-            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TreeView settingsTree;
-        private System.Windows.Forms.Panel panel1;
+        private TradeTweet.TriStateTreeView settingsTree;
     }
 }
