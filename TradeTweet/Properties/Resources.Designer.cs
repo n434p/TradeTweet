@@ -153,6 +153,16 @@ namespace TradeTweet.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap middle {
+            get {
+                object obj = ResourceManager.GetObject("middle", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap rd_corner {
             get {
                 object obj = ResourceManager.GetObject("rd_corner", resourceCulture);
@@ -183,9 +193,29 @@ namespace TradeTweet.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap select {
+            get {
+                object obj = ResourceManager.GetObject("select", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap settings {
             get {
                 object obj = ResourceManager.GetObject("settings", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap settings_bottom_edge {
+            get {
+                object obj = ResourceManager.GetObject("settings_bottom_edge", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -496,6 +526,16 @@ namespace TradeTweet.Properties {
         internal static System.Drawing.Bitmap transp_right_corner {
             get {
                 object obj = ResourceManager.GetObject("transp_right_corner", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap unselect {
+            get {
+                object obj = ResourceManager.GetObject("unselect", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

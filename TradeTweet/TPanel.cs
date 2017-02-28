@@ -16,7 +16,7 @@ namespace TradeTweet
     internal partial class TPanel : UserControl
     {
         ToolTip tip;
-        SettingsPanel settingsPanel;
+        AutoSettings settingsPanel;
         TwittwerService ts;
         PicturePanel picPanel;
         NETSDK PlatformEngine;
@@ -28,7 +28,6 @@ namespace TradeTweet
         public string Status { get { return tweetText.Text; } }
 
         public Action OnLogout = null;
-        //  public Action OnTweet = null;
         public Action OnSettingsApplied = null;
         public Action<bool> OnAutoTweetToggle = null;
         public Action<string> OnAutoTweetAction = null;
@@ -81,7 +80,10 @@ namespace TradeTweet
         {
             InitializeComponent();
             this.DoubleBuffered = true;
-           
+
+            this.Margin = new Padding(0);
+            this.Padding = new Padding(0);
+
             tip = new ToolTip();
 
             tip.SetToolTip(logoutLink, "Click to logout");
@@ -96,7 +98,33 @@ namespace TradeTweet
             picPanelContainer.Controls.Add(picPanel);
 
             noticePanel = new NoticeP(historyPanel);
-            historyPanel.Controls.Add(noticePanel);
+            this.Controls.Add(noticePanel);
+            noticePanel.BringToFront();
+
+            settingsPanel = new AutoSettings();
+            settingsPanel.Visible = false;
+
+            this.Controls.Add(settingsPanel);
+            settingsPanel.BringToFront();
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            RelocationSettingsPanel();
+        }
+
+        void RelocationSettingsPanel()
+        {
+            if (settingsPanel != null && settingsPanel.Visible)
+            {
+                settingsPanel.Location = new Point(headerPanel.Left + autoTweetBtn.Left + 3, headerPanel.Bottom - 3);
+            }
+
+            if (noticePanel != null)
+            {
+                noticePanel.Location = new Point(historyPanel.Left +3, historyPanel.Top + 3) ;
+            }
         }
 
         public void TweetPanel(NETSDK platformEngine)
@@ -251,6 +279,9 @@ namespace TradeTweet
         private void settingsBtn_Click(object sender, EventArgs e)
         {
             SettingsOpen = !SettingsOpen;
+            settingsPanel.Visible = SettingsOpen;
+
+            RelocationSettingsPanel();
         }
 
         private void autoTweetBtn_Click(object sender, EventArgs e)
@@ -298,19 +329,6 @@ namespace TradeTweet
             separatorLine.BackColor = (state) ? Color.FromArgb(34, 34, 34) : Color.FromArgb(0, 0, 0);
         }
 
-        public List<Image> GetImages()
-        {
-            List<Image> list = new List<Image>();
-
-            foreach (Control item in picPanel.Controls)
-            {
-                if (item.BackgroundImage != null)
-                    list.Add(item.BackgroundImage);
-            }
-
-            return list;
-        }
-
         public void ProcessClick(picMode mode)
         {
             if (picPanel.Controls.Count < MAX_CARDS)
@@ -333,8 +351,7 @@ namespace TradeTweet
                 return;
             }
 
-            if (OnMaxPics != null)
-                noticePanel.ShowNotice("Only 4 pics are allowed to tweet!", 1000, NoticeType.Info);
+            noticePanel.ShowNotice("Only 4 pics are allowed to tweet!", 1000, NoticeType.Info);
         }
 
         void MakeScreen(PictureCard c = null)
@@ -345,7 +362,8 @@ namespace TradeTweet
 
             if (c != null)
             {
-                c.BackgroundImage = img;
+                c.BackgroundImage = c.ResizeImage(img, CARD_ZIZE);
+                images[c] = img;
                 return;
             }
 
@@ -393,7 +411,8 @@ namespace TradeTweet
 
                     if (c != null)
                     {
-                        c.BackgroundImage = img;
+                        c.BackgroundImage = c.ResizeImage(img, CARD_ZIZE);
+                        images[c] = img;
                         return;
                     }
 
@@ -459,7 +478,7 @@ namespace TradeTweet
                 this.Controls.Add(cross);
             }
 
-            Image ResizeImage(Image image, int minSize)
+            public Image ResizeImage(Image image, int minSize)
             {
                 Image resizedImg = null;
 

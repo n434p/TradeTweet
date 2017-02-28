@@ -129,8 +129,6 @@ namespace TradeTweet
 
         public void ShowSet()
         {
-
-
             foreach (EventType item in Enum.GetValues(typeof(EventType)))
             {
                 bool check = (set != null) ? set[item] : false;

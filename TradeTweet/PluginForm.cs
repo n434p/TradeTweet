@@ -85,6 +85,8 @@ namespace TradeTweet
             var tt = new TPanel();
             tt.TweetPanel(PlatformEngine);
 
+            tt.Padding = new Padding(0);
+            tt.Margin = new Padding(0);
             tt.Dock = DockStyle.Fill;
 
             return tt;

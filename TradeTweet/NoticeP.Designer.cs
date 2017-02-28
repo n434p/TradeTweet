@@ -29,9 +29,10 @@
         private void InitializeComponent()
         {
             this.noticeText = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.statusPic = new System.Windows.Forms.Label();
             this.sidePic = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // noticeText
@@ -48,6 +49,17 @@
             this.noticeText.TabIndex = 0;
             this.noticeText.Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque interdum ru" +
     "trum sodales. Nullam mattis fermentum libero, non volutpat.\r\n";
+            this.noticeText.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
+            this.label1.Location = new System.Drawing.Point(0, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(400, 1);
+            this.label1.TabIndex = 3;
             // 
             // statusPic
             // 
@@ -67,21 +79,22 @@
             this.sidePic.Size = new System.Drawing.Size(47, 47);
             this.sidePic.TabIndex = 1;
             // 
-            // label1
+            // label2
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
-            this.label1.Location = new System.Drawing.Point(0, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(400, 1);
-            this.label1.TabIndex = 3;
+            this.label2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
+            this.label2.Location = new System.Drawing.Point(0, 46);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(400, 1);
+            this.label2.TabIndex = 4;
             // 
             // NoticeP
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.statusPic);
             this.Controls.Add(this.sidePic);
@@ -99,5 +112,6 @@
         private System.Windows.Forms.Label sidePic;
         private System.Windows.Forms.Label statusPic;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
     }
 }
