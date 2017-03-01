@@ -129,8 +129,8 @@ namespace TradeTweet
         static CancellationTokenSource cts;
 
         static internal NETSDK PlatformEngine;
-        public static Action<string> OnAutoTweetSend = null;
-        public static Action<string> OnAutoTweetRespond = null;
+        public static Action<string, EventType> OnAutoTweetSend = null;
+        public static Action<Response, EventType> OnAutoTweetRespond = null;
 
         public static TwittwerService Run(NETSDK engine)
         {
@@ -156,13 +156,13 @@ namespace TradeTweet
 
         public static void LinkEvents(bool unlinkAll = false)
         {
-            foreach (EventOperation operation in Settings.Set.Values)
+            foreach (EventType type in Settings.Set.Keys)
             {
-                bool check = (unlinkAll) ? false : operation.Active;
+                bool check = (unlinkAll) ? false : Settings.Set[type].Active;
 
                 if (check)
                 {
-                    switch (operation.Type)
+                    switch (type)
                     {
                         case EventType.OrderPlaced:
                             PlatformEngine.Orders.OrderAdded += Orders_OrderAdded;
@@ -180,7 +180,7 @@ namespace TradeTweet
                 }
                 else
                 {
-                    switch (operation.Type)
+                    switch (type)
                     {
                         case EventType.OrderPlaced:
                             PlatformEngine.Orders.OrderAdded -= Orders_OrderAdded;
@@ -199,17 +199,16 @@ namespace TradeTweet
             }
         }
 
-        private static async void SendAutoTweet(string text)
+        private static async void SendAutoTweet(string text, EventType type)
         {
             if (ts == null || !ts.Connected)
                 return;
 
-            OnAutoTweetSend?.Invoke(text);
+            OnAutoTweetSend?.Invoke(text, type);
 
-            await ts.SendTweetAsync(new Twitt { Text = text, Media = null }, null, ct).ContinueWith((t) =>
-            {
-                OnAutoTweetRespond?.Invoke("Done!");
-            });
+            var resp = await ts.SendTweetAsync(new Twitt { Text = text, Media = null }, null, ct);
+
+            OnAutoTweetRespond?.Invoke(resp, type);
         }
 
         private static void Positions_PositionRemoved(Position obj)
@@ -220,7 +219,7 @@ namespace TradeTweet
 
             text = text.PositionMessage(op, obj);
 
-            SendAutoTweet(text);
+            SendAutoTweet(text, EventType.PositionClosed);
         }
 
         private static void Positions_PositionAdded(Position obj)
@@ -231,7 +230,7 @@ namespace TradeTweet
 
             text = text.PositionMessage(op, obj);
 
-            SendAutoTweet(text);
+            SendAutoTweet(text, EventType.PositionOpened);
         }
 
         private static void Orders_OrderRemoved(Order obj)
@@ -242,7 +241,7 @@ namespace TradeTweet
 
             text = text.OrderMessage(op, obj);
 
-            SendAutoTweet(text);
+            SendAutoTweet(text, EventType.OrderCancelled);
         }
 
         private static void Orders_OrderAdded(Order obj)
@@ -253,7 +252,7 @@ namespace TradeTweet
 
             text = text.OrderMessage(op,obj);
 
-            SendAutoTweet(text);
+            SendAutoTweet(text, EventType.OrderPlaced);
         }
 
         public static string PositionMessage(this string value, EventOperation op, Position obj)

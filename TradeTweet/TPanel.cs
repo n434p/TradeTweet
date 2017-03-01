@@ -205,33 +205,23 @@ namespace TradeTweet
 
             var ttt = await ts.SendTweetAsync(new Twitt { Text = Status, Media = media }, mediaString, ct);
 
-            ResponseNotice(ttt);
+            ResponseNotice(ttt, EventType.Empty);
 
             ToggleTweetButton();
 
             return ttt;
         }
 
-        void ResponseNotice(Response resp)
+        void ResponseNotice(Response resp, EventType type)
         {
             if (!resp.Failed)
             {
-                noticePanel.ShowNotice("Done!", 1000, NoticeType.Success, EventType.Empty);
+                noticePanel.ShowNotice("Done!", 0, NoticeType.Success, type);
             }
             else
             {
-                noticePanel.ShowNotice(resp.Text, 1000, NoticeType.Error, EventType.Empty);
+                noticePanel.ShowNotice(resp.Text, 0, NoticeType.Error, type);
             }
-        }
-
-        private async void OnAutoTweet(string status, EventType type)
-        {
-            noticePanel.ShowNotice("AutoTweet...",1000, NoticeType.Info, type);
-
-            await ts.SendTweetAsync(new Twitt { Text = status, Media = null }, null, ct).ContinueWith((t) =>
-            {
-                ResponseNotice(t.Result);
-            });
         }
 
         private void logoutLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -287,15 +277,16 @@ namespace TradeTweet
 
         private void autoTweetBtn_Click(object sender, EventArgs e)
         {
-            //if (!settingsPanel.HasEvents)
-            //{
-            //    AutoTweetFlag = false;
-            //    ShowNotice("There is no events to tweet!");
-            //    return;
-            //}
+            if (!Settings.Set.Values.Any(v => v.Active))
+            {
+                AutoTweetFlag = false;
+                noticePanel.ShowNotice("There is no events to tweet!",1000);
+                return;
+            }
 
             AutoTweetFlag = !AutoTweetFlag;
 
+            //// Save settings
             //if (OnAutoTweetToggle != null)
             //    OnAutoTweetToggle.Invoke(AutoTweetFlag);
 
@@ -303,18 +294,23 @@ namespace TradeTweet
 
             AutoTweet.LinkEvents(!AutoTweetFlag);
 
-
-            //if (AutoTweetFlag)
-            //{
-            //    AutoTweet.OnAutoTweetSend += ShowNotice;
-            //    AutoTweet.OnAutoTweetRespond += ShowNotice;
-            //}
-            //else
-            //{
-            //    AutoTweet.OnAutoTweetSend -= ShowNotice;
-            //    AutoTweet.OnAutoTweetRespond -= ShowNotice;
-            //}
+            if (AutoTweetFlag)
+            {
+                AutoTweet.OnAutoTweetSend += ShowInfoNotice;
+                AutoTweet.OnAutoTweetRespond += ResponseNotice;
+            }
+            else
+            {
+                AutoTweet.OnAutoTweetSend -= ShowInfoNotice;
+                AutoTweet.OnAutoTweetRespond -= ResponseNotice;
+            }
         }
+
+        private void ShowInfoNotice(string text, EventType type)
+        {
+            noticePanel.ShowNotice(text, 0, NoticeType.Info, type);
+        }
+    
 
         private void addImageBtn_Click(object sender, EventArgs e)
         {

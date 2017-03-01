@@ -45,15 +45,15 @@ namespace TradeTweet
 
             ts = AutoTweet.Run(PlatformEngine);
 
-            AutoTweet.OnAutoTweetSend += (s) =>
-            {
-                ShowNotice(s);
-            };
+            //AutoTweet.OnAutoTweetSend += (s) =>
+            //{
+            //    ShowNotice(s);
+            //};
 
-            AutoTweet.OnAutoTweetRespond += (s) =>
-            {
-                ShowNotice(s);
-            };
+            //AutoTweet.OnAutoTweetRespond += (s) =>
+            //{
+            //    ShowNotice(s);
+            //};
 
             noticePanel = new NoticePanel();
             this.Controls.Add(noticePanel);
@@ -326,11 +326,26 @@ namespace TradeTweet
 
             private void RefreshSettings()
             {
-                foreach (TreeNode node in Nodes)
+                foreach (TreeNode rootNode in Nodes)
                 {
-                    EventOperation n = node.Tag as EventOperation;
-                    
+                    EventType type = (EventType) rootNode.Tag;
 
+                    foreach (TreeNode node in rootNode.Nodes)
+                    {
+                        EventItem item = (EventItem) node.Tag;
+                        Settings.Set[type].Items[item].Checked = node.Checked;
+                    }
+
+                    bool rootChecked = rootNode.StateImageIndex > 0;
+
+                    // relink to events if we have changes in root nodes & autoTweet mode is on
+                    if (Settings.Set[type].Active != rootChecked )
+                    {
+                        Settings.Set[type].Active = rootChecked;
+
+                        if (Settings.autoTweet)
+                            AutoTweet.LinkEvents();
+                    }
                 }
             }
 

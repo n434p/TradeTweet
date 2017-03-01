@@ -115,16 +115,16 @@ namespace TradeTweet
 
                 ShowNotice((statusPanel.AutoTweet) ? "AutoTweet Enabled!" : "AutoTweet Disabled!");
 
-                if (statusPanel.AutoTweet)
-                {
-                    AutoTweet.OnAutoTweetSend += ShowNotice;
-                    AutoTweet.OnAutoTweetRespond += ShowNotice;
-                }
-                else
-                {
-                    AutoTweet.OnAutoTweetSend -= ShowNotice;
-                    AutoTweet.OnAutoTweetRespond -= ShowNotice;
-                }
+                //if (statusPanel.AutoTweet)
+                //{
+                //    AutoTweet.OnAutoTweetSend += ShowNotice;
+                //    AutoTweet.OnAutoTweetRespond += ShowNotice;
+                //}
+                //else
+                //{
+                //    AutoTweet.OnAutoTweetSend -= ShowNotice;
+                //    AutoTweet.OnAutoTweetRespond -= ShowNotice;
+                //}
             };
 
             settingsPanel.OnApply = () => 

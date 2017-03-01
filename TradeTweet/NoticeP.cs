@@ -64,18 +64,19 @@ namespace TradeTweet
             ParentWindow.Invoke((MethodInvoker)delegate
             {
                 ParentWindow.Controls.Add(notice);
+                ParentWindow.Controls.SetChildIndex(notice, 0);
             });
 
             await Task.Delay(miliseconds).ContinueWith((t) =>
             {
                 if (callback != null)
                     callback.Invoke();
-            });
 
-            ParentWindow.Invoke((MethodInvoker)delegate
-            {
-                if(miliseconds != 0)
-                    ParentWindow.Controls.Remove(notice);
+                ParentWindow.Invoke((MethodInvoker)delegate
+                {
+                    if (miliseconds != 0)
+                        ParentWindow.Controls.Remove(notice);
+                });
             });
         }
     }

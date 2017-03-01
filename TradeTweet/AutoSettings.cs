@@ -60,8 +60,7 @@ namespace TradeTweet
                     {
                         Active = false,
                         Items = new Dictionary<EventItem, EventOperationItem>(),
-                        Name = rootNodeName,
-                        Type = item
+                        Name = rootNodeName
                     };
 
                     Settings.Set[item] = evenOperation;
@@ -118,12 +117,13 @@ namespace TradeTweet
 
                     TreeNode node = new TreeNode(Settings.Set[item].Items[item2].Name);
                     node.Checked = Settings.Set[item].Items[item2].Checked;
+                    node.Tag = item2;
 
                     list.Add(node);
                 }
 
                 TreeNode rootNode = new TreeNode(Settings.Set[item].Name, list.ToArray());
-                rootNode.Tag = Settings.Set[item];
+                rootNode.Tag = item;
 
                 settingsTree.Nodes.Add(rootNode);
             }
