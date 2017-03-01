@@ -24,6 +24,197 @@ namespace TradeTweet
             int nHeightEllipse // width of ellipse
         );
 
+        void DrawTree()
+        {
+            settingsTree.Nodes.Clear();
+
+            foreach (EventType item in Enum.GetValues(typeof(EventType)))
+            {
+                if (item == EventType.Empty) continue;
+
+                var list = new List<TreeNode>();
+
+                if (!Settings.Set.ContainsKey(item))
+                {
+                    string rootNodeName = "";
+
+                    switch (item)
+                    {
+                        case EventType.OrderPlaced:
+                            rootNodeName = "Order placed";
+                            break;
+                        case EventType.OrderCancelled:
+                            rootNodeName = "Order cancelled";
+                            break;
+                        case EventType.PositionOpened:
+                            rootNodeName = "Position opened";
+                            break;
+                        case EventType.PositionClosed:
+                            rootNodeName = "Position closed";
+                            break;
+                        default:
+                            break;
+                    }
+
+                    var evenOperation = new EventOperation()
+                    {
+                        Active = false,
+                        Items = new Dictionary<EventItem, EventOperationItem>(),
+                        Name = rootNodeName,
+                        Type = item
+                    };
+
+                    Settings.Set[item] = evenOperation;
+                }
+
+                foreach (EventItem item2 in Enum.GetValues(typeof(EventItem)))
+                {
+                    if (!Settings.Set[item].Items.ContainsKey(item2))
+                    {
+                        string nodeName = "";
+
+                        switch (item2)
+                        {
+                            case EventItem.side:
+                                nodeName = "Side";
+                                break;
+                            case EventItem.qty:
+                                nodeName = "Quantity";
+                                break;
+                            case EventItem.symbol:
+                                nodeName = "Symbol";
+                                break;
+                            case EventItem.type:
+                                nodeName = "Order type";
+                                break;
+                            case EventItem.price:
+                                nodeName = "Open price";
+                                break;
+                            case EventItem.sl:
+                                nodeName = "Stop loss";
+                                break;
+                            case EventItem.tp:
+                                nodeName = "Take profit";
+                                break;
+                            case EventItem.id:
+                                nodeName = "Order Id";
+                                break;
+                            default:
+                                break;
+                        }
+
+                        // skip order type for Position's cases
+                        if ((item == EventType.PositionOpened || item == EventType.PositionClosed) && (item2 == EventItem.type))
+                            continue;
+
+                        EventOperationItem eventItem = new EventOperationItem()
+                        {
+                            Checked = false,
+                            Name = nodeName
+                        };
+
+                        Settings.Set[item].Items[item2] = eventItem;
+                    }
+
+                    TreeNode node = new TreeNode(Settings.Set[item].Items[item2].Name);
+                    node.Checked = Settings.Set[item].Items[item2].Checked;
+
+                    list.Add(node);
+                }
+
+                settingsTree.Nodes.Add(new TreeNode(Settings.Set[item].Name, list.ToArray()));
+            }
+        }
+
+        //private void GenerateNewTree()
+        //{
+        //    foreach (EventType item in Enum.GetValues(typeof(EventType)))
+        //    {
+        //        string rootNodeName = "";
+
+        //        switch (item)
+        //        {
+        //            case EventType.OrderPlaced:
+        //                rootNodeName = "Order placed";
+        //                break;
+        //            case EventType.OrderCancelled:
+        //                rootNodeName = "Order cancelled";
+        //                break;
+        //            case EventType.PositionOpened:
+        //                rootNodeName = "Position opened";
+        //                break;
+        //            case EventType.PositionClosed:
+        //                rootNodeName = "Position closed";
+        //                break;
+        //            default:
+        //                break;
+        //        }
+
+        //        var evenOperation = new EventOperation()
+        //        {
+        //            Active = false,
+        //            Items = new Dictionary<EventItem, EventOperationItem>(),
+        //            Name = rootNodeName,
+        //            Type = item
+        //        };
+
+        //        var list = new List<TreeNode>();
+
+        //        foreach (EventItem item2 in Enum.GetValues(typeof(EventItem)))
+        //        {
+        //            string nodeName = "";
+
+        //            switch (item2)
+        //            {
+        //                case EventItem.side:
+        //                    nodeName = "Side";
+        //                    break;
+        //                case EventItem.qty:
+        //                    nodeName = "Quantity";
+        //                    break;
+        //                case EventItem.symbol:
+        //                    nodeName = "Symbol";
+        //                    break;
+        //                case EventItem.type:
+        //                    nodeName = "Order type";
+        //                    break;
+        //                case EventItem.price:
+        //                    nodeName = "Open price";
+        //                    break;
+        //                case EventItem.sl:
+        //                    nodeName = "Stop loss";
+        //                    break;
+        //                case EventItem.tp:
+        //                    nodeName = "Take profit";
+        //                    break;
+        //                case EventItem.id:
+        //                    nodeName = "Order Id";
+        //                    break;
+        //                default:
+        //                    break;
+        //            }
+
+        //            // skip order type for Position's cases
+        //            if ((item == EventType.PositionOpened || item == EventType.PositionClosed) && (item2 == EventItem.type))
+        //                continue;
+
+        //            TreeNode node = new TreeNode(nodeName);
+        //            node.Checked = false;
+
+        //            EventOperationItem eventItem = new EventOperationItem()
+        //            {
+        //                Checked = false,
+        //                Name = nodeName
+        //            };
+
+        //            evenOperation.Items[item2] = eventItem;
+        //            list.Add(node);
+        //        }
+
+        //        Settings.Set[item] = evenOperation;
+        //        settingsTree.Nodes.Add(new TreeNode(Settings.Set[item].Name, list.ToArray()));
+        //    }
+        //}
 
         public AutoSettings()
         {
@@ -31,50 +222,7 @@ namespace TradeTweet
 
             Region = System.Drawing.Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 1, 5));
 
-            TreeNode orderPlaced_side = new TreeNode("Side");
-            TreeNode orderPlaced_qty = new TreeNode("Quantity");
-            TreeNode orderPlaced_symbol = new TreeNode("Symbol");
-            TreeNode orderPlaced_type = new TreeNode("Order type");
-            TreeNode orderPlaced_price = new TreeNode("Open price");
-            TreeNode orderPlaced_sl = new TreeNode("Stop loss");
-            TreeNode orderPlaced_tp = new TreeNode("Take profit");
-            TreeNode orderPlaced_id = new TreeNode("Order ID");
-
-            TreeNode orderPlaced = new TreeNode("Order placed", new TreeNode[] 
-            {
-                orderPlaced_side,
-                orderPlaced_qty,
-                orderPlaced_symbol,
-                orderPlaced_type,
-                orderPlaced_price,
-                orderPlaced_sl,
-                orderPlaced_tp,
-                orderPlaced_id
-            });
-
-            settingsTree.Nodes.Add(orderPlaced);
-
-            TreeNode positionOpenned_side = new TreeNode("Side");
-            TreeNode positionOpenned_qty = new TreeNode("Quantity");
-            TreeNode positionOpenned_symbol = new TreeNode("Symbol");
-            TreeNode positionOpenned_price = new TreeNode("Open price");
-            TreeNode positionOpenned_sl = new TreeNode("SL(Forex)");
-            TreeNode positionOpenned_tp = new TreeNode("TP(Forex)");
-            TreeNode positionOpenned_id = new TreeNode("Order ID");
-
-            TreeNode positionOpenned = new TreeNode("Position openned", new TreeNode[]
-            {
-                positionOpenned_side,
-                positionOpenned_qty,
-                positionOpenned_symbol,
-                positionOpenned_price,
-                positionOpenned_sl,
-                positionOpenned_tp,
-                positionOpenned_id
-            });
-
-            settingsTree.Nodes.Add(positionOpenned);
-
+            DrawTree();
         }
 
         protected override void OnPaint(PaintEventArgs e)

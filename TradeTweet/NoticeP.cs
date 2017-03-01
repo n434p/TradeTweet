@@ -46,16 +46,16 @@ namespace TradeTweet
                 case EventType.Empty:
                     notice.sidePic.Image = null;
                     break;
-                case EventType.OrderOpen:
+                case EventType.OrderPlaced:
                     notice.sidePic.Image = Properties.Resources.TradeTweet_16;
                     break;
-                case EventType.OrderClose:
+                case EventType.OrderCancelled:
                     notice.sidePic.Image = Properties.Resources.TradeTweet_17;
                     break;
-                case EventType.PositionClose:
+                case EventType.PositionClosed:
                     notice.sidePic.Image = Properties.Resources.TradeTweet_18;
                     break;
-                case EventType.PositionOpen:
+                case EventType.PositionOpened:
                     notice.sidePic.Image = Properties.Resources.TradeTweet_19;
                     break;
             }

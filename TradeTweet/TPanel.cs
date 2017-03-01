@@ -124,7 +124,7 @@ namespace TradeTweet
         {
             if (settingsPanel != null && settingsPanel.Visible)
             {
-                settingsPanel.Location = new Point(headerPanel.Left + autoTweetBtn.Left + 3, headerPanel.Bottom - 3);
+                settingsPanel.Location = new Point(headerPanel.Left + autoTweetBtn.Left + 3, headerPanel.Bottom - 7);
             }
         }
 

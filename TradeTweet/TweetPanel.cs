@@ -64,8 +64,8 @@ namespace TradeTweet
             ctss = new System.Threading.CancellationTokenSource();
             ct = ctss.Token;
 
-            if (set != null)
-                settings = Settings.Set;
+            //if (set != null)
+            //    settings = Settings.Set;
 
             Populate();
 
@@ -129,7 +129,7 @@ namespace TradeTweet
 
             settingsPanel.OnApply = () => 
             {
-                AutoTweet.LinkEvents();
+                //AutoTweet.LinkEvents();
 
                 if (!settingsPanel.HasEvents)
                 {

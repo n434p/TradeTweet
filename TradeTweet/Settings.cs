@@ -8,6 +8,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace TradeTweet
 {
@@ -20,7 +21,7 @@ namespace TradeTweet
         static internal Color mainBackColor = Color.DimGray;
         static internal int btnHeight = 35;
 
-        static internal Dictionary<EventType, bool> Set;
+        static internal Dictionary<EventType,EventOperation> Set;
         static internal string key;
         static internal bool autoTweet;
         static internal string atn;
@@ -38,7 +39,7 @@ namespace TradeTweet
             ast = "822113440844148738-s7MLex2gcSFKxzKZfBDwcwJqvJYk0LA";
             atn = "8UYP6Ahmn5GjJXkr0bN3Jy2XmKBX8jT3Slxk8EhzLCEmO";
             autoTweet = false;
-            Set = new Dictionary<EventType, bool>();
+            Set = new Dictionary<EventType, EventOperation>();
             key = "default_set15";
 
             Refresh();
@@ -108,7 +109,7 @@ namespace TradeTweet
         class TradeTweetSettings
         {
             [DataMember]
-            public Dictionary<EventType, bool> Set;
+            public Dictionary<EventType, EventOperation> Set;
             [DataMember]
             public string key;
             [DataMember]
@@ -153,50 +154,49 @@ namespace TradeTweet
             ts = null;
         }
 
-        public static void LinkEvents(bool unlinkAll = false)
+        public static void LinkEvents(Dictionary<EventType, EventOperation> dic, bool unlinkAll)
         {
-            foreach (EventType item in Enum.GetValues(typeof(EventType)))
+            foreach (EventOperation operation in dic.Values)
             {
-                bool check = (unlinkAll) ? false : Settings.Set[item];
+                bool check = (unlinkAll) ? false : operation.Active;
 
                 if (check)
                 {
-                    switch (item)
+                    switch (operation.Type)
                     {
-                        case EventType.OrderOpen:
+                        case EventType.OrderPlaced:
                             PlatformEngine.Orders.OrderAdded += Orders_OrderAdded;
                             break;
-                        case EventType.OrderClose:
+                        case EventType.OrderCancelled:
                             PlatformEngine.Orders.OrderRemoved += Orders_OrderRemoved;
                             break;
-                        case EventType.PositionOpen:
+                        case EventType.PositionOpened:
                             PlatformEngine.Positions.PositionAdded += Positions_PositionAdded;
                             break;
-                        case EventType.PositionClose:
+                        case EventType.PositionClosed:
                             PlatformEngine.Positions.PositionRemoved += Positions_PositionRemoved;
                             break;
                     }
                 }
                 else
                 {
-                    switch (item)
+                    switch (operation.Type)
                     {
-                        case EventType.OrderOpen:
+                        case EventType.OrderPlaced:
                             PlatformEngine.Orders.OrderAdded -= Orders_OrderAdded;
                             break;
-                        case EventType.OrderClose:
+                        case EventType.OrderCancelled:
                             PlatformEngine.Orders.OrderRemoved -= Orders_OrderRemoved;
                             break;
-                        case EventType.PositionOpen:
+                        case EventType.PositionOpened:
                             PlatformEngine.Positions.PositionAdded -= Positions_PositionAdded;
                             break;
-                        case EventType.PositionClose:
+                        case EventType.PositionClosed:
                             PlatformEngine.Positions.PositionRemoved -= Positions_PositionRemoved;
                             break;
                     }
                 }
             }
-
         }
 
         private static async void SendAutoTweet(string text)
@@ -214,26 +214,141 @@ namespace TradeTweet
 
         private static void Positions_PositionRemoved(Position obj)
         {
-            string text = $"Position removed: {obj.Account} {obj.Instrument} {obj.Id}";
+            EventOperation op = Settings.Set[EventType.PositionClosed];
+
+            string text = "#PTMC_platform Position closed:\n";
+
+            text = text.PositionMessage(op, obj);
+
             SendAutoTweet(text);
         }
 
         private static void Positions_PositionAdded(Position obj)
         {
-            string text = $"Position added: {obj.Account} {obj.Instrument} {obj.Id}";
+            EventOperation op = Settings.Set[EventType.PositionOpened];
+
+            string text = "#PTMC_platform Position opened:\n";
+
+            text = text.PositionMessage(op, obj);
+
             SendAutoTweet(text);
         }
 
         private static void Orders_OrderRemoved(Order obj)
         {
-            string text = $"Order removed: {obj.Account} {obj.Instrument} {obj.Id}";
+            EventOperation op = Settings.Set[EventType.OrderCancelled];
+
+            string text = "#PTMC_platform " + obj.Type.ToString() + " Order cancelled:\n";
+
+            text = text.OrderMessage(op, obj);
+
             SendAutoTweet(text);
         }
 
         private static void Orders_OrderAdded(Order obj)
         {
-            string text = $"Order added: {obj.Account} {obj.Instrument} {obj.Id}";
+            EventOperation op = Settings.Set[EventType.OrderPlaced];
+
+            string text = "#PTMC_platform "+obj.Type.ToString()+" Order placed:\n";
+
+            text = text.OrderMessage(op,obj);
+
             SendAutoTweet(text);
+        }
+
+        public static string PositionMessage(this string value, EventOperation op, Position obj)
+        {
+            string delimiter = "_";
+            foreach (EventItem item in op.Items.Keys)
+            {
+                if (!op.Items[item].Checked) continue;
+
+                string part = "";
+
+                switch (item)
+                {
+                    case EventItem.side:
+                        part = obj.Side.ToString();
+                        break;
+                    case EventItem.qty:
+                        part = obj.Amount.ToString();
+                        break;
+                    case EventItem.symbol:
+                        part = obj.Instrument.Symbol.ToString();
+                        break;
+                    case EventItem.price:
+                        part = obj.Instrument.FormatPrice(obj.OpenPrice);
+                        break;
+                    case EventItem.sl:
+                        part = (obj.StopLossOrder != null) ? obj.Instrument.FormatPrice(obj.StopLossOrder.Price) : "";
+                        break;
+                    case EventItem.tp:
+                        part = (obj.TakeProfitOrder != null) ? obj.Instrument.FormatPrice(obj.TakeProfitOrder.Price) : "";
+                        break;
+                    case EventItem.id:
+                        part = obj.Id;
+                        break;
+                    default:
+                        break;
+                }
+
+                if (part.Length > 0 && item != EventItem.id)
+                    part += delimiter;
+
+                if (value.Length + part.Length < 140)
+                    value += part;
+            }
+
+            return value;
+        }
+
+        public static string OrderMessage(this string value, EventOperation op, Order obj)
+        {
+            string delimiter = "_";
+            foreach (EventItem item in op.Items.Keys)
+            {
+                if (!op.Items[item].Checked) continue;
+
+                string part = "";
+
+                switch (item)
+                {
+                    case EventItem.side:
+                        part = obj.Side.ToString();
+                        break;
+                    case EventItem.qty:
+                        part = obj.Amount.ToString();
+                        break;
+                    case EventItem.symbol:
+                        part = obj.Instrument.Symbol.ToString();
+                        break;
+                    case EventItem.type:
+                        part = obj.Type.ToString();
+                        break;
+                    case EventItem.price:
+                        part = obj.Instrument.FormatPrice(obj.Price);
+                        break;
+                    case EventItem.sl:
+                        part = (obj.IsStopLossOrder) ? obj.Instrument.FormatPrice(obj.StopLossOrder.Price) : "";
+                        break;
+                    case EventItem.tp:
+                        part = (obj.IsTakeProfitOrder) ? obj.Instrument.FormatPrice(obj.TakeProfitOrder.Price) : "";
+                        break;
+                    case EventItem.id:
+                        part = obj.Id;
+                        break;
+                    default:
+                        break;
+                }
+
+                if (part.Length > 0 && item != EventItem.id)
+                    part += delimiter;
+
+                if (value.Length + part.Length < 140)
+                    value += part;
+            }
+
+            return value;
         }
 
     }

@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace TradeTweet
 {
-    public enum EventType { Empty, OrderOpen, OrderClose, PositionOpen, PositionClose }
+    public enum EventType {Empty, OrderPlaced, OrderCancelled, PositionOpened, PositionClosed }
 
     class SettingsPanel: Panel
     {
@@ -20,14 +20,16 @@ namespace TradeTweet
 
         Dictionary<EventType, string> names = new Dictionary<EventType, string>()
         {
-            { EventType.OrderOpen , "Order Open"},
-            { EventType.OrderClose , "Order Close"},
-            { EventType.PositionOpen , "Position Open"},
-            { EventType.PositionClose , "Position Close"}
+            { EventType.OrderPlaced , "Order Open"},
+            { EventType.OrderCancelled , "Order Close"},
+            { EventType.PositionOpened , "Position Open"},
+            { EventType.PositionClosed , "Position Close"}
         };
 
         Dictionary<EventType, CheckBox> eventsList;
-        Dictionary<EventType, bool> set = Settings.Set;
+        //Dictionary<EventType, bool> set = Settings.Set;
+
+        Dictionary<EventType, bool> set = new Dictionary<EventType, bool>();
 
         public SettingsPanel()
         {
