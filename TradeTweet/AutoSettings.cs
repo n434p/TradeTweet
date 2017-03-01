@@ -122,9 +122,14 @@ namespace TradeTweet
                     list.Add(node);
                 }
 
-                settingsTree.Nodes.Add(new TreeNode(Settings.Set[item].Name, list.ToArray()));
+                TreeNode rootNode = new TreeNode(Settings.Set[item].Name, list.ToArray());
+                rootNode.Tag = Settings.Set[item];
+
+                settingsTree.Nodes.Add(rootNode);
             }
         }
+
+
 
         //private void GenerateNewTree()
         //{

@@ -299,7 +299,10 @@ namespace TradeTweet
             //if (OnAutoTweetToggle != null)
             //    OnAutoTweetToggle.Invoke(AutoTweetFlag);
 
-            noticePanel.ShowNotice((AutoTweetFlag) ? "AutoTweet Enabled!" : "AutoTweet Disabled!", 0, NoticeType.Info);
+            noticePanel.ShowNotice((AutoTweetFlag) ? "AutoTweet Enabled!" : "AutoTweet Disabled!", 1000, NoticeType.Info);
+
+            AutoTweet.LinkEvents(!AutoTweetFlag);
+
 
             //if (AutoTweetFlag)
             //{

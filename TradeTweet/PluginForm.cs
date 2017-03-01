@@ -319,7 +319,19 @@ namespace TradeTweet
                 // populate state up the tree, possibly resulting in parents with mixed state
                 UpdateParentState(e.Node.Parent);
 
+                RefreshSettings();
+
                 IgnoreClickAction--;
+            }
+
+            private void RefreshSettings()
+            {
+                foreach (TreeNode node in Nodes)
+                {
+                    EventOperation n = node.Tag as EventOperation;
+                    
+
+                }
             }
 
             // <summary>

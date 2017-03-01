@@ -154,9 +154,9 @@ namespace TradeTweet
             ts = null;
         }
 
-        public static void LinkEvents(Dictionary<EventType, EventOperation> dic, bool unlinkAll)
+        public static void LinkEvents(bool unlinkAll = false)
         {
-            foreach (EventOperation operation in dic.Values)
+            foreach (EventOperation operation in Settings.Set.Values)
             {
                 bool check = (unlinkAll) ? false : operation.Active;
 
