@@ -19,7 +19,6 @@ namespace TradeTweet
         AutoSettings settingsPanel;
         TwittwerService ts;
         PicturePanel picPanel;
-        NETSDK PlatformEngine;
         NoticeP noticePanel;
 
         System.Threading.CancellationTokenSource ctss;
@@ -109,6 +108,14 @@ namespace TradeTweet
 
             historyPanel.HorizontalScroll.Enabled = false;
             historyPanel.HorizontalScroll.Visible = false;
+
+            Settings.onSettingsChanged += () => 
+            {
+                AutoTweetFlag = Settings.autoTweet;
+            };
+
+            AutoTweet.OnAutoTweetSend += ShowInfoNotice;
+            AutoTweet.OnAutoTweetRespond += ResponseNotice;
         }
 
         protected override void OnResize(EventArgs e)
@@ -131,8 +138,6 @@ namespace TradeTweet
         public void TweetPanel(NETSDK platformEngine)
         {
             ts = AutoTweet.Run(platformEngine);
-
-            PlatformEngine = platformEngine;
     
             ctss = new System.Threading.CancellationTokenSource();
             ct = ctss.Token;
@@ -216,7 +221,7 @@ namespace TradeTweet
         {
             if (!resp.Failed)
             {
-                noticePanel.ShowNotice("Done!", 0, NoticeType.Success, type);
+                noticePanel.ShowNotice("Done!", 2000, NoticeType.Success, type);
             }
             else
             {
@@ -229,7 +234,7 @@ namespace TradeTweet
                 OnLogout?.Invoke();
         }
 
-        private async void MM()
+        private async void SendTweetAsync()
         {
             var rrr = await OnTweet();
 
@@ -256,7 +261,7 @@ namespace TradeTweet
 
         private void tweetBtn_Click(object sender, EventArgs e)
         {
-             MM();
+             SendTweetAsync();
         }
 
         private void tweetText_TextChanged(object sender, EventArgs e)
@@ -286,15 +291,15 @@ namespace TradeTweet
 
             AutoTweetFlag = !AutoTweetFlag;
 
-            //// Save settings
-            //if (OnAutoTweetToggle != null)
-            //    OnAutoTweetToggle.Invoke(AutoTweetFlag);
+            // Save settings
+            Settings.OnSettingsChange();
 
-            noticePanel.ShowNotice((AutoTweetFlag) ? "AutoTweet Enabled!" : "AutoTweet Disabled!", 1000, NoticeType.Info);
+            noticePanel.ShowNotice((Settings.autoTweet) ? "AutoTweet Enabled!" : "AutoTweet Disabled!", 1000, NoticeType.Info);
+        }
 
-            AutoTweet.LinkEvents(!AutoTweetFlag);
-
-            if (AutoTweetFlag)
+        void NoticeSubscribing()
+        {
+            if (Settings.autoTweet)
             {
                 AutoTweet.OnAutoTweetSend += ShowInfoNotice;
                 AutoTweet.OnAutoTweetRespond += ResponseNotice;

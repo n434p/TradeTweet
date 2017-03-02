@@ -206,7 +206,7 @@ namespace TradeTweet
                 //cts.CancelAfter(5000);
                 ct = cts.Token;
 
-                Settings.onLogInOut += () => StartPlugin();
+                Settings.onLogInOut += () => StartPlugin();        
 
                 StartPlugin(); // "822113440844148738-s7MLex2gcSFKxzKZfBDwcwJqvJYk0LA", "8UYP6Ahmn5GjJXkr0bN3Jy2XmKBX8jT3Slxk8EhzLCEmO");
             }
@@ -319,12 +319,10 @@ namespace TradeTweet
                 // populate state up the tree, possibly resulting in parents with mixed state
                 UpdateParentState(e.Node.Parent);
 
-                RefreshSettings();
-
                 IgnoreClickAction--;
             }
 
-            private void RefreshSettings()
+            internal void RefreshSettings()
             {
                 foreach (TreeNode rootNode in Nodes)
                 {
@@ -338,15 +336,16 @@ namespace TradeTweet
 
                     bool rootChecked = rootNode.StateImageIndex > 0;
 
-                    // relink to events if we have changes in root nodes & autoTweet mode is on
-                    if (Settings.Set[type].Active != rootChecked )
+                    if (rootChecked != Settings.Set[type].Active)
                     {
                         Settings.Set[type].Active = rootChecked;
 
-                        if (Settings.autoTweet)
-                            AutoTweet.LinkEvents();
+                        //if(Settings.autoTweet)
+                            AutoTweet.LinkEvent(type);
                     }
                 }
+
+                Settings.OnSettingsChange();
             }
 
             // <summary>
@@ -366,7 +365,7 @@ namespace TradeTweet
             // <summary>
             // Helper function to replace child state with that of the parent
             // </summary>
-            protected void UpdateChildState(System.Windows.Forms.TreeNodeCollection Nodes, int StateImageIndex, bool Checked, bool ChangeUninitialisedNodesOnly)
+            internal void UpdateChildState(System.Windows.Forms.TreeNodeCollection Nodes, int StateImageIndex, bool Checked, bool ChangeUninitialisedNodesOnly)
             {
                 foreach (System.Windows.Forms.TreeNode tnChild in Nodes)
                 {
@@ -386,7 +385,7 @@ namespace TradeTweet
             // <summary>
             // Helper function to notify parent it may need to use 'mixed' state
             // </summary>
-            protected void UpdateParentState(System.Windows.Forms.TreeNode tn)
+            internal void UpdateParentState(System.Windows.Forms.TreeNode tn)
             {
                 // Node needs to check all of it's children to see if any of them are ticked or mixed
                 if (tn == null)
@@ -498,6 +497,8 @@ namespace TradeTweet
                 // toggle the node's checked status.  This will then fire OnAfterCheck
                 System.Windows.Forms.TreeNode tn = e.Node;
                 tn.Checked = !tn.Checked;
+
+                RefreshSettings();
             }
         }
     }

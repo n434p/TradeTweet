@@ -24,13 +24,64 @@ namespace TradeTweet
             int nHeightEllipse // width of ellipse
         );
 
+        public AutoSettings()
+        {
+            InitializeComponent();
+
+            settingsTree.FullRowSelect = false;
+
+            Region = System.Drawing.Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 1, 5));
+
+            DrawTree();
+
+            Settings.onSettingsChanged += RefreshTree;
+        }
+
+        
+
+        internal void RefreshTree()
+        {
+            foreach (TreeNode rootNode in settingsTree.Nodes)
+            {
+                EventType type = (EventType)rootNode.Tag;
+
+                int count = 0;
+
+                foreach (TreeNode node in rootNode.Nodes)
+                {
+                    EventItem item = (EventItem)node.Tag;
+
+                    node.StateImageIndex = (Settings.Set[type].Items[item].Checked) ? 1: 0;
+
+                    if (Settings.Set[type].Items[item].Checked)
+                        count++;
+                }
+
+                if (count == rootNode.Nodes.Count)
+                    rootNode.StateImageIndex = 1;
+                else if ( count == 0)
+                    rootNode.StateImageIndex = 0;
+                else
+                    rootNode.StateImageIndex = 2;
+
+            }
+
+            
+        }
+
+
         void DrawTree()
         {
             settingsTree.Nodes.Clear();
 
+            settingsTree.SuspendLayout();
+
             foreach (EventType item in Enum.GetValues(typeof(EventType)))
             {
                 if (item == EventType.Empty) continue;
+
+                TreeNode rootNode = new TreeNode();
+                settingsTree.Nodes.Add(rootNode);
 
                 var list = new List<TreeNode>();
 
@@ -119,16 +170,18 @@ namespace TradeTweet
                     node.Checked = Settings.Set[item].Items[item2].Checked;
                     node.Tag = item2;
 
-                    list.Add(node);
+                    rootNode.Nodes.Add(node);
                 }
 
-                TreeNode rootNode = new TreeNode(Settings.Set[item].Name, list.ToArray());
+                rootNode.Name = Settings.Set[item].Name;
                 rootNode.Tag = item;
-
-                settingsTree.Nodes.Add(rootNode);
+                rootNode.Checked = Settings.Set[item].Active;
             }
-        }
 
+            settingsTree.ResumeLayout();
+
+            //RefreshTree();
+        }
 
 
         //private void GenerateNewTree()
@@ -220,21 +273,7 @@ namespace TradeTweet
         //        settingsTree.Nodes.Add(new TreeNode(Settings.Set[item].Name, list.ToArray()));
         //    }
         //}
-
-        public AutoSettings()
-        {
-            InitializeComponent();
-
-            Region = System.Drawing.Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 1, 5));
-
-            DrawTree();
-        }
-
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            base.OnPaint(e);
-        }
     }
 
-    
+
 }

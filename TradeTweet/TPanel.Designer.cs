@@ -417,7 +417,7 @@ namespace TradeTweet
             this.historyPanel.AutoSize = true;
             this.historyPanel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("historyPanel.BackgroundImage")));
             this.historyPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.historyPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.historyPanel.FlowDirection = System.Windows.Forms.FlowDirection.BottomUp;
             this.historyPanel.Location = new System.Drawing.Point(32, 48);
             this.historyPanel.Margin = new System.Windows.Forms.Padding(0);
             this.historyPanel.Name = "historyPanel";

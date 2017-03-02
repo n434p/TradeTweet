@@ -47,37 +47,40 @@ namespace TradeTweet
                     notice.sidePic.Image = null;
                     break;
                 case EventType.OrderPlaced:
-                    notice.sidePic.Image = Properties.Resources.TradeTweet_16;
+                    notice.sidePic.Image = Properties.Resources.TradeTweet_19;
                     break;
                 case EventType.OrderCancelled:
-                    notice.sidePic.Image = Properties.Resources.TradeTweet_17;
-                    break;
-                case EventType.PositionClosed:
                     notice.sidePic.Image = Properties.Resources.TradeTweet_18;
                     break;
+                case EventType.PositionClosed:
+                    notice.sidePic.Image = Properties.Resources.TradeTweet_16;
+                    break;
                 case EventType.PositionOpened:
-                    notice.sidePic.Image = Properties.Resources.TradeTweet_19;
+                    notice.sidePic.Image = Properties.Resources.TradeTweet_17;
                     break;
             }
 
+            await Task.Run(
+                    async () =>
+                    {
+                        ParentWindow.Invoke((MethodInvoker)delegate
+                        {
+                            ParentWindow.Controls.Add(notice);
+                            ParentWindow.Controls.SetChildIndex(notice, 0);
+                        });
 
-            ParentWindow.Invoke((MethodInvoker)delegate
-            {
-                ParentWindow.Controls.Add(notice);
-                ParentWindow.Controls.SetChildIndex(notice, 0);
-            });
+                        await Task.Delay(miliseconds).ContinueWith((task) =>
+                        {
+                            if (callback != null)
+                                callback.Invoke();
+                        });
 
-            await Task.Delay(miliseconds).ContinueWith((t) =>
-            {
-                if (callback != null)
-                    callback.Invoke();
-
-                ParentWindow.Invoke((MethodInvoker)delegate
-                {
-                    if (miliseconds != 0)
-                        ParentWindow.Controls.Remove(notice);
-                });
-            });
+                        ParentWindow.Invoke((MethodInvoker)delegate
+                        {
+                            if (miliseconds != 0)
+                                ParentWindow.Controls.Remove(notice);
+                        });
+                    });
         }
     }
 }
