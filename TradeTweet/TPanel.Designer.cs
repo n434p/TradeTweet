@@ -57,7 +57,7 @@ namespace TradeTweet
             this.picPanelBase = new System.Windows.Forms.Panel();
             this.label15 = new System.Windows.Forms.Label();
             this.picPanelContainer = new System.Windows.Forms.Label();
-            this.historyPanel = new TradeTweet.CustomPanel();
+            this.historyPanel = new CustomPanel();
             this.gridPanel.SuspendLayout();
             this.headerPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.avatar)).BeginInit();
@@ -478,7 +478,7 @@ namespace TradeTweet
         private System.Windows.Forms.Panel separatorLine;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label2;
-        private TradeTweet.CustomPanel historyPanel;
+        private CustomPanel historyPanel;
     }
 
 

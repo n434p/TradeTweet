@@ -1,10 +1,6 @@
-﻿using PTLRuntime.NETScript.Application;
-using System;
-using System.Linq;
+﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Collections.Generic;
-using TradeTweet.Properties;
 
 namespace TradeTweet
 {
@@ -16,24 +12,9 @@ namespace TradeTweet
         const int CARD_ZIZE = 64;
         const int MARGIN = 7;
 
-        public Action OnMaxPics = null;
-
         public void Clear()
         {
             this.Controls.Clear();
-        }
-
-        public List<Image> GetImages()
-        {
-            List<Image> list = new List<Image>();
-
-            foreach (Control item in this.Controls)
-            {
-                if (item.BackgroundImage != null)
-                    list.Add(item.BackgroundImage);
-            }
-
-            return list;
         }
 
         public PicturePanel()

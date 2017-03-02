@@ -37,11 +37,11 @@ namespace TradeTweet
 
         public static void ClearSettings()
         {
-            ast = "822113440844148738-s7MLex2gcSFKxzKZfBDwcwJqvJYk0LA";
-            atn = "8UYP6Ahmn5GjJXkr0bN3Jy2XmKBX8jT3Slxk8EhzLCEmO";
+            ast = ""; //822113440844148738-s7MLex2gcSFKxzKZfBDwcwJqvJYk0LA";
+            atn = ""; //8UYP6Ahmn5GjJXkr0bN3Jy2XmKBX8jT3Slxk8EhzLCEmO";
             autoTweet = false;
             Set = new Dictionary<EventType, EventOperation>();
-            key = "default_set00";
+            key = "default_set05";
 
             Refresh();
         }
@@ -151,7 +151,12 @@ namespace TradeTweet
             PlatformEngine = engine;
 
             ts = new TwittwerService(Settings.ast, Settings.atn);
-         //   LinkEvents();
+
+            PlatformEngine.Orders.OrderAdded += Orders_OrderAdded;
+            PlatformEngine.Orders.OrderRemoved += Orders_OrderRemoved;
+            PlatformEngine.Positions.PositionAdded += Positions_PositionAdded;
+            PlatformEngine.Positions.PositionRemoved += Positions_PositionRemoved;
+
             return ts;
         }
 
@@ -208,48 +213,6 @@ namespace TradeTweet
             }
         }
 
-        public static void LinkEvent(EventType type)
-        {
-                if (Settings.Set[type].Active)
-                {
-                    switch (type)
-                    {
-                        case EventType.OrderPlaced:
-                            PlatformEngine.Orders.OrderAdded += Orders_OrderAdded;
-                            break;
-                        case EventType.OrderCancelled:
-                            PlatformEngine.Orders.OrderRemoved += Orders_OrderRemoved;
-                            break;
-                        case EventType.PositionOpened:
-                            PlatformEngine.Positions.PositionAdded += Positions_PositionAdded;
-                            break;
-                        case EventType.PositionClosed:
-                            PlatformEngine.Positions.PositionRemoved += Positions_PositionRemoved;
-                            break;
-                    }
-                }
-                else
-                {
-                    switch (type)
-                    {
-                        case EventType.OrderPlaced:
-                            PlatformEngine.Orders.OrderAdded -= Orders_OrderAdded;
-                            break;
-                        case EventType.OrderCancelled:
-                            PlatformEngine.Orders.OrderRemoved -= Orders_OrderRemoved;
-                            break;
-                        case EventType.PositionOpened:
-                            PlatformEngine.Positions.PositionAdded -= Positions_PositionAdded;
-                            break;
-                        case EventType.PositionClosed:
-                            PlatformEngine.Positions.PositionRemoved -= Positions_PositionRemoved;
-                            break;
-                    }
-                }
-            
-        }
-
-
         private static async void SendAutoTweet(string text, EventType type)
         {
             if (ts == null || !ts.Connected)
@@ -264,7 +227,7 @@ namespace TradeTweet
 
         private static void Positions_PositionRemoved(Position obj)
         {
-            if (!Settings.Set[EventType.PositionClosed].Active) return;
+            if (!Settings.autoTweet && !Settings.Set[EventType.PositionClosed].Active) return;
 
             string text = "#PTMC_platform\nPosition closed:\n";
 
@@ -275,7 +238,7 @@ namespace TradeTweet
 
         private static void Positions_PositionAdded(Position obj)
         {
-            if (!Settings.Set[EventType.PositionOpened].Active) return;
+            if (!Settings.autoTweet && !Settings.Set[EventType.PositionOpened].Active) return;
 
             string text = "#PTMC_platform\nPosition opened:\n";
 
@@ -286,7 +249,7 @@ namespace TradeTweet
 
         private static void Orders_OrderRemoved(Order obj)
         {
-            if (!Settings.Set[EventType.OrderCancelled].Active) return;
+            if (!Settings.autoTweet && !Settings.Set[EventType.OrderCancelled].Active) return;
 
             string text = "#PTMC_platform\n" + obj.Type.ToString() + " Order cancelled:\n";
 
@@ -298,7 +261,7 @@ namespace TradeTweet
         private static void Orders_OrderAdded(Order obj)
         {
             // skip order's establishing statuses - take only new
-            if (obj.Status != OrderStatus.New) return;
+            if (!Settings.autoTweet && obj.Status != OrderStatus.New && !Settings.Set[EventType.OrderCancelled].Active) return;
 
             string text = "#PTMC_platform\n" + obj.Type.ToString()+" Order placed:\n";
 
@@ -379,22 +342,21 @@ namespace TradeTweet
                         part = obj.Instrument.FormatPrice(obj.Price);
                         break;
                     case EventItem.sl:
-                        part = (obj.IsStopLossOrder) ? obj.Instrument.FormatPrice(obj.StopLossOrder.Price) : "";
+                        part = (obj.StopLossOrder != null) ? ("SL@" + obj.Instrument.FormatPrice(obj.StopLossOrder.Price)) : "";
                         break;
                     case EventItem.tp:
-                        part = (obj.IsTakeProfitOrder) ? obj.Instrument.FormatPrice(obj.TakeProfitOrder.Price) : "";
+                        part = (obj.TakeProfitOrder != null) ? ("TP@" + obj.Instrument.FormatPrice(obj.TakeProfitOrder.Price)) : "";
                         break;
                     case EventItem.id:
-                        part = obj.Id;
+                        part = "#" + obj.Id;
                         break;
                     default:
                         break;
                 }
 
-                if (part.Length > 0 && item != EventItem.id)
-                    part += delimiter;
+                part = string.Join(delimiter, part);
 
-                if (value.Length + part.Length < 140)
+                if (value.Length + part.Length <= 140)
                     value += part;
             }
 

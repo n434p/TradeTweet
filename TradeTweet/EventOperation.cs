@@ -3,6 +3,8 @@ using System.Runtime.Serialization;
 
 namespace TradeTweet
 {
+    enum EventType { Empty, OrderPlaced, OrderCancelled, PositionOpened, PositionClosed }
+
     [DataContract]
     enum EventItem
     {

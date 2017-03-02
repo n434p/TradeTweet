@@ -27,10 +27,6 @@ namespace TradeTweet
         public string Status { get { return tweetText.Text; } }
 
         public Action OnLogout = null;
-        public Action OnSettingsApplied = null;
-        public Action<bool> OnAutoTweetToggle = null;
-        public Action<string> OnAutoTweetAction = null;
-        public Action<string> OnNewNotice = null;
 
         const int MAX_TWEET_LENGTH = 140;
         const string ENTER_TWEET = "Type here...";
@@ -38,8 +34,8 @@ namespace TradeTweet
         const int statusPanelHeight = 40;
         const int CARD_ZIZE = 64;
         const int MARGIN = 5;
+        const int MAX_CARDS = 4;
 
-        // **************** Status P
 
         public bool AutoTweetFlag
         {
@@ -64,16 +60,6 @@ namespace TradeTweet
             }
         }
         bool so = false;
-
-        //
-
-        //***************** Picture P
-
-        const int MAX_CARDS = 4;
-
-        public Action OnMaxPics = null;
-
-        //
 
         public TPanel()
         {
@@ -113,6 +99,8 @@ namespace TradeTweet
             {
                 AutoTweetFlag = Settings.autoTweet;
             };
+
+            AutoTweetFlag = Settings.autoTweet;
 
             AutoTweet.OnAutoTweetSend += ShowInfoNotice;
             AutoTweet.OnAutoTweetRespond += ResponseNotice;
@@ -536,6 +524,24 @@ namespace TradeTweet
         private void addImageBtn_MouseLeave(object sender, EventArgs e)
         {
             addImageBtn.Image = Properties.Resources.TradeTweet_05;
+        }
+
+        internal class CustomPanel : FlowLayoutPanel
+        {
+            public CustomPanel()
+            {
+                this.DoubleBuffered = true;
+
+                this.AutoScroll = true;
+                this.AutoSize = true;
+                this.BackgroundImage = global::TradeTweet.Properties.Resources.factura;
+                this.Dock = System.Windows.Forms.DockStyle.Fill;
+                this.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+                this.Location = new System.Drawing.Point(32, 48);
+                this.Margin = new System.Windows.Forms.Padding(0);
+                this.Size = new System.Drawing.Size(400, 98);
+                this.WrapContents = false;
+            }
         }
 
     }

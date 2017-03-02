@@ -31,7 +31,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.settingsTree = new TradeTweet.TriStateTreeView();
+            this.settingsTree = new TriStateTreeView();
             this.SuspendLayout();
             // 
             // settingsTree
@@ -46,7 +46,6 @@
             this.settingsTree.Name = "settingsTree";
             this.settingsTree.Size = new System.Drawing.Size(164, 162);
             this.settingsTree.TabIndex = 0;
-            this.settingsTree.TriStateStyleProperty = TradeTweet.TriStateTreeView.TriStateStyles.Standard;
             // 
             // AutoSettings
             // 
@@ -67,6 +66,6 @@
 
         #endregion
 
-        private TradeTweet.TriStateTreeView settingsTree;
+        private TriStateTreeView settingsTree;
     }
 }
