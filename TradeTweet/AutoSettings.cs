@@ -1,11 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 
@@ -29,7 +23,7 @@ namespace TradeTweet
             InitializeComponent();
 
             settingsTree.FullRowSelect = false;
-            settingsTree.CheckBoxes = true;
+            settingsTree.CheckBoxes = false;
 
             Region = System.Drawing.Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 1, 5));
 
@@ -38,10 +32,11 @@ namespace TradeTweet
             Settings.onSettingsChanged += RefreshTree;
         }
 
-        
-
         internal void RefreshTree()
         {
+            settingsTree.SuspendLayout();
+            settingsTree.IgnoreClickAction++;
+
             foreach (TreeNode rootNode in settingsTree.Nodes)
             {
                 EventType type = (EventType)rootNode.Tag;
@@ -52,30 +47,31 @@ namespace TradeTweet
                 {
                     EventItem item = (EventItem)node.Tag;
 
-                    node.StateImageIndex = (Settings.Set[type].Items[item].Checked) ? 1: 0;
+                    node.Checked = Settings.Set[type].Items[item].Checked;
+                    node.StateImageIndex = (node.Checked) ? 1: 0;
 
                     if (Settings.Set[type].Items[item].Checked)
                         count++;
                 }
 
+                rootNode.Checked = count > 0;
+
                 if (count == rootNode.Nodes.Count)
                     rootNode.StateImageIndex = 1;
-                else if ( count == 0)
+                else if (count == 0)
                     rootNode.StateImageIndex = 0;
                 else
                     rootNode.StateImageIndex = 2;
 
             }
+            settingsTree.IgnoreClickAction--;
+            settingsTree.ResumeLayout();
 
-            
         }
-
 
         void DrawTree()
         {
             settingsTree.Nodes.Clear();
-
-           // settingsTree.IgnoreClickAction++;
 
             foreach (EventType item in Enum.GetValues(typeof(EventType)))
             {
@@ -83,28 +79,28 @@ namespace TradeTweet
 
                 var list = new List<TreeNode>();
 
+                string rootNodeName = "";
+
+                switch (item)
+                {
+                    case EventType.OrderPlaced:
+                        rootNodeName = "Order placed";
+                        break;
+                    case EventType.OrderCancelled:
+                        rootNodeName = "Order cancelled";
+                        break;
+                    case EventType.PositionOpened:
+                        rootNodeName = "Position opened";
+                        break;
+                    case EventType.PositionClosed:
+                        rootNodeName = "Position closed";
+                        break;
+                    default:
+                        break;
+                }
+
                 if (!Settings.Set.ContainsKey(item))
                 {
-                    string rootNodeName = "";
-
-                    switch (item)
-                    {
-                        case EventType.OrderPlaced:
-                            rootNodeName = "Order placed";
-                            break;
-                        case EventType.OrderCancelled:
-                            rootNodeName = "Order cancelled";
-                            break;
-                        case EventType.PositionOpened:
-                            rootNodeName = "Position opened";
-                            break;
-                        case EventType.PositionClosed:
-                            rootNodeName = "Position closed";
-                            break;
-                        default:
-                            break;
-                    }
-
                     var evenOperation = new EventOperation()
                     {
                         Active = false,
@@ -117,8 +113,7 @@ namespace TradeTweet
 
                 foreach (EventItem item2 in Enum.GetValues(typeof(EventItem)))
                 {
-                    if (!Settings.Set[item].Items.ContainsKey(item2))
-                    {
+
                         string nodeName = "";
 
                         switch (item2)
@@ -151,10 +146,12 @@ namespace TradeTweet
                                 break;
                         }
 
-                        // skip order type for Position's cases
-                        if ((item == EventType.PositionOpened || item == EventType.PositionClosed) && (item2 == EventItem.type))
-                            continue;
+                    // skip order type for Position's cases
+                    if ((item == EventType.PositionOpened || item == EventType.PositionClosed) && (item2 == EventItem.type))
+                        continue;
 
+                    if (!Settings.Set[item].Items.ContainsKey(item2))
+                    {
                         EventOperationItem eventItem = new EventOperationItem()
                         {
                             Checked = false,
@@ -165,7 +162,7 @@ namespace TradeTweet
                     }
 
                     TreeNode node = new TreeNode(Settings.Set[item].Items[item2].Name);
-                    node.Checked = Settings.Set[item].Items[item2].Checked;
+                    //node.Checked = Settings.Set[item].Items[item2].Checked;
                     node.Tag = item2;
 
                     list.Add(node);
@@ -173,7 +170,8 @@ namespace TradeTweet
 
                 TreeNode rootNode = new TreeNode(Settings.Set[item].Name, list.ToArray());
                 rootNode.Tag = item;
-                rootNode.Checked = Settings.Set[item].Active;
+
+                //rootNode.Checked = Settings.Set[item].Active;
 
                 settingsTree.Nodes.Add(rootNode);
             }
@@ -181,13 +179,12 @@ namespace TradeTweet
             RefreshTree();
         }
 
-
         internal class TriStateTreeView : System.Windows.Forms.TreeView
         {
             // <remarks>
             // CheckedState is an enum of all allowable nodes states
             // </remarks>
-            public enum CheckedState : int { UnInitialised = -1, UnChecked, Checked, Mixed };
+            public enum CheckedState : int { /*UnInitialised = -1,*/ UnChecked, Checked, Mixed };
 
             // <remarks>
             // IgnoreClickAction is used to ingore messages generated by setting the node.Checked flag in code
@@ -216,9 +213,9 @@ namespace TradeTweet
                 CheckBoxes = false;         // Disable default CheckBox functionality if it's been enabled
 
                 // Give every node an initial 'unchecked' image
-                IgnoreClickAction++;    // we're making changes to the tree, ignore any other change requests
-                UpdateChildState(this.Nodes, (int)CheckedState.UnChecked, false, true);
-                IgnoreClickAction--;
+                //IgnoreClickAction++;    // we're making changes to the tree, ignore any other change requests
+                //UpdateChildState(this.Nodes, (int)CheckedState.UnChecked, false, true);
+                //IgnoreClickAction--;
             }
 
             // <summary>
@@ -294,7 +291,7 @@ namespace TradeTweet
             {
                 foreach (System.Windows.Forms.TreeNode tnChild in Nodes)
                 {
-                    if (!ChangeUninitialisedNodesOnly || tnChild.StateImageIndex == -1)
+                    if (!ChangeUninitialisedNodesOnly) // || tnChild.StateImageIndex == -1)
                     {
                         tnChild.StateImageIndex = StateImageIndex;
                         tnChild.Checked = Checked;  // override 'checked' state of child with that of parent

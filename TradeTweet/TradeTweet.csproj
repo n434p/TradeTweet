@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>C:\Users\nazar\OneDrive\Документи\ProtraderMCTest\My plug-ins\</OutputPath>
+    <OutputPath>..\..\..\..\Users\developer\Documents\ProtraderMCTest\My plug-ins\</OutputPath>
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -72,13 +72,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Commons">
-      <HintPath>C:\Users\nazar\AppData\Roaming\ProtraderMCTest\Commons.dll</HintPath>
+      <HintPath>..\..\..\..\Users\developer\AppData\Roaming\ProtraderMCTest\Commons.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>C:\Users\nazar\AppData\Roaming\ProtraderMCTest\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\..\Users\developer\AppData\Roaming\ProtraderMCTest\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PTLRuntime">
-      <HintPath>C:\Users\nazar\AppData\Roaming\ProtraderMCTest\PTLRuntime.dll</HintPath>
+      <HintPath>..\..\..\..\Users\developer\AppData\Roaming\ProtraderMCTest\PTLRuntime.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -111,6 +111,12 @@
     </Compile>
     <Compile Include="NoticeP.Designer.cs">
       <DependentUpon>NoticeP.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NoticeP2.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="NoticeP2.Designer.cs">
+      <DependentUpon>NoticeP2.cs</DependentUpon>
     </Compile>
     <Compile Include="PicturePanel.cs">
       <SubType>Component</SubType>
@@ -151,6 +157,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="NoticeP.resx">
       <DependentUpon>NoticeP.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NoticeP2.resx">
+      <DependentUpon>NoticeP2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PluginForm.resx">
       <DependentUpon>PluginForm.cs</DependentUpon>
@@ -230,7 +239,52 @@
     <None Include="Resources\settings_bottom_edge.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\close.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\close_order_green.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\close_order_red.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\close_order_yellow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\close_pos_green.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\close_pos_red.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\close_pos_yellow.png" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="Resources\factura.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\middle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\open_order_green.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\open_order_red.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\open_order_yellow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\open_pos_green.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\open_pos_red.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\open_pos_yellow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\select.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\TradeTweet-05.png" />
@@ -312,12 +366,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\TradeTweet-31.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\middle.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\select.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\unselect.png" />

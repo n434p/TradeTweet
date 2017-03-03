@@ -139,7 +139,7 @@ namespace TradeTweet
 
         static internal NETSDK PlatformEngine;
         public static Action<string, EventType> OnAutoTweetSend = null;
-        public static Action<Response, EventType> OnAutoTweetRespond = null;
+        public static Action<string, Response, EventType> OnAutoTweetRespond = null;
 
         public static TwittwerService Run(NETSDK engine)
         {
@@ -159,7 +159,6 @@ namespace TradeTweet
 
             return ts;
         }
-
 
         public static void Stop()
         {
@@ -218,56 +217,64 @@ namespace TradeTweet
             if (ts == null || !ts.Connected)
                 return;
 
-            OnAutoTweetSend?.Invoke(text, type);
+            OnAutoTweetSend?.Invoke("Sending...", type);
 
             var resp = await ts.SendTweetAsync(new Twitt { Text = text, Media = null }, null, ct);
 
-            OnAutoTweetRespond?.Invoke(resp, type);
+            OnAutoTweetRespond?.Invoke(text, resp, type);
         }
 
         private static void Positions_PositionRemoved(Position obj)
         {
-            if (!Settings.autoTweet && !Settings.Set[EventType.PositionClosed].Active) return;
+            if (!Settings.autoTweet) return;
 
             string text = "#PTMC_platform\nPosition closed:\n";
 
-            text = text.PositionMessage(Settings.Set[EventType.PositionClosed], obj);
+            string subText = text.PositionMessage(Settings.Set[EventType.PositionClosed], obj);
 
-            SendAutoTweet(text, EventType.PositionClosed);
+            if (text == subText) return;
+
+            SendAutoTweet(subText, EventType.PositionClosed);
         }
 
         private static void Positions_PositionAdded(Position obj)
         {
-            if (!Settings.autoTweet && !Settings.Set[EventType.PositionOpened].Active) return;
+            if (!Settings.autoTweet) return;
 
             string text = "#PTMC_platform\nPosition opened:\n";
 
-            text = text.PositionMessage(Settings.Set[EventType.PositionOpened], obj);
+            string subText = text.PositionMessage(Settings.Set[EventType.PositionOpened], obj);
 
-            SendAutoTweet(text, EventType.PositionOpened);
+            if (text == subText) return;
+
+            SendAutoTweet(subText, EventType.PositionOpened);
         }
 
         private static void Orders_OrderRemoved(Order obj)
         {
-            if (!Settings.autoTweet && !Settings.Set[EventType.OrderCancelled].Active) return;
+            if (!Settings.autoTweet) return;
 
             string text = "#PTMC_platform\n" + obj.Type.ToString() + " Order cancelled:\n";
 
-            text = text.OrderMessage(Settings.Set[EventType.OrderCancelled], obj);
+            string subText = text.OrderMessage(Settings.Set[EventType.OrderCancelled], obj);
 
-            SendAutoTweet(text, EventType.OrderCancelled);
+            if (text == subText) return;
+
+            SendAutoTweet(subText, EventType.OrderCancelled);
         }
 
         private static void Orders_OrderAdded(Order obj)
         {
             // skip order's establishing statuses - take only new
-            if (!Settings.autoTweet && obj.Status != OrderStatus.New && !Settings.Set[EventType.OrderCancelled].Active) return;
+            if (!Settings.autoTweet || obj.Status != OrderStatus.New) return;
 
             string text = "#PTMC_platform\n" + obj.Type.ToString()+" Order placed:\n";
 
-            text = text.OrderMessage(Settings.Set[EventType.OrderPlaced], obj);
+            string subText = text.OrderMessage(Settings.Set[EventType.OrderPlaced], obj);
 
-            SendAutoTweet(text, EventType.OrderPlaced);
+            if (text == subText) return;
+
+            SendAutoTweet(subText, EventType.OrderPlaced);
         }
 
         public static string PositionMessage(this string value, EventOperation op, Position obj)

@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TradeTweet.Properties;
 
 namespace TradeTweet
 {
@@ -15,19 +11,24 @@ namespace TradeTweet
     public partial class NoticeP : UserControl
     {
         Control ParentWindow;
+        bool removeable = false;
 
         public NoticeP(Control attachTo)
         {
             InitializeComponent();
             DoubleBuffered = true;
             ParentWindow = attachTo;
+            crossLabel.Visible = false;
         }
 
-        internal async void ShowNotice(string message, int miliseconds = 2000, NoticeType type = NoticeType.Info, EventType evType = EventType.Empty, Action callback = null)
+        internal virtual void ShowNotice(string message, NoticeType type = NoticeType.Info, EventType evType = EventType.Empty, Action callback = null)
         {
             NoticeP notice = new NoticeP(ParentWindow);
-            notice.noticeText.Text = message;
+            notice.noticeText.Text = message.Replace("#PTMC_platform","").Replace('\n',' ');
 
+            notice.removeable = type == NoticeType.Error;
+
+            if (evType == EventType.Empty)
             switch (type)
             {
                 case NoticeType.Info:
@@ -43,44 +44,58 @@ namespace TradeTweet
 
             switch (evType)
             {
-                case EventType.Empty:
-                    notice.sidePic.Image = null;
-                    break;
                 case EventType.OrderPlaced:
-                    notice.sidePic.Image = Properties.Resources.TradeTweet_19;
+                    notice.statusPic.Image = (type == NoticeType.Error)? Resources.open_order_red: Resources.open_order_green;
                     break;
                 case EventType.OrderCancelled:
-                    notice.sidePic.Image = Properties.Resources.TradeTweet_18;
+                    notice.statusPic.Image = (type == NoticeType.Error) ? Resources.close_order_red : Resources.close_order_green;
                     break;
                 case EventType.PositionClosed:
-                    notice.sidePic.Image = Properties.Resources.TradeTweet_16;
+                    notice.statusPic.Image = (type == NoticeType.Error) ? Resources.close_pos_red : Resources.close_pos_green;
                     break;
                 case EventType.PositionOpened:
-                    notice.sidePic.Image = Properties.Resources.TradeTweet_17;
+                    notice.statusPic.Image = (type == NoticeType.Error) ? Resources.open_pos_red : Resources.open_pos_green;
                     break;
             }
+            
+            ParentWindow.Invoke((MethodInvoker)delegate
+            {
+                ParentWindow.Controls.Add(notice);
+                ParentWindow.Controls.SetChildIndex(notice, 0);
+            });       
+        }
 
-            await Task.Run(
-                    async () =>
-                    {
-                        ParentWindow.Invoke((MethodInvoker)delegate
-                        {
-                            ParentWindow.Controls.Add(notice);
-                            ParentWindow.Controls.SetChildIndex(notice, 0);
-                        });
 
-                        await Task.Delay(miliseconds).ContinueWith((task) =>
-                        {
-                            if (callback != null)
-                                callback.Invoke();
-                        });
+        private void label1_Click(object sender, EventArgs e)
+        {
+            if (crossLabel.Image != null)
+            {
+                ParentWindow.Controls.Remove(this);
+                this.Dispose();
+            }
+        }
 
-                        ParentWindow.Invoke((MethodInvoker)delegate
-                        {
-                            if (miliseconds != 0)
-                                ParentWindow.Controls.Remove(notice);
-                        });
-                    });
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            if (removeable && this.ClientRectangle.Contains(this.PointToClient(Cursor.Position)))
+            {
+                crossLabel.Visible = true;
+                this.BackColor = Color.Black;
+            }
+            else
+            {
+                crossLabel.Visible = false;
+                this.BackColor = Color.Transparent;
+            }
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            if (!removeable) return;
+
+             crossLabel.Image = Properties.Resources.TradeTweet_10;
+             this.BackColor = Color.Black;
         }
     }
 }

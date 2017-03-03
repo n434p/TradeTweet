@@ -23,7 +23,7 @@ namespace TradeTweet
         ConnectionPanel connectionPanel;
         EnterPinPanel enterPinPanel;
         CancellationToken ct;
-        NoticeP noticePanel;
+        NoticeP2 noticePanel;
 
         const string LOGIN = "Login";
         const string LOGOUT = "Logout";
@@ -44,7 +44,7 @@ namespace TradeTweet
 
             ts = AutoTweet.Run(PlatformEngine);
 
-            noticePanel = new NoticeP(this);
+            noticePanel = new NoticeP2(this);
 
             ts.onAuthorized = (s1, s2) => {
                 Settings.ast = s1;
@@ -72,6 +72,8 @@ namespace TradeTweet
         {
             var tt = new TPanel();
             tt.TweetPanel(PlatformEngine);
+
+            tt.NoticeSubscribing();
 
             tt.Padding = new Padding(0);
             tt.Margin = new Padding(0);

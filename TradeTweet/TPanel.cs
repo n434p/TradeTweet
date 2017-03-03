@@ -20,6 +20,7 @@ namespace TradeTweet
         TwittwerService ts;
         PicturePanel picPanel;
         NoticeP noticePanel;
+        NoticeP2 nnnPanel;
 
         System.Threading.CancellationTokenSource ctss;
         System.Threading.CancellationToken ct;
@@ -84,11 +85,14 @@ namespace TradeTweet
 
             noticePanel = new NoticeP(historyPanel);
 
+            nnnPanel = new NoticeP2(this);
+            this.Controls.Add(nnnPanel);
+            nnnPanel.BringToFront();
+
             settingsPanel = new AutoSettings();
             settingsPanel.Visible = false;
 
             this.Controls.Add(settingsPanel);
-            settingsPanel.BringToFront();
 
             historyPanel.AutoScroll = true;
 
@@ -102,24 +106,41 @@ namespace TradeTweet
 
             AutoTweetFlag = Settings.autoTweet;
 
-            AutoTweet.OnAutoTweetSend += ShowInfoNotice;
-            AutoTweet.OnAutoTweetRespond += ResponseNotice;
+            /// set notice panel location
+            RelocationPanels();
         }
 
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
 
-            RelocationSettingsPanel();
+            if (Width <= 400)
+            {
+                gridPanel.ColumnStyles[0].SizeType = SizeType.AutoSize;
+                gridPanel.ColumnStyles[2].SizeType = SizeType.AutoSize;
+            }
+            else
+            {
+                gridPanel.ColumnStyles[0].SizeType = SizeType.Percent;
+                gridPanel.ColumnStyles[0].Width = 100;
+                gridPanel.ColumnStyles[2].SizeType = SizeType.Percent;
+                gridPanel.ColumnStyles[2].Width = 100;
+            }
 
-       
+            RelocationPanels();
         }
 
-        void RelocationSettingsPanel()
+        void RelocationPanels()
         {
             if (settingsPanel != null && settingsPanel.Visible)
             {
                 settingsPanel.Location = new Point(headerPanel.Left + autoTweetBtn.Left + 3, headerPanel.Bottom - 7);
+                settingsPanel.BringToFront();
+            }
+
+            if (nnnPanel != null)
+            {
+                nnnPanel.Location = new Point(headerPanel.Left+3, headerPanel.Bottom+3);
             }
         }
 
@@ -135,8 +156,6 @@ namespace TradeTweet
             avatar.BackgroundImageLayout = ImageLayout.Zoom;
 
             //Populate();
-
-            
 
             //statusPanel.onSettingsClicked = () =>
             //{
@@ -171,7 +190,7 @@ namespace TradeTweet
         private async Task<Response> OnTweet()
         {
             ToggleTweetButton();
-            noticePanel.ShowNotice("Sending...");
+            nnnPanel.ShowNotice("Sending...");
 
             List<Task<Response>> list = new List<Task<Response>>();
 
@@ -198,22 +217,22 @@ namespace TradeTweet
 
             var ttt = await ts.SendTweetAsync(new Twitt { Text = Status, Media = media }, mediaString, ct);
 
-            ResponseNotice(ttt, EventType.Empty);
+            ResponseNotice(Status, ttt, EventType.Empty);
 
             ToggleTweetButton();
 
             return ttt;
         }
 
-        void ResponseNotice(Response resp, EventType type)
+        void ResponseNotice(string text, Response resp, EventType type)
         {
             if (!resp.Failed)
             {
-                noticePanel.ShowNotice("Done!", 2000, NoticeType.Success, type);
+                noticePanel.ShowNotice(text, NoticeType.Success, type);
             }
             else
             {
-                noticePanel.ShowNotice(resp.Text, 0, NoticeType.Error, type);
+                noticePanel.ShowNotice(resp.Text, NoticeType.Error, type);
             }
         }
 
@@ -265,7 +284,7 @@ namespace TradeTweet
             SettingsOpen = !SettingsOpen;
             settingsPanel.Visible = SettingsOpen;
 
-            RelocationSettingsPanel();
+            RelocationPanels();
         }
 
         private void autoTweetBtn_Click(object sender, EventArgs e)
@@ -273,7 +292,7 @@ namespace TradeTweet
             if (!Settings.Set.Values.Any(v => v.Active))
             {
                 AutoTweetFlag = false;
-                noticePanel.ShowNotice("There is no events to tweet!",1000);
+                nnnPanel.ShowNotice("There is no events to tweet!",1000);
                 return;
             }
 
@@ -282,10 +301,10 @@ namespace TradeTweet
             // Save settings
             Settings.OnSettingsChange();
 
-            noticePanel.ShowNotice((Settings.autoTweet) ? "AutoTweet Enabled!" : "AutoTweet Disabled!", 1000, NoticeType.Info);
+            nnnPanel.ShowNotice((Settings.autoTweet) ? "AutoTweet Enabled!" : "AutoTweet Disabled!", 1000, NoticeType.Info);
         }
 
-        void NoticeSubscribing()
+        internal void NoticeSubscribing()
         {
             if (Settings.autoTweet)
             {
@@ -301,7 +320,7 @@ namespace TradeTweet
 
         private void ShowInfoNotice(string text, EventType type)
         {
-            noticePanel.ShowNotice(text, 0, NoticeType.Info, type);
+            nnnPanel.ShowNotice(text, 1000, NoticeType.Info, type);
         }
     
 
@@ -344,7 +363,7 @@ namespace TradeTweet
                 return;
             }
 
-            noticePanel.ShowNotice("Only 4 pics are allowed to tweet!", 1000, NoticeType.Info);
+            nnnPanel.ShowNotice("Only 4 pics are allowed to tweet!", 1000, NoticeType.Info);
         }
 
         void MakeScreen(PictureCard c = null)
@@ -542,6 +561,8 @@ namespace TradeTweet
                 this.Size = new System.Drawing.Size(400, 98);
                 this.WrapContents = false;
             }
+
+
         }
 
     }

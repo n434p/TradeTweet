@@ -30,7 +30,6 @@ namespace TradeTweet
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TPanel));
             this.gridPanel = new System.Windows.Forms.TableLayoutPanel();
             this.headerPanel = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
@@ -57,7 +56,7 @@ namespace TradeTweet
             this.picPanelBase = new System.Windows.Forms.Panel();
             this.label15 = new System.Windows.Forms.Label();
             this.picPanelContainer = new System.Windows.Forms.Label();
-            this.historyPanel = new CustomPanel();
+            this.historyPanel = new TPanel.CustomPanel();
             this.gridPanel.SuspendLayout();
             this.headerPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.avatar)).BeginInit();
@@ -415,7 +414,7 @@ namespace TradeTweet
             // 
             this.historyPanel.AutoScroll = true;
             this.historyPanel.AutoSize = true;
-            this.historyPanel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("historyPanel.BackgroundImage")));
+            this.historyPanel.BackgroundImage = global::TradeTweet.Properties.Resources.factura;
             this.historyPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.historyPanel.FlowDirection = System.Windows.Forms.FlowDirection.BottomUp;
             this.historyPanel.Location = new System.Drawing.Point(32, 48);
