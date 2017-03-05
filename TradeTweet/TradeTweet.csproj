@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\..\Users\developer\Documents\ProtraderMCTest\My plug-ins\</OutputPath>
+    <OutputPath>C:\Users\user\Documents\ProtraderMC Beta\My plug-ins\</OutputPath>
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -72,13 +72,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Commons">
-      <HintPath>..\..\..\..\Users\developer\AppData\Roaming\ProtraderMCTest\Commons.dll</HintPath>
+      <HintPath>C:\Users\user\AppData\Roaming\ProtraderMC Beta\Commons.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\..\Users\developer\AppData\Roaming\ProtraderMCTest\Newtonsoft.Json.dll</HintPath>
+      <HintPath>C:\Users\user\AppData\Roaming\ProtraderMC Beta\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PTLRuntime">
-      <HintPath>..\..\..\..\Users\developer\AppData\Roaming\ProtraderMCTest\PTLRuntime.dll</HintPath>
+      <HintPath>C:\Users\user\AppData\Roaming\ProtraderMC Beta\PTLRuntime.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -98,6 +98,12 @@
     </Compile>
     <Compile Include="AutoSettings.Designer.cs">
       <DependentUpon>AutoSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CustomVScrollbar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CustomVScrollbar.Designer.cs">
+      <DependentUpon>CustomVScrollbar.cs</DependentUpon>
     </Compile>
     <Compile Include="EnterPinPanel.cs">
       <SubType>UserControl</SubType>

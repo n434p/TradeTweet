@@ -217,11 +217,13 @@ namespace TradeTweet
             if (ts == null || !ts.Connected)
                 return;
 
-            OnAutoTweetSend?.Invoke("Sending...", type);
+            if(OnAutoTweetSend != null)
+                OnAutoTweetSend.Invoke("Sending...", type);
 
             var resp = await ts.SendTweetAsync(new Twitt { Text = text, Media = null }, null, ct);
 
-            OnAutoTweetRespond?.Invoke(text, resp, type);
+            if(OnAutoTweetRespond != null)
+                OnAutoTweetRespond.Invoke(text, resp, type);
         }
 
         private static void Positions_PositionRemoved(Position obj)

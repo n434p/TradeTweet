@@ -238,7 +238,8 @@ namespace TradeTweet
 
         private void logoutLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-                OnLogout?.Invoke();
+            if(OnLogout != null)
+                OnLogout.Invoke();
         }
 
         private async void SendTweetAsync()
@@ -357,7 +358,8 @@ namespace TradeTweet
                         break;
                 }
 
-                act?.Invoke(null);
+                if(act != null)
+                    act.Invoke(null);
 
                 TogglePicPanel();
                 return;
@@ -368,7 +370,7 @@ namespace TradeTweet
 
         void MakeScreen(PictureCard c = null)
         {
-            Image img = Terminal.MakeScreenshot(Form.ActiveForm.DisplayRectangle, Size.Empty);
+            Image img = null; // Terminal.MakeScreenshot(Form.ActiveForm.DisplayRectangle, Size.Empty);
 
             if (img == null) return;
 
@@ -551,7 +553,6 @@ namespace TradeTweet
             {
                 this.DoubleBuffered = true;
 
-                this.AutoScroll = true;
                 this.AutoSize = true;
                 this.BackgroundImage = global::TradeTweet.Properties.Resources.factura;
                 this.Dock = System.Windows.Forms.DockStyle.Fill;
