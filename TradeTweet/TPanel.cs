@@ -70,6 +70,8 @@ namespace TradeTweet
             this.histPanelContainer.Controls.Add(historyPanel);
             this.histPanelContainer.Controls.Add(scroll);
 
+            scroll.Scroll += Scroll_Scroll;
+
             this.Margin = new Padding(0);
             this.Padding = new Padding(0);
 
@@ -106,6 +108,14 @@ namespace TradeTweet
 
             /// set notice panel location
             RelocationPanels();
+
+        }
+
+        private void Scroll_Scroll(object sender, EventArgs e)
+        {
+            historyPanel.Location = new Point(0, scroll.Value);
+            scroll.Invalidate();
+            Application.DoEvents();
         }
 
         protected override void OnResize(EventArgs e)

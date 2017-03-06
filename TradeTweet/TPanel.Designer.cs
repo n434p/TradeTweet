@@ -415,7 +415,7 @@ namespace TradeTweet
             // 
             // histPanelContainer
             // 
-            this.histPanelContainer.AutoSize = true;
+            this.histPanelContainer.AutoSize = false;
             this.histPanelContainer.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("histPanelContainer.BackgroundImage")));
             this.histPanelContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.histPanelContainer.Location = new System.Drawing.Point(32, 48);
@@ -426,7 +426,9 @@ namespace TradeTweet
             // 
             // historyPanel
             // 
+            this.historyPanel.AutoScroll = false;
             this.historyPanel.AutoSize = true;
+            this.historyPanel.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             this.historyPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.historyPanel.FlowDirection = System.Windows.Forms.FlowDirection.BottomUp;
             this.historyPanel.Location = new System.Drawing.Point(99, 72);

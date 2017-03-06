@@ -30,8 +30,6 @@ namespace TradeTweet
         private bool moThumbDown = false;
         private bool moThumbDragging = false;
 
-        internal int scrollwidth;
-
         public new event EventHandler Scroll = null;
         public event EventHandler ValueChanged = null;
 
