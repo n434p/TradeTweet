@@ -67,6 +67,9 @@ namespace TradeTweet
             InitializeComponent();
             this.DoubleBuffered = true;
 
+            this.histPanelContainer.Controls.Add(historyPanel);
+            this.histPanelContainer.Controls.Add(scroll);
+
             this.Margin = new Padding(0);
             this.Padding = new Padding(0);
 
@@ -93,11 +96,6 @@ namespace TradeTweet
             settingsPanel.Visible = false;
 
             this.Controls.Add(settingsPanel);
-
-            historyPanel.AutoScroll = true;
-
-            historyPanel.HorizontalScroll.Enabled = false;
-            historyPanel.HorizontalScroll.Visible = false;
 
             Settings.onSettingsChanged += () => 
             {
@@ -552,15 +550,30 @@ namespace TradeTweet
             public CustomPanel()
             {
                 this.DoubleBuffered = true;
-
                 this.AutoSize = true;
-                this.BackgroundImage = global::TradeTweet.Properties.Resources.factura;
                 this.Dock = System.Windows.Forms.DockStyle.Fill;
                 this.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
                 this.Location = new System.Drawing.Point(32, 48);
                 this.Margin = new System.Windows.Forms.Padding(0);
                 this.Size = new System.Drawing.Size(400, 98);
                 this.WrapContents = false;
+            }
+
+
+        }
+
+        internal class DoubleBufferedPanel : Panel
+        {
+            public DoubleBufferedPanel()
+            {
+                this.DoubleBuffered = true;
+
+                this.AutoSize = true;
+                this.BackgroundImage = global::TradeTweet.Properties.Resources.factura;
+                this.Dock = System.Windows.Forms.DockStyle.Fill;
+                this.Location = new System.Drawing.Point(32, 48);
+                this.Margin = new System.Windows.Forms.Padding(0);
+                this.Size = new System.Drawing.Size(400, 98);
             }
 
 

@@ -11,24 +11,10 @@ using System.Windows.Forms;
 
 namespace TradeTweet
 {
-
     internal partial class CustomVScrollbar : UserControl
     {
-
-        protected Color moChannelColor = Color.Empty;
-        protected Image moUpArrowImage = null;
-        //protected Image moUpArrowImage_Over = null;
-        //protected Image moUpArrowImage_Down = null;
-        protected Image moDownArrowImage = null;
-        //protected Image moDownArrowImage_Over = null;
-        //protected Image moDownArrowImage_Down = null;
-        protected Image moThumbArrowImage = null;
-
-        protected Image moThumbTopImage = null;
-        protected Image moThumbTopSpanImage = null;
-        protected Image moThumbBottomImage = null;
-        protected Image moThumbBottomSpanImage = null;
-        protected Image moThumbMiddleImage = null;
+        Brush oBrush = new SolidBrush(Color.FromArgb(0, 0, 0));
+        Brush oWhiteBrush = new SolidBrush(Color.FromArgb(31, 31, 31));
 
         protected int moLargeChange = 10;
         protected int moSmallChange = 1;
@@ -44,12 +30,14 @@ namespace TradeTweet
         private bool moThumbDown = false;
         private bool moThumbDragging = false;
 
+        internal int scrollwidth;
+
         public new event EventHandler Scroll = null;
         public event EventHandler ValueChanged = null;
 
         private int GetThumbHeight()
         {
-            int nTrackHeight = (this.Height);
+            int nTrackHeight = (this.Height - 2);
             float fThumbHeight = ((float)LargeChange / (float)Maximum) * nTrackHeight;
             int nThumbHeight = (int)fThumbHeight;
 
@@ -58,10 +46,11 @@ namespace TradeTweet
                 nThumbHeight = nTrackHeight;
                 fThumbHeight = nTrackHeight;
             }
-            if (nThumbHeight < 56)
+            // min thumb height
+            if (nThumbHeight < 10)
             {
-                nThumbHeight = 56;
-                fThumbHeight = 56;
+                nThumbHeight = 20;
+                fThumbHeight = 20;
             }
 
             return nThumbHeight;
@@ -70,24 +59,11 @@ namespace TradeTweet
         public CustomVScrollbar()
         {
             InitializeComponent();
-
             SetStyle(ControlStyles.ResizeRedraw, true);
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             SetStyle(ControlStyles.DoubleBuffer, true);
 
-            moChannelColor = Color.FromArgb(51, 51, 51);
-            // UpArrowImage = Resource.uparrow;
-            // DownArrowImage = Resource.downarrow;
-
-
-            //ThumbBottomImage = Resource.ThumbBottom;
-            //ThumbBottomSpanImage = Resource.ThumbSpanBottom;
-            //ThumbTopImage = Resource.ThumbTop;
-            //ThumbTopSpanImage = Resource.ThumbSpanTop;
-            //ThumbMiddleImage = Resource.ThumbMiddle;
-
-            this.Width = 8; // UpArrowImage.Width;
-            base.MinimumSize = new Size(8, GetThumbHeight());
+            //base.MinimumSize = new Size(this.Width, 2 + GetThumbHeight());
         }
 
         [EditorBrowsable(EditorBrowsableState.Always), Browsable(true), DefaultValue(false), Category("Behavior"), Description("LargeChange")]
@@ -142,23 +118,10 @@ namespace TradeTweet
             {
                 moValue = value;
 
-                int nTrackHeight = (this.Height);
-                float fThumbHeight = ((float)LargeChange / (float)Maximum) * nTrackHeight;
-                int nThumbHeight = (int)fThumbHeight;
-
-                if (nThumbHeight > nTrackHeight)
-                {
-                    nThumbHeight = nTrackHeight;
-                    fThumbHeight = nTrackHeight;
-                }
-                if (nThumbHeight < 56)
-                {
-                    nThumbHeight = 56;
-                    fThumbHeight = 56;
-                }
+                GetThumbHeight();
 
                 //figure out value
-                int nPixelRange = nTrackHeight - nThumbHeight;
+                int nPixelRange = this.Height - 2 - GetThumbHeight();
                 int nRealRange = (Maximum - Minimum) - LargeChange;
                 float fPerc = 0.0f;
                 if (nRealRange != 0)
@@ -175,112 +138,32 @@ namespace TradeTweet
             }
         }
 
-        [EditorBrowsable(EditorBrowsableState.Always), Browsable(true), DefaultValue(false), Category("Skin"), Description("Channel Color")]
-        public Color ChannelColor
-        {
-            get { return moChannelColor; }
-            set { moChannelColor = value; }
-        }
-
-        [EditorBrowsable(EditorBrowsableState.Always), Browsable(true), DefaultValue(false), Category("Skin"), Description("Up Arrow Graphic")]
-        public Image ThumbTopImage
-        {
-            get { return moThumbTopImage; }
-            set { moThumbTopImage = value; }
-        }
-
-        [EditorBrowsable(EditorBrowsableState.Always), Browsable(true), DefaultValue(false), Category("Skin"), Description("Up Arrow Graphic")]
-        public Image ThumbTopSpanImage
-        {
-            get { return moThumbTopSpanImage; }
-            set { moThumbTopSpanImage = value; }
-        }
-
-        [EditorBrowsable(EditorBrowsableState.Always), Browsable(true), DefaultValue(false), Category("Skin"), Description("Up Arrow Graphic")]
-        public Image ThumbBottomImage
-        {
-            get { return moThumbBottomImage; }
-            set { moThumbBottomImage = value; }
-        }
-
-        [EditorBrowsable(EditorBrowsableState.Always), Browsable(true), DefaultValue(false), Category("Skin"), Description("Up Arrow Graphic")]
-        public Image ThumbBottomSpanImage
-        {
-            get { return moThumbBottomSpanImage; }
-            set { moThumbBottomSpanImage = value; }
-        }
-
-        [EditorBrowsable(EditorBrowsableState.Always), Browsable(true), DefaultValue(false), Category("Skin"), Description("Up Arrow Graphic")]
-        public Image ThumbMiddleImage
-        {
-            get { return moThumbMiddleImage; }
-            set { moThumbMiddleImage = value; }
-        }
 
         protected override void OnPaint(PaintEventArgs e)
         {
+            Draw(e);
+        }
 
+        internal void Draw(PaintEventArgs e)
+        {
             e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
 
+            ////draw channel left and right border colors
+            //e.Graphics.FillRectangle(oWhiteBrush, new Rectangle(0, 1, 1, (this.Height - 1)));
+            //e.Graphics.FillRectangle(oWhiteBrush, new Rectangle(this.Width-1, 1, 1, (this.Height - 1)));
 
-            Brush oBrush = new SolidBrush(moChannelColor);
-            Brush oWhiteBrush = new SolidBrush(Color.FromArgb(0, 0, 0));
-
-            //draw channel left and right border colors
-            e.Graphics.FillRectangle(oWhiteBrush, new Rectangle(0, 0, 1, (this.Height)));
-            e.Graphics.FillRectangle(oWhiteBrush, new Rectangle(this.Width - 1, 0, 1, (this.Height)));
-
-            //draw channel
-            e.Graphics.FillRectangle(oBrush, new Rectangle(1, 0, this.Width - 2, (this.Height)));
-
-            //draw thumb
-            int nTrackHeight = (this.Height);
-            float fThumbHeight = ((float)LargeChange / (float)Maximum) * nTrackHeight;
-            int nThumbHeight = (int)fThumbHeight;
-
-            if (nThumbHeight > nTrackHeight)
-            {
-                nThumbHeight = nTrackHeight;
-                fThumbHeight = nTrackHeight;
-            }
-            if (nThumbHeight < 56)
-            {
-                nThumbHeight = 56;
-                fThumbHeight = 56;
-            }
+            ////draw channel
+            //e.Graphics.FillRectangle(oBrush, new Rectangle(1, 1, this.Width-2, (this.Height - 1)));
 
             //Debug.WriteLine(nThumbHeight.ToString());
 
-            float fSpanHeight = (fThumbHeight - (ThumbMiddleImage.Height + ThumbTopImage.Height + ThumbBottomImage.Height)) / 2.0f;
+            float fSpanHeight = GetThumbHeight();
             int nSpanHeight = (int)fSpanHeight;
 
             int nTop = moThumbTop;
-            nTop += 0;
+            nTop += 1;
 
-            //draw top
-            e.Graphics.DrawImage(ThumbTopImage, new Rectangle(1, nTop, this.Width - 2, ThumbTopImage.Height));
-
-            nTop += ThumbTopImage.Height;
-            //draw top span
-            Rectangle rect = new Rectangle(1, nTop, this.Width - 2, nSpanHeight);
-
-
-            e.Graphics.DrawImage(ThumbTopSpanImage, 1.0f, (float)nTop, (float)this.Width - 2.0f, (float)fSpanHeight * 2);
-
-            nTop += nSpanHeight;
-            //draw middle
-            e.Graphics.DrawImage(ThumbMiddleImage, new Rectangle(1, nTop, this.Width - 2, ThumbMiddleImage.Height));
-
-
-            nTop += ThumbMiddleImage.Height;
-            //draw top span
-            rect = new Rectangle(1, nTop, this.Width - 2, nSpanHeight * 2);
-            e.Graphics.DrawImage(ThumbBottomSpanImage, rect);
-
-            nTop += nSpanHeight;
-            //draw bottom
-            e.Graphics.DrawImage(ThumbBottomImage, new Rectangle(1, nTop, this.Width - 2, nSpanHeight));
-
+            e.Graphics.FillRectangle(Brushes.DimGray, new Rectangle(1, nTop, this.Width - 2, nSpanHeight));
         }
 
         public override bool AutoSize
@@ -294,7 +177,7 @@ namespace TradeTweet
                 base.AutoSize = value;
                 if (base.AutoSize)
                 {
-                    this.Width = moUpArrowImage.Width;
+                    //this.Width = moUpArrowImage.Width;
                 }
             }
         }
@@ -302,35 +185,20 @@ namespace TradeTweet
         private void CustomScrollbar_MouseDown(object sender, MouseEventArgs e)
         {
             Point ptPoint = this.PointToClient(Cursor.Position);
-            int nTrackHeight = (this.Height);
-            float fThumbHeight = ((float)LargeChange / (float)Maximum) * nTrackHeight;
-            int nThumbHeight = (int)fThumbHeight;
-
-            if (nThumbHeight > nTrackHeight)
-            {
-                nThumbHeight = nTrackHeight;
-                fThumbHeight = nTrackHeight;
-            }
-            if (nThumbHeight < 56)
-            {
-                nThumbHeight = 56;
-                fThumbHeight = 56;
-            }
 
             int nTop = moThumbTop;
-            nTop += 0;
+            nTop += 1;
 
 
-            Rectangle thumbrect = new Rectangle(new Point(1, nTop), new Size(ThumbMiddleImage.Width, nThumbHeight));
+            Rectangle thumbrect = new Rectangle(new Point(1, nTop), new Size(this.Width, GetThumbHeight()));
             if (thumbrect.Contains(ptPoint))
             {
+
                 //hit the thumb
                 nClickPoint = (ptPoint.Y - nTop);
                 //MessageBox.Show(Convert.ToString((ptPoint.Y - nTop)));
                 this.moThumbDown = true;
             }
-
-
         }
 
         private void CustomScrollbar_MouseUp(object sender, MouseEventArgs e)
@@ -342,29 +210,15 @@ namespace TradeTweet
         private void MoveThumb(int y)
         {
             int nRealRange = Maximum - Minimum;
-            int nTrackHeight = (this.Height);
-            float fThumbHeight = ((float)LargeChange / (float)Maximum) * nTrackHeight;
-            int nThumbHeight = (int)fThumbHeight;
-
-            if (nThumbHeight > nTrackHeight)
-            {
-                nThumbHeight = nTrackHeight;
-                fThumbHeight = nTrackHeight;
-            }
-            if (nThumbHeight < 56)
-            {
-                nThumbHeight = 56;
-                fThumbHeight = 56;
-            }
 
             int nSpot = nClickPoint;
 
-            int nPixelRange = (nTrackHeight - nThumbHeight);
+            int nPixelRange = (this.Height - 2 - GetThumbHeight());
             if (moThumbDown && nRealRange > 0)
             {
                 if (nPixelRange > 0)
                 {
-                    int nNewThumbTop = y - (0 + nSpot);
+                    int nNewThumbTop = y - (1 + nSpot);
 
                     if (nNewThumbTop < 0)
                     {
@@ -376,7 +230,7 @@ namespace TradeTweet
                     }
                     else
                     {
-                        moThumbTop = y - (0 + nSpot);
+                        moThumbTop = y - (1 + nSpot);
                     }
 
                     //figure out value
