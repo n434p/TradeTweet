@@ -67,9 +67,17 @@ namespace TradeTweet
             InitializeComponent();
             this.DoubleBuffered = true;
 
-            this.histPanelContainer.Controls.Add(historyPanel);
-            this.histPanelContainer.Controls.Add(scroll);
+            historyPanel.AutoScroll = false;
+            historyPanel.HorizontalScroll.Maximum = 0;
+            historyPanel.HorizontalScroll.Visible = false;
+            historyPanel.VerticalScroll.Maximum = 0;
+            historyPanel.VerticalScroll.Visible = false;
+            historyPanel.AutoScroll = true;
 
+            histPanelContainer.Controls.Add(historyPanel);
+
+            scrollHistContainer.Controls.Add(histPanelContainer);
+            scrollHistContainer.Controls.Add(scroll);
             scroll.Scroll += Scroll_Scroll;
 
             this.Margin = new Padding(0);
@@ -113,7 +121,13 @@ namespace TradeTweet
 
         private void Scroll_Scroll(object sender, EventArgs e)
         {
-            historyPanel.Location = new Point(0, scroll.Value);
+            //histPanelContainer.AutoScroll = false;
+            //histPanelContainer.VerticalScroll.Enabled = false;
+            //histPanelContainer.VerticalScroll.Visible = false;
+            //histPanelContainer.VerticalScroll.Maximum = historyPanel.Height;
+            //histPanelContainer.AutoScroll = true;
+
+            historyPanel.AutoScrollPosition = new Point(0, scroll.Value);
             scroll.Invalidate();
             Application.DoEvents();
         }
@@ -559,10 +573,10 @@ namespace TradeTweet
         {
             public CustomPanel()
             {
+                this.FlowDirection = FlowDirection.TopDown;
                 this.DoubleBuffered = true;
                 this.AutoSize = true;
                 this.Dock = System.Windows.Forms.DockStyle.Fill;
-                this.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
                 this.Location = new System.Drawing.Point(32, 48);
                 this.Margin = new System.Windows.Forms.Padding(0);
                 this.Size = new System.Drawing.Size(400, 98);

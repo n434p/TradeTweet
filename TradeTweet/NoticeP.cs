@@ -24,6 +24,7 @@ namespace TradeTweet
         internal virtual void ShowNotice(string message, NoticeType type = NoticeType.Info, EventType evType = EventType.Empty, Action callback = null)
         {
             NoticeP notice = new NoticeP(ParentWindow);
+
             notice.noticeText.Text = message.Replace("#PTMC_platform","").Replace('\n',' ');
 
             notice.removeable = type == NoticeType.Error;
@@ -61,7 +62,6 @@ namespace TradeTweet
             ParentWindow.Invoke((MethodInvoker)delegate
             {
                 ParentWindow.Controls.Add(notice);
-                ParentWindow.Controls.SetChildIndex(notice, 0);
             });       
         }
 
@@ -76,26 +76,26 @@ namespace TradeTweet
         }
 
 
-        protected override void OnMouseLeave(EventArgs e)
-        {
-            if (removeable && this.ClientRectangle.Contains(this.PointToClient(Cursor.Position)))
-            {
-                crossLabel.Visible = true;
-                this.BackColor = Color.Black;
-            }
-            else
-            {
-                crossLabel.Visible = false;
-                this.BackColor = Color.Transparent;
-            }
-        }
+        //protected override void OnMouseLeave(EventArgs e)
+        //{
+        //    if (removeable && this.ClientRectangle.Contains(this.PointToClient(Cursor.Position)))
+        //    {
+        //        crossLabel.Visible = true;
+        //        this.BackColor = Color.Black;
+        //    }
+        //    else
+        //    {
+        //        crossLabel.Visible = false;
+        //        this.BackColor = Color.Transparent;
+        //    }
+        //}
 
-        protected override void OnMouseMove(MouseEventArgs e)
-        {
-            if (!removeable) return;
+        //protected override void OnMouseMove(MouseEventArgs e)
+        //{
+        //    if (!removeable) return;
 
-             crossLabel.Image = Properties.Resources.TradeTweet_10;
-             this.BackColor = Color.Black;
-        }
+        //     crossLabel.Image = Properties.Resources.TradeTweet_10;
+        //     this.BackColor = Color.Black;
+        //}
     }
 }

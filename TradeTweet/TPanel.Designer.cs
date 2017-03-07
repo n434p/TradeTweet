@@ -57,6 +57,7 @@ namespace TradeTweet
             this.picPanelBase = new System.Windows.Forms.Panel();
             this.label15 = new System.Windows.Forms.Label();
             this.picPanelContainer = new System.Windows.Forms.Label();
+            this.scrollHistContainer = new TPanel.DoubleBufferedPanel();
             this.histPanelContainer = new TPanel.DoubleBufferedPanel();
             this.historyPanel = new TPanel.CustomPanel();
             this.scroll = new CustomVScrollbar();
@@ -85,7 +86,7 @@ namespace TradeTweet
             this.gridPanel.Controls.Add(this.panel1, 1, 5);
             this.gridPanel.Controls.Add(this.panel5, 1, 4);
             this.gridPanel.Controls.Add(this.picPanelBase, 1, 3);
-            this.gridPanel.Controls.Add(this.histPanelContainer, 1, 1);
+            this.gridPanel.Controls.Add(this.scrollHistContainer, 1, 1);
             this.gridPanel.Location = new System.Drawing.Point(3, 4);
             this.gridPanel.Margin = new System.Windows.Forms.Padding(0);
             this.gridPanel.Name = "gridPanel";
@@ -413,30 +414,39 @@ namespace TradeTweet
             this.picPanelContainer.Size = new System.Drawing.Size(400, 73);
             this.picPanelContainer.TabIndex = 7;
             // 
+            // scrollHistContainer
+            // 
+            this.scrollHistContainer.AutoSize = true;
+            this.scrollHistContainer.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("scrollHistContainer.BackgroundImage")));
+            this.scrollHistContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.scrollHistContainer.Location = new System.Drawing.Point(32, 48);
+            this.scrollHistContainer.Margin = new System.Windows.Forms.Padding(0);
+            this.scrollHistContainer.Name = "scrollHistContainer";
+            this.scrollHistContainer.Size = new System.Drawing.Size(400, 151);
+            this.scrollHistContainer.TabIndex = 7;
+            // 
             // histPanelContainer
             // 
-            this.histPanelContainer.AutoSize = false;
+            this.histPanelContainer.AutoSize = true;
             this.histPanelContainer.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("histPanelContainer.BackgroundImage")));
             this.histPanelContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.histPanelContainer.Location = new System.Drawing.Point(32, 48);
-            this.histPanelContainer.Margin = new System.Windows.Forms.Padding(0);
+            this.histPanelContainer.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
             this.histPanelContainer.Name = "histPanelContainer";
-            this.histPanelContainer.Size = new System.Drawing.Size(400, 151);
+            this.histPanelContainer.Size = new System.Drawing.Size(392, 151);
             this.histPanelContainer.TabIndex = 7;
             // 
             // historyPanel
             // 
-            this.historyPanel.AutoScroll = false;
+            this.historyPanel.AutoScroll = true;
             this.historyPanel.AutoSize = true;
-            this.historyPanel.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            this.historyPanel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.historyPanel.FlowDirection = System.Windows.Forms.FlowDirection.BottomUp;
+            this.historyPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.historyPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.historyPanel.Location = new System.Drawing.Point(99, 72);
             this.historyPanel.Margin = new System.Windows.Forms.Padding(0);
             this.historyPanel.Name = "historyPanel";
             this.historyPanel.Size = new System.Drawing.Size(266, 103);
             this.historyPanel.TabIndex = 7;
-            this.historyPanel.WrapContents = false;
             // 
             // scroll
             // 
@@ -508,6 +518,7 @@ namespace TradeTweet
         private CustomPanel historyPanel;
         private DoubleBufferedPanel histPanelContainer;
         private CustomVScrollbar scroll;
+        private DoubleBufferedPanel scrollHistContainer;
     }
 
 
