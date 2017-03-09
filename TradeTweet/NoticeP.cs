@@ -11,6 +11,9 @@ namespace TradeTweet
     public partial class NoticeP : UserControl
     {
         Control ParentWindow;
+        public Action mouseMoved;
+
+        public bool Removeable { get { return removeable; } }
         bool removeable = false;
 
         public NoticeP(Control attachTo)
@@ -24,10 +27,13 @@ namespace TradeTweet
         internal virtual void ShowNotice(string message, NoticeType type = NoticeType.Info, EventType evType = EventType.Empty, Action callback = null)
         {
             NoticeP notice = new NoticeP(ParentWindow);
-
             notice.noticeText.Text = message.Replace("#PTMC_platform","").Replace('\n',' ');
-
             notice.removeable = type == NoticeType.Error;
+
+            if (notice.removeable)
+            {
+                notice.mouseMoved = mouseMoved;
+            }
 
             if (evType == EventType.Empty)
             switch (type)
@@ -65,7 +71,6 @@ namespace TradeTweet
             });       
         }
 
-
         private void label1_Click(object sender, EventArgs e)
         {
             if (crossLabel.Image != null)
@@ -75,27 +80,56 @@ namespace TradeTweet
             }
         }
 
+        void RefreshState()
+        {
+            if (mouseMoved != null)
+                mouseMoved.Invoke();
+        }
 
-        //protected override void OnMouseLeave(EventArgs e)
-        //{
-        //    if (removeable && this.ClientRectangle.Contains(this.PointToClient(Cursor.Position)))
-        //    {
-        //        crossLabel.Visible = true;
-        //        this.BackColor = Color.Black;
-        //    }
-        //    else
-        //    {
-        //        crossLabel.Visible = false;
-        //        this.BackColor = Color.Transparent;
-        //    }
-        //}
+        internal void RefreshRemoveabled()
+        {
+            if (!removeable) return;
 
-        //protected override void OnMouseMove(MouseEventArgs e)
-        //{
-        //    if (!removeable) return;
+            if (this.ClientRectangle.Contains(this.PointToClient(Cursor.Position)))
+            {
+                crossLabel.Visible = true;
+                this.BackColor = Color.Black;
+            }
+            else
+            {
+                crossLabel.Visible = false;
+                this.BackColor = Color.Transparent;
+            }
+        }
 
-        //     crossLabel.Image = Properties.Resources.TradeTweet_10;
-        //     this.BackColor = Color.Black;
-        //}
+        private void noticeText_MouseLeave(object sender, EventArgs e)
+        {
+            RefreshState();
+        }
+
+        private void NoticeP_MouseLeave(object sender, EventArgs e)
+        {
+            RefreshState();
+        }
+
+        private void noticeText_MouseEnter(object sender, EventArgs e)
+        {
+            RefreshState();
+        }
+
+        private void NoticeP_MouseEnter(object sender, EventArgs e)
+        {
+            RefreshState();
+        }
+
+        private void crossLabel_MouseLeave(object sender, EventArgs e)
+        {
+            RefreshState();
+        }
+
+        private void crossLabel_MouseEnter(object sender, EventArgs e)
+        {
+            RefreshState();
+        }
     }
 }

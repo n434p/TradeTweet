@@ -438,7 +438,7 @@ namespace TradeTweet
             // 
             // historyPanel
             // 
-            this.historyPanel.AutoScroll = true;
+            this.historyPanel.AutoScroll = false;
             this.historyPanel.AutoSize = true;
             this.historyPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.historyPanel.Dock = System.Windows.Forms.DockStyle.Fill;

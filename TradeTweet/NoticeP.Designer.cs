@@ -39,24 +39,28 @@
             this.noticeText.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.noticeText.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
             this.noticeText.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(148)))), ((int)(((byte)(148)))), ((int)(((byte)(148)))));
-            this.noticeText.Location = new System.Drawing.Point(45, 5);
+            this.noticeText.Location = new System.Drawing.Point(45, 0);
             this.noticeText.Margin = new System.Windows.Forms.Padding(0);
             this.noticeText.Name = "noticeText";
-            this.noticeText.Size = new System.Drawing.Size(320, 37);
+            this.noticeText.Size = new System.Drawing.Size(320, 45);
             this.noticeText.TabIndex = 0;
             this.noticeText.Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque interdum ru" +
     "trum sodales. Nullam mattis fermentum libero, non volutpat.\r\n";
             this.noticeText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.noticeText.MouseEnter += new System.EventHandler(this.noticeText_MouseEnter);
+            this.noticeText.MouseLeave += new System.EventHandler(this.noticeText_MouseLeave);
             // 
             // crossLabel
             // 
             this.crossLabel.Image = global::TradeTweet.Properties.Resources.TradeTweet_10;
-            this.crossLabel.Location = new System.Drawing.Point(372, 15);
+            this.crossLabel.Location = new System.Drawing.Point(366, 15);
             this.crossLabel.Margin = new System.Windows.Forms.Padding(0);
             this.crossLabel.Name = "crossLabel";
             this.crossLabel.Size = new System.Drawing.Size(16, 16);
             this.crossLabel.TabIndex = 1;
             this.crossLabel.Click += new System.EventHandler(this.label1_Click);
+            this.crossLabel.MouseEnter += new System.EventHandler(this.crossLabel_MouseEnter);
+            this.crossLabel.MouseLeave += new System.EventHandler(this.crossLabel_MouseLeave);
             // 
             // statusPic
             // 
@@ -78,6 +82,8 @@
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "NoticeP";
             this.Size = new System.Drawing.Size(400, 47);
+            this.MouseEnter += new System.EventHandler(this.NoticeP_MouseEnter);
+            this.MouseLeave += new System.EventHandler(this.NoticeP_MouseLeave);
             this.ResumeLayout(false);
 
         }

@@ -67,13 +67,6 @@ namespace TradeTweet
             InitializeComponent();
             this.DoubleBuffered = true;
 
-            historyPanel.AutoScroll = false;
-            historyPanel.HorizontalScroll.Maximum = 0;
-            historyPanel.HorizontalScroll.Visible = false;
-            historyPanel.VerticalScroll.Maximum = 0;
-            historyPanel.VerticalScroll.Visible = false;
-            historyPanel.AutoScroll = true;
-
             histPanelContainer.Controls.Add(historyPanel);
 
             scrollHistContainer.Controls.Add(histPanelContainer);
@@ -97,6 +90,7 @@ namespace TradeTweet
             picPanelContainer.Controls.Add(picPanel);
 
             noticePanel = new NoticeP(historyPanel);
+            noticePanel.mouseMoved += () => historyPanel.RefreshState(); 
 
             nnnPanel = new NoticeP2(this);
             this.Controls.Add(nnnPanel);
@@ -121,12 +115,8 @@ namespace TradeTweet
 
         private void Scroll_Scroll(object sender, EventArgs e)
         {
-            //histPanelContainer.AutoScroll = false;
-            //histPanelContainer.VerticalScroll.Enabled = false;
-            //histPanelContainer.VerticalScroll.Visible = false;
-            //histPanelContainer.VerticalScroll.Maximum = historyPanel.Height;
-            //histPanelContainer.AutoScroll = true;
-
+            //historyPanel.AutoScroll = false;
+            //historyPanel.AutoScrollMinSize = new Size(0, 400);
             historyPanel.AutoScrollPosition = new Point(0, scroll.Value);
             scroll.Invalidate();
             Application.DoEvents();
@@ -573,6 +563,10 @@ namespace TradeTweet
         {
             public CustomPanel()
             {
+                this.SetStyle(ControlStyles.UserPaint, true);
+                this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+                this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+
                 this.FlowDirection = FlowDirection.TopDown;
                 this.DoubleBuffered = true;
                 this.AutoSize = true;
@@ -581,9 +575,25 @@ namespace TradeTweet
                 this.Margin = new System.Windows.Forms.Padding(0);
                 this.Size = new System.Drawing.Size(400, 98);
                 this.WrapContents = false;
+
+                // prevent vertical scrollbar blinking
+                this.AutoScroll = false;
+                this.AutoScrollMinSize = new Size(int.MaxValue, int.MaxValue);
             }
 
+            protected override void OnMouseLeave(EventArgs e)
+            {
+                base.OnMouseLeave(e);
+                RefreshState();
+            }
 
+            internal void RefreshState()
+            {
+                foreach (NoticeP item in Controls)
+                {
+                    item.RefreshRemoveabled();
+                }
+            }
         }
 
         internal class DoubleBufferedPanel : Panel
