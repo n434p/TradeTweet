@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using PTLRuntime.NETScript;
 using TradeTweet.Properties;
 using PTLRuntime.NETScript.Application;
+using System.Diagnostics;
 
 namespace TradeTweet
 {
@@ -71,6 +72,14 @@ namespace TradeTweet
 
             scrollHistContainer.Controls.Add(histPanelContainer);
             scrollHistContainer.Controls.Add(scroll);
+
+            historyPanel.Resize += (o, e) =>
+            {
+                scroll.Maximum =  (historyPanel.Controls.Count != 0) ? historyPanel.Controls.OfType<NoticeP>().Max(b => b.Bottom) : 0;
+                scroll.LargeChange = scroll.Maximum / scroll.Height + scroll.Height;
+                scroll.Value = Math.Abs(historyPanel.AutoScrollPosition.Y);
+            };
+
             scroll.Scroll += Scroll_Scroll;
 
             this.Margin = new Padding(0);
@@ -115,9 +124,12 @@ namespace TradeTweet
 
         private void Scroll_Scroll(object sender, EventArgs e)
         {
-            //historyPanel.AutoScroll = false;
-            //historyPanel.AutoScrollMinSize = new Size(0, 400);
+            //prevent vertical scrollbar blinking on change
+            historyPanel.AutoScroll = false;
+            historyPanel.AutoScrollMinSize = new Size(1, 1);
+
             historyPanel.AutoScrollPosition = new Point(0, scroll.Value);
+            Debug.Print("SCroll: "+ scroll.Value + "  Auto Y: " + historyPanel.AutoScrollPosition.Y+ " Loc Y: "+ historyPanel.Location.Y);
             scroll.Invalidate();
             Application.DoEvents();
         }
@@ -336,7 +348,6 @@ namespace TradeTweet
             nnnPanel.ShowNotice(text, 1000, NoticeType.Info, type);
         }
     
-
         private void addImageBtn_Click(object sender, EventArgs e)
         {
             ProcessClick(picMode.Image);
@@ -382,7 +393,7 @@ namespace TradeTweet
 
         void MakeScreen(PictureCard c = null)
         {
-            Image img = null; // Terminal.MakeScreenshot(Form.ActiveForm.DisplayRectangle, Size.Empty);
+            Image img = Terminal.MakeScreenshot(Form.ActiveForm.DisplayRectangle, Size.Empty);
 
             if (img == null) return;
 
@@ -576,15 +587,9 @@ namespace TradeTweet
                 this.Size = new System.Drawing.Size(400, 98);
                 this.WrapContents = false;
 
-                // prevent vertical scrollbar blinking
-                this.AutoScroll = false;
-                this.AutoScrollMinSize = new Size(int.MaxValue, int.MaxValue);
-            }
-
-            protected override void OnMouseLeave(EventArgs e)
-            {
-                base.OnMouseLeave(e);
-                RefreshState();
+                //// prevent vertical scrollbar blinking on start
+                //this.AutoScroll = false;
+                //this.AutoScrollMinSize = new Size(1, 1);
             }
 
             internal void RefreshState()

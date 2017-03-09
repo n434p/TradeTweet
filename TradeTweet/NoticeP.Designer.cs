@@ -39,7 +39,7 @@
             this.noticeText.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.noticeText.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
             this.noticeText.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(148)))), ((int)(((byte)(148)))), ((int)(((byte)(148)))));
-            this.noticeText.Location = new System.Drawing.Point(45, 0);
+            this.noticeText.Location = new System.Drawing.Point(41, 1);
             this.noticeText.Margin = new System.Windows.Forms.Padding(0);
             this.noticeText.Name = "noticeText";
             this.noticeText.Size = new System.Drawing.Size(320, 45);
@@ -52,8 +52,8 @@
             // 
             // crossLabel
             // 
-            this.crossLabel.Image = global::TradeTweet.Properties.Resources.TradeTweet_10;
-            this.crossLabel.Location = new System.Drawing.Point(366, 15);
+            this.crossLabel.Image = global::TradeTweet.Properties.Resources.close;
+            this.crossLabel.Location = new System.Drawing.Point(363, 15);
             this.crossLabel.Margin = new System.Windows.Forms.Padding(0);
             this.crossLabel.Name = "crossLabel";
             this.crossLabel.Size = new System.Drawing.Size(16, 16);
@@ -65,7 +65,7 @@
             // statusPic
             // 
             this.statusPic.Image = global::TradeTweet.Properties.Resources.TradeTweet_11;
-            this.statusPic.Location = new System.Drawing.Point(14, 14);
+            this.statusPic.Location = new System.Drawing.Point(12, 15);
             this.statusPic.Margin = new System.Windows.Forms.Padding(0);
             this.statusPic.Name = "statusPic";
             this.statusPic.Size = new System.Drawing.Size(16, 16);
@@ -81,7 +81,7 @@
             this.Controls.Add(this.noticeText);
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "NoticeP";
-            this.Size = new System.Drawing.Size(400, 47);
+            this.Size = new System.Drawing.Size(392, 47);
             this.MouseEnter += new System.EventHandler(this.NoticeP_MouseEnter);
             this.MouseLeave += new System.EventHandler(this.NoticeP_MouseLeave);
             this.ResumeLayout(false);

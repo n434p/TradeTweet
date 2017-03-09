@@ -41,14 +41,7 @@ namespace TradeTweet
 
             if (nThumbHeight > nTrackHeight)
             {
-                nThumbHeight = nTrackHeight;
-                fThumbHeight = nTrackHeight;
-            }
-            // min thumb height
-            if (nThumbHeight < 10)
-            {
-                nThumbHeight = 20;
-                fThumbHeight = 20;
+                return 0;
             }
 
             return nThumbHeight;
