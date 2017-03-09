@@ -16,8 +16,8 @@ namespace TradeTweet
         Brush oBrush = new SolidBrush(Color.FromArgb(0, 0, 0));
         Brush oWhiteBrush = new SolidBrush(Color.FromArgb(31, 31, 31));
 
-        protected int moLargeChange = 10;
-        protected int moSmallChange = 1;
+        protected int moLargeChange = 50;
+        protected int moSmallChange = 10;
         protected int moMinimum = 0;
         protected int moMaximum = 100;
         protected int moValue = 0;
@@ -107,25 +107,39 @@ namespace TradeTweet
             get { return moValue; }
             set
             {
-                moValue = value;
-
-                GetThumbHeight();
-
                 //figure out value
                 int nPixelRange = this.Height - 2 - GetThumbHeight();
                 int nRealRange = (Maximum - Minimum) - LargeChange;
-                float fPerc = 0.0f;
-                if (nRealRange != 0)
+
+                if (nRealRange > 0)
                 {
-                    fPerc = (float)moValue / (float)nRealRange;
+                    if (nPixelRange > 0)
+                    {
+                        int nNewThumbTop = moValue + value;
 
+                        if (nNewThumbTop < 0)
+                        {
+                            moThumbTop = nNewThumbTop = 0;
+                        }
+                        else if (nNewThumbTop > nPixelRange)
+                        {
+                            moThumbTop = nNewThumbTop = nPixelRange;
+                        }
+                        else
+                        {
+                            moThumbTop = nNewThumbTop;
+                        }
+
+                        //figure out value
+                        float fPerc = (float)moThumbTop / (float)nPixelRange;
+                        float fValue = fPerc * (Maximum - LargeChange);
+                        moValue = (int)fValue;
+
+                        Application.DoEvents();
+
+                        Invalidate();
+                    }
                 }
-
-                float fTop = fPerc * nPixelRange;
-                moThumbTop = (int)fTop;
-
-
-                Invalidate();
             }
         }
 

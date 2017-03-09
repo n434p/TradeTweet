@@ -76,9 +76,13 @@ namespace TradeTweet
             historyPanel.Resize += (o, e) =>
             {
                 scroll.Maximum =  (historyPanel.Controls.Count != 0) ? historyPanel.Controls.OfType<NoticeP>().Max(b => b.Bottom) : 0;
-                scroll.LargeChange = scroll.Maximum / scroll.Height + scroll.Height;
+                //scroll.LargeChange = scroll.Maximum / scroll.Height + scroll.Height;
+                Debug.Print("1AS " + historyPanel.AutoScrollPosition.Y + "  scroll.Value  " + scroll.Value);
                 scroll.Value = Math.Abs(historyPanel.AutoScrollPosition.Y);
+                Debug.Print("2AS " + historyPanel.AutoScrollPosition.Y + "  scroll.Value  " + scroll.Value);
             };
+
+            historyPanel.MouseWheel += Scroll_Scroll;
 
             scroll.Scroll += Scroll_Scroll;
 
@@ -127,6 +131,12 @@ namespace TradeTweet
             //prevent vertical scrollbar blinking on change
             historyPanel.AutoScroll = false;
             historyPanel.AutoScrollMinSize = new Size(1, 1);
+
+            if (e is MouseEventArgs)
+            {
+                int wheelMovement = SystemInformation.MouseWheelScrollDelta;
+                scroll.Value = ((e as MouseEventArgs).Delta / wheelMovement) * 2;
+            }
 
             historyPanel.AutoScrollPosition = new Point(0, scroll.Value);
             Debug.Print("SCroll: "+ scroll.Value + "  Auto Y: " + historyPanel.AutoScrollPosition.Y+ " Loc Y: "+ historyPanel.Location.Y);
@@ -587,7 +597,7 @@ namespace TradeTweet
                 this.Size = new System.Drawing.Size(400, 98);
                 this.WrapContents = false;
 
-                //// prevent vertical scrollbar blinking on start
+                // prevent vertical scrollbar blinking on start
                 //this.AutoScroll = false;
                 //this.AutoScrollMinSize = new Size(1, 1);
             }
