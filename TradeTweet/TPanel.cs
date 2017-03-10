@@ -75,11 +75,8 @@ namespace TradeTweet
 
             historyPanel.Resize += (o, e) =>
             {
-                scroll.Maximum =  (historyPanel.Controls.Count != 0) ? historyPanel.Controls.OfType<NoticeP>().Max(b => b.Bottom) : 0;
-                //scroll.LargeChange = scroll.Maximum / scroll.Height + scroll.Height;
-                Debug.Print("1AS " + historyPanel.AutoScrollPosition.Y + "  scroll.Value  " + scroll.Value);
-                scroll.Value = Math.Abs(historyPanel.AutoScrollPosition.Y);
-                Debug.Print("2AS " + historyPanel.AutoScrollPosition.Y + "  scroll.Value  " + scroll.Value);
+                scroll.Maximum =  (historyPanel.Controls.Count != 0) ? historyPanel.Controls.OfType<NoticeP>().Sum(b => b.Height) : 0;
+                scroll.LargeChange = scroll.Maximum / scroll.Height + scroll.Height;
             };
 
             historyPanel.MouseWheel += Scroll_Scroll;
@@ -135,11 +132,11 @@ namespace TradeTweet
             if (e is MouseEventArgs)
             {
                 int wheelMovement = SystemInformation.MouseWheelScrollDelta;
-                scroll.Value = ((e as MouseEventArgs).Delta / wheelMovement) * 2;
+                //scroll.Value = ((e as MouseEventArgs).Delta / wheelMovement) * 5;
+                scroll.Value = (((e as MouseEventArgs).Delta < 0) ? 10 : -10);
             }
 
             historyPanel.AutoScrollPosition = new Point(0, scroll.Value);
-            Debug.Print("SCroll: "+ scroll.Value + "  Auto Y: " + historyPanel.AutoScrollPosition.Y+ " Loc Y: "+ historyPanel.Location.Y);
             scroll.Invalidate();
             Application.DoEvents();
         }

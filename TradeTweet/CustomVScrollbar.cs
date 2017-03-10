@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using System.Diagnostics;
 
 namespace TradeTweet
 {
@@ -41,8 +41,10 @@ namespace TradeTweet
 
             if (nThumbHeight > nTrackHeight)
             {
-                return 0;
+                nThumbHeight = 0;
             }
+
+            Debug.Print("ThumbHeight: " + nThumbHeight);
 
             return nThumbHeight;
         }
@@ -63,6 +65,7 @@ namespace TradeTweet
             get { return moLargeChange; }
             set
             {
+                Debug.Print("LargeChange: " + moLargeChange + " -> " + value);
                 moLargeChange = value;
                 Invalidate();
             }
@@ -96,6 +99,7 @@ namespace TradeTweet
             get { return moMaximum; }
             set
             {
+                Debug.Print("Maximum: " + moMaximum + " -> " + value);
                 moMaximum = value;
                 Invalidate();
             }
@@ -107,6 +111,7 @@ namespace TradeTweet
             get { return moValue; }
             set
             {
+                Debug.Print("Value: " + moValue + " -> " + value);
                 //figure out value
                 int nPixelRange = this.Height - 2 - GetThumbHeight();
                 int nRealRange = (Maximum - Minimum) - LargeChange;
@@ -115,7 +120,7 @@ namespace TradeTweet
                 {
                     if (nPixelRange > 0)
                     {
-                        int nNewThumbTop = moValue + value;
+                        int nNewThumbTop = moThumbTop + value;
 
                         if (nNewThumbTop < 0)
                         {
@@ -166,7 +171,7 @@ namespace TradeTweet
             int nSpanHeight = (int)fSpanHeight;
 
             int nTop = moThumbTop;
-            nTop += 1;
+            //nTop += 1;
 
             e.Graphics.FillRectangle(Brushes.DimGray, new Rectangle(1, nTop, this.Width - 2, nSpanHeight));
         }
@@ -192,7 +197,7 @@ namespace TradeTweet
             Point ptPoint = this.PointToClient(Cursor.Position);
 
             int nTop = moThumbTop;
-            nTop += 1;
+            //nTop += 1;
 
 
             Rectangle thumbrect = new Rectangle(new Point(1, nTop), new Size(this.Width, GetThumbHeight()));
@@ -242,6 +247,8 @@ namespace TradeTweet
                     float fPerc = (float)moThumbTop / (float)nPixelRange;
                     float fValue = fPerc * (Maximum - LargeChange);
                     moValue = (int)fValue;
+
+                    Debug.Print("Move Value: " + moValue);
 
                     Application.DoEvents();
 
