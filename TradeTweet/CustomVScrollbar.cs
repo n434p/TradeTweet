@@ -30,7 +30,7 @@ namespace TradeTweet
         private bool moThumbDown = false;
         private bool moThumbDragging = false;
 
-        public new event EventHandler Scroll = null;
+        public new event EventHandler ThumbMoving = null;
         public event EventHandler ValueChanged = null;
 
         private int GetThumbHeight()
@@ -126,9 +126,9 @@ namespace TradeTweet
                         {
                             moThumbTop = nNewThumbTop = 0;
                         }
-                        else if (nNewThumbTop > Maximum - nPixelRange)
+                        else if (nNewThumbTop > nPixelRange)
                         {
-                            moThumbTop = nNewThumbTop = Maximum - nPixelRange;
+                            moThumbTop = nNewThumbTop = nPixelRange;
                         }
                         else
                         {
@@ -273,8 +273,8 @@ namespace TradeTweet
             if (ValueChanged != null)
                 ValueChanged(this, new EventArgs());
 
-            if (Scroll != null)
-                Scroll(this, new EventArgs());
+            if (ThumbMoving != null)
+                ThumbMoving(this, new EventArgs());
         }
 
     }

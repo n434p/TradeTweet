@@ -73,27 +73,26 @@ namespace TradeTweet
             scrollHistContainer.Controls.Add(histPanelContainer);
             scrollHistContainer.Controls.Add(scroll);
 
-            historyPanel.Resize += (o, e) =>
+            historyPanel.needRescrolling += () =>
             {
-                Debug.Print("h:" + historyPanel.PreferredSize.Height +
-                 " historyPanel.VerticalScroll.Maximum " + historyPanel.VerticalScroll.Maximum +
-                 " scroll.Maximum" + scroll.Maximum +
-                 " scroll.LargeChange" + scroll.LargeChange);
-
                 var h = historyPanel.PreferredSize.Height;
-                historyPanel.VerticalScroll.Maximum = h;
                 scroll.Maximum = h;
                 scroll.LargeChange = h / historyPanel.Height + scroll.Height;
 
-                Debug.Print(">>> "+
-                    " historyPanel.VerticalScroll.Maximum " + historyPanel.VerticalScroll.Maximum +
-                    " scroll.Maximum" + scroll.Maximum +
-                    " scroll.LargeChange" + scroll.LargeChange);
+                historyPanel.SuspendLayout();
+
+                historyPanel.AutoScrollMinSize = new Size(int.MaxValue, h);
+
+                historyPanel.VerticalScroll.Maximum = h;
+                historyPanel.HorizontalScroll.Visible = false;
+                historyPanel.VerticalScroll.Visible = false;
+
+                historyPanel.ResumeLayout();
             };
 
             historyPanel.MouseWheel += Scroll_Scroll;
 
-            scroll.Scroll += Scroll_Scroll;
+            scroll.ThumbMoving += Scroll_Scroll;
 
             this.Margin = new Padding(0);
             this.Padding = new Padding(0);
@@ -137,34 +136,17 @@ namespace TradeTweet
 
         private void Scroll_Scroll(object sender, EventArgs e)
         {
-            //prevent vertical scrollbar blinking on change
-            //historyPanel.AutoScroll = false;
-            //historyPanel.AutoScrollMinSize = new Size(0, 0);
+
 
             if (e is MouseEventArgs)
             {
                 int wheelMovement = SystemInformation.MouseWheelScrollDelta;
-                //scroll.Value = ((e as MouseEventArgs).Delta / wheelMovement) * 5;
-                scroll.Value = (((e as MouseEventArgs).Delta < 0) ? 1 : -1);
-            }
+                scroll.Value = (((e as MouseEventArgs).Delta < 0) ? 10 : -10);
 
-            //historyPanel.VerticalScroll.Visible = false;
-            //historyPanel.VerticalScroll.Minimum = 0;
+
+            }
             
             historyPanel.AutoScrollPosition = new Point(0, scroll.Value);
-            Debug.Print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + historyPanel.AutoScrollPosition);
-
-
-            //historyPanel.val = scroll.Value;
-            //historyPanel.Refresh();
-
-            //historyPanel.AutoScroll = false;
-            //historyPanel.AutoScrollMinSize = new Size(1, 1);
-
-            //historyPanel.AutoScroll = false;
-
-
-            //  historyPanel.ChangeLocation(0, scroll.Value);
 
             scroll.Invalidate();
             Application.DoEvents();
@@ -608,7 +590,7 @@ namespace TradeTweet
 
         internal class CustomPanel : FlowLayoutPanel
         {
-            internal int val = 0;
+            public Action needRescrolling;
 
             public CustomPanel()
             {
@@ -630,7 +612,36 @@ namespace TradeTweet
                 this.HorizontalScroll.Visible = false;
                 this.VerticalScroll.Maximum = 0;
                 this.VerticalScroll.Visible = false;
-                this.AutoScroll = true;
+            }
+
+            void M(Control c)
+            {
+
+            }
+
+
+            protected override void OnResize(EventArgs eventargs)
+            {
+                base.OnResize(eventargs);
+
+                if (needRescrolling != null)
+                    needRescrolling.Invoke();
+            }
+
+            protected override void OnControlAdded(ControlEventArgs e)
+            {
+                base.OnControlAdded(e);
+
+                if (needRescrolling != null)
+                    needRescrolling.Invoke();
+            }
+
+            protected override void OnControlRemoved(ControlEventArgs e)
+            {
+                base.OnControlRemoved(e);
+
+                if (needRescrolling != null)
+                    needRescrolling.Invoke();
             }
 
             internal void RefreshState()
@@ -639,11 +650,6 @@ namespace TradeTweet
                 {
                     item.RefreshRemoveabled();
                 }
-            }
-
-            internal void ChangeLocation(int x, int y)
-            {
-                this.SetDisplayRectLocation(x, y);
             }
         }
 
@@ -658,14 +664,6 @@ namespace TradeTweet
                 this.DoubleBuffered = true;
 
                 this.AutoScroll = false;
-
-                this.HorizontalScroll.Visible = false;
-                this.HorizontalScroll.Minimum = 0;
-                this.HorizontalScroll.Maximum = 0;
-
-                this.VerticalScroll.Visible = false;
-                this.VerticalScroll.Minimum = 0;
-                this.VerticalScroll.Maximum = 100;
 
                 this.AutoSize = true;
                 this.BackgroundImage = global::TradeTweet.Properties.Resources.factura;
