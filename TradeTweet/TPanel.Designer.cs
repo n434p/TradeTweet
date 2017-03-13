@@ -30,7 +30,6 @@ namespace TradeTweet
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TPanel));
             this.gridPanel = new System.Windows.Forms.TableLayoutPanel();
             this.headerPanel = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
@@ -57,10 +56,7 @@ namespace TradeTweet
             this.picPanelBase = new System.Windows.Forms.Panel();
             this.label15 = new System.Windows.Forms.Label();
             this.picPanelContainer = new System.Windows.Forms.Label();
-            this.scrollHistContainer = new TPanel.DoubleBufferedPanel();
-            this.histPanelContainer = new TPanel.DoubleBufferedPanel();
-            this.historyPanel = new TPanel.CustomPanel();
-            this.scroll = new CustomVScrollbar();
+            this.scrollHistContainer = new TPanel.CustomPanel();
             this.gridPanel.SuspendLayout();
             this.headerPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.avatar)).BeginInit();
@@ -416,51 +412,15 @@ namespace TradeTweet
             // 
             // scrollHistContainer
             // 
+            this.scrollHistContainer.AutoScroll = false;
             this.scrollHistContainer.AutoSize = true;
-            this.scrollHistContainer.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("scrollHistContainer.BackgroundImage")));
+            this.scrollHistContainer.BackgroundImage = global::TradeTweet.Properties.Resources.factura;
             this.scrollHistContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.scrollHistContainer.Location = new System.Drawing.Point(32, 48);
             this.scrollHistContainer.Margin = new System.Windows.Forms.Padding(0);
             this.scrollHistContainer.Name = "scrollHistContainer";
             this.scrollHistContainer.Size = new System.Drawing.Size(400, 151);
             this.scrollHistContainer.TabIndex = 7;
-            // 
-            // histPanelContainer
-            // 
-            this.histPanelContainer.AutoSize = false;
-            this.histPanelContainer.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("histPanelContainer.BackgroundImage")));
-            this.histPanelContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.histPanelContainer.Location = new System.Drawing.Point(32, 48);
-            this.histPanelContainer.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
-            this.histPanelContainer.Name = "histPanelContainer";
-            this.histPanelContainer.Size = new System.Drawing.Size(392, 151);
-            this.histPanelContainer.TabIndex = 7;
-            // 
-            // historyPanel
-            // 
-            this.historyPanel.AutoScroll = false;
-            this.historyPanel.AutoSize = true;
-            this.historyPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.historyPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.historyPanel.Location = new System.Drawing.Point(99, 72);
-            this.historyPanel.Margin = new System.Windows.Forms.Padding(0);
-            this.historyPanel.Name = "historyPanel";
-            this.historyPanel.Size = new System.Drawing.Size(266, 103);
-            this.historyPanel.TabIndex = 7;
-            // 
-            // scroll
-            // 
-            this.scroll.Dock = System.Windows.Forms.DockStyle.Right;
-            this.scroll.LargeChange = 10;
-            this.scroll.Location = new System.Drawing.Point(0, 0);
-            this.scroll.Margin = new System.Windows.Forms.Padding(0);
-            this.scroll.Maximum = 100;
-            this.scroll.Minimum = 0;
-            this.scroll.Name = "scroll";
-            this.scroll.Size = new System.Drawing.Size(8, 150);
-            this.scroll.SmallChange = 1;
-            this.scroll.TabIndex = 0;
-            this.scroll.Value = 0;
             // 
             // TPanel
             // 
@@ -515,10 +475,7 @@ namespace TradeTweet
         private System.Windows.Forms.Panel separatorLine;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label2;
-        private CustomPanel historyPanel;
-        private DoubleBufferedPanel histPanelContainer;
-        private CustomVScrollbar scroll;
-        private DoubleBufferedPanel scrollHistContainer;
+        private CustomPanel scrollHistContainer;
     }
 
 

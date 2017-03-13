@@ -30,7 +30,7 @@ namespace TradeTweet
         private bool moThumbDown = false;
         private bool moThumbDragging = false;
 
-        public new event EventHandler ThumbMoving = null;
+        public event EventHandler ThumbMoving = null;
         public event EventHandler ValueChanged = null;
 
         private int GetThumbHeight()

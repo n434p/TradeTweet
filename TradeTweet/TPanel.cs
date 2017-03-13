@@ -68,32 +68,6 @@ namespace TradeTweet
             InitializeComponent();
             this.DoubleBuffered = true;
 
-            histPanelContainer.Controls.Add(historyPanel);
-
-            scrollHistContainer.Controls.Add(histPanelContainer);
-            scrollHistContainer.Controls.Add(scroll);
-
-            historyPanel.needRescrolling += () =>
-            {
-                var h = historyPanel.PreferredSize.Height;
-                scroll.Maximum = h;
-                scroll.LargeChange = h / historyPanel.Height + scroll.Height;
-
-                historyPanel.SuspendLayout();
-
-                historyPanel.AutoScrollMinSize = new Size(int.MaxValue, h);
-
-                historyPanel.VerticalScroll.Maximum = h;
-                historyPanel.HorizontalScroll.Visible = false;
-                historyPanel.VerticalScroll.Visible = false;
-
-                historyPanel.ResumeLayout();
-            };
-
-            historyPanel.MouseWheel += Scroll_Scroll;
-
-            scroll.ThumbMoving += Scroll_Scroll;
-
             this.Margin = new Padding(0);
             this.Padding = new Padding(0);
 
@@ -110,8 +84,8 @@ namespace TradeTweet
             picPanel = new PicturePanel();
             picPanelContainer.Controls.Add(picPanel);
 
-            noticePanel = new NoticeP(historyPanel);
-            noticePanel.mouseMoved += () => historyPanel.RefreshState(); 
+            noticePanel = new NoticeP(scrollHistContainer.panel);
+            noticePanel.mouseMoved += () => scrollHistContainer.RefreshState(); 
 
             nnnPanel = new NoticeP2(this);
             this.Controls.Add(nnnPanel);
@@ -134,23 +108,6 @@ namespace TradeTweet
 
         }
 
-        private void Scroll_Scroll(object sender, EventArgs e)
-        {
-
-
-            if (e is MouseEventArgs)
-            {
-                int wheelMovement = SystemInformation.MouseWheelScrollDelta;
-                scroll.Value = (((e as MouseEventArgs).Delta < 0) ? 10 : -10);
-
-
-            }
-            
-            historyPanel.AutoScrollPosition = new Point(0, scroll.Value);
-
-            scroll.Invalidate();
-            Application.DoEvents();
-        }
 
         protected override void OnResize(EventArgs e)
         {
@@ -588,16 +545,12 @@ namespace TradeTweet
             addImageBtn.Image = Properties.Resources.TradeTweet_05;
         }
 
-        internal class CustomPanel : FlowLayoutPanel
+        internal class AnotherPanel : FlowLayoutPanel 
         {
             public Action needRescrolling;
 
-            public CustomPanel()
+            public AnotherPanel()
             {
-                this.SetStyle(ControlStyles.UserPaint, true);
-                this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
-                this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
-
                 this.FlowDirection = FlowDirection.TopDown;
                 this.DoubleBuffered = true;
                 this.AutoSize = true;
@@ -610,15 +563,10 @@ namespace TradeTweet
                 this.AutoScroll = false;
                 this.HorizontalScroll.Maximum = 0;
                 this.HorizontalScroll.Visible = false;
+                this.HorizontalScroll.Enabled = false;
                 this.VerticalScroll.Maximum = 0;
                 this.VerticalScroll.Visible = false;
             }
-
-            void M(Control c)
-            {
-
-            }
-
 
             protected override void OnResize(EventArgs eventargs)
             {
@@ -643,10 +591,91 @@ namespace TradeTweet
                 if (needRescrolling != null)
                     needRescrolling.Invoke();
             }
+        }
+
+
+        internal class CustomPanel : DoubleBufferedPanel
+        {
+            public AnotherPanel panel = new AnotherPanel();
+            CustomVScrollbar scrollB = new CustomVScrollbar();
+
+            public CustomPanel()
+            {
+                scrollB.Dock = System.Windows.Forms.DockStyle.Right;
+                scrollB.LargeChange = 10;
+                scrollB.Margin = new System.Windows.Forms.Padding(0);
+                scrollB.Maximum = 100;
+                scrollB.Minimum = 0;
+                scrollB.Name = "scroll";
+                scrollB.Size = new System.Drawing.Size(8, 150);
+                scrollB.SmallChange = 1;
+                scrollB.TabIndex = 0;
+                scrollB.Value = 0;
+
+                scrollB.ThumbMoving += ScrollB_ThumbMoving;
+                panel.MouseWheel += Panel_MouseWheel;
+                panel.needRescrolling += needRescrolling;
+                panel.Scroll += Panel_Scroll;
+
+                this.Controls.Add(panel);
+                this.Controls.Add(scrollB);
+
+                this.AutoScroll = false;
+                this.HorizontalScroll.Maximum = 0;
+                this.HorizontalScroll.Visible = false;
+                this.HorizontalScroll.Enabled = false;
+                this.VerticalScroll.Maximum = 0;
+                this.VerticalScroll.Visible = false;
+            }
+
+            private void Panel_Scroll(object sender, ScrollEventArgs e)
+            {
+                
+            }
+
+            private void Panel_MouseWheel(object sender, MouseEventArgs e)
+            {
+                var h = scrollB.Value;
+
+                int wheelMovement = SystemInformation.MouseWheelScrollDelta;
+                scrollB.Value = (((e as MouseEventArgs).Delta < 0) ? 10 : -10);
+
+                if (h == scrollB.Value) return;
+
+                ScrollB_ThumbMoving(null, e);
+
+                base.OnMouseWheel(e);
+            }
+
+            private void ScrollB_ThumbMoving(object sender, EventArgs e)
+            {
+                panel.AutoScrollPosition = new Point(0, scrollB.Value);
+                scrollB.Invalidate();
+                Application.DoEvents();
+            }
+
+            void needRescrolling()
+            {
+                var h = panel.PreferredSize.Height;
+                scrollB.Maximum = h;
+                scrollB.LargeChange = h / panel.Height + scrollB.Height;
+
+                panel.SuspendLayout();
+
+                panel.AutoScrollMinSize = new Size(1, int.MaxValue);
+
+                panel.VerticalScroll.Maximum = h;
+                this.HorizontalScroll.Maximum = 0;
+                this.HorizontalScroll.Visible = false;
+                this.HorizontalScroll.Enabled = false;
+                panel.VerticalScroll.Visible = false;
+
+                panel.ResumeLayout();
+            }
 
             internal void RefreshState()
             {
-                foreach (NoticeP item in Controls)
+                foreach (NoticeP item in panel.Controls)
                 {
                     item.RefreshRemoveabled();
                 }
@@ -663,17 +692,17 @@ namespace TradeTweet
 
                 this.DoubleBuffered = true;
 
-                this.AutoScroll = false;
-
                 this.AutoSize = true;
-                this.BackgroundImage = global::TradeTweet.Properties.Resources.factura;
+                this.BackgroundImage = Properties.Resources.factura;
                 this.Dock = System.Windows.Forms.DockStyle.Fill;
                 this.Location = new System.Drawing.Point(32, 48);
                 this.Margin = new System.Windows.Forms.Padding(0);
                 this.Size = new System.Drawing.Size(400, 98);
+
+                this.HorizontalScroll.Maximum = 0;
+                this.HorizontalScroll.Visible = false;
+                this.HorizontalScroll.Enabled = false;
             }
-
-
         }
 
     }
