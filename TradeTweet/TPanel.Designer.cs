@@ -427,11 +427,11 @@ namespace TradeTweet
             // 
             // histPanelContainer
             // 
-            this.histPanelContainer.AutoSize = true;
+            this.histPanelContainer.AutoSize = false;
             this.histPanelContainer.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("histPanelContainer.BackgroundImage")));
             this.histPanelContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.histPanelContainer.Location = new System.Drawing.Point(32, 48);
-            this.histPanelContainer.Margin = new System.Windows.Forms.Padding(0, 0, 8, 0);
+            this.histPanelContainer.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.histPanelContainer.Name = "histPanelContainer";
             this.histPanelContainer.Size = new System.Drawing.Size(392, 151);
             this.histPanelContainer.TabIndex = 7;

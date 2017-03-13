@@ -126,9 +126,9 @@ namespace TradeTweet
                         {
                             moThumbTop = nNewThumbTop = 0;
                         }
-                        else if (nNewThumbTop > nPixelRange)
+                        else if (nNewThumbTop > Maximum - nPixelRange)
                         {
-                            moThumbTop = nNewThumbTop = nPixelRange;
+                            moThumbTop = nNewThumbTop = Maximum - nPixelRange;
                         }
                         else
                         {

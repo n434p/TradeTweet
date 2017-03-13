@@ -75,8 +75,20 @@ namespace TradeTweet
 
             historyPanel.Resize += (o, e) =>
             {
-                scroll.Maximum =  (historyPanel.Controls.Count != 0) ? historyPanel.Controls.OfType<NoticeP>().Sum(b => b.Height) : 0;
-                scroll.LargeChange = scroll.Maximum / scroll.Height + scroll.Height;
+                Debug.Print("h:" + historyPanel.PreferredSize.Height +
+                 " historyPanel.VerticalScroll.Maximum " + historyPanel.VerticalScroll.Maximum +
+                 " scroll.Maximum" + scroll.Maximum +
+                 " scroll.LargeChange" + scroll.LargeChange);
+
+                var h = historyPanel.PreferredSize.Height;
+                historyPanel.VerticalScroll.Maximum = h;
+                scroll.Maximum = h;
+                scroll.LargeChange = h / historyPanel.Height + scroll.Height;
+
+                Debug.Print(">>> "+
+                    " historyPanel.VerticalScroll.Maximum " + historyPanel.VerticalScroll.Maximum +
+                    " scroll.Maximum" + scroll.Maximum +
+                    " scroll.LargeChange" + scroll.LargeChange);
             };
 
             historyPanel.MouseWheel += Scroll_Scroll;
@@ -126,17 +138,34 @@ namespace TradeTweet
         private void Scroll_Scroll(object sender, EventArgs e)
         {
             //prevent vertical scrollbar blinking on change
-            historyPanel.AutoScroll = false;
-            historyPanel.AutoScrollMinSize = new Size(1, 1);
+            //historyPanel.AutoScroll = false;
+            //historyPanel.AutoScrollMinSize = new Size(0, 0);
 
             if (e is MouseEventArgs)
             {
                 int wheelMovement = SystemInformation.MouseWheelScrollDelta;
                 //scroll.Value = ((e as MouseEventArgs).Delta / wheelMovement) * 5;
-                scroll.Value = (((e as MouseEventArgs).Delta < 0) ? 10 : -10);
+                scroll.Value = (((e as MouseEventArgs).Delta < 0) ? 1 : -1);
             }
 
+            //historyPanel.VerticalScroll.Visible = false;
+            //historyPanel.VerticalScroll.Minimum = 0;
+            
             historyPanel.AutoScrollPosition = new Point(0, scroll.Value);
+            Debug.Print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " + historyPanel.AutoScrollPosition);
+
+
+            //historyPanel.val = scroll.Value;
+            //historyPanel.Refresh();
+
+            //historyPanel.AutoScroll = false;
+            //historyPanel.AutoScrollMinSize = new Size(1, 1);
+
+            //historyPanel.AutoScroll = false;
+
+
+            //  historyPanel.ChangeLocation(0, scroll.Value);
+
             scroll.Invalidate();
             Application.DoEvents();
         }
@@ -579,6 +608,8 @@ namespace TradeTweet
 
         internal class CustomPanel : FlowLayoutPanel
         {
+            internal int val = 0;
+
             public CustomPanel()
             {
                 this.SetStyle(ControlStyles.UserPaint, true);
@@ -594,9 +625,12 @@ namespace TradeTweet
                 this.Size = new System.Drawing.Size(400, 98);
                 this.WrapContents = false;
 
-                // prevent vertical scrollbar blinking on start
-                //this.AutoScroll = false;
-                //this.AutoScrollMinSize = new Size(1, 1);
+                this.AutoScroll = false;
+                this.HorizontalScroll.Maximum = 0;
+                this.HorizontalScroll.Visible = false;
+                this.VerticalScroll.Maximum = 0;
+                this.VerticalScroll.Visible = false;
+                this.AutoScroll = true;
             }
 
             internal void RefreshState()
@@ -606,13 +640,32 @@ namespace TradeTweet
                     item.RefreshRemoveabled();
                 }
             }
+
+            internal void ChangeLocation(int x, int y)
+            {
+                this.SetDisplayRectLocation(x, y);
+            }
         }
 
         internal class DoubleBufferedPanel : Panel
         {
             public DoubleBufferedPanel()
             {
+                this.SetStyle(ControlStyles.UserPaint, true);
+                this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+                this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+
                 this.DoubleBuffered = true;
+
+                this.AutoScroll = false;
+
+                this.HorizontalScroll.Visible = false;
+                this.HorizontalScroll.Minimum = 0;
+                this.HorizontalScroll.Maximum = 0;
+
+                this.VerticalScroll.Visible = false;
+                this.VerticalScroll.Minimum = 0;
+                this.VerticalScroll.Maximum = 100;
 
                 this.AutoSize = true;
                 this.BackgroundImage = global::TradeTweet.Properties.Resources.factura;
