@@ -4,14 +4,6 @@ using System.Drawing;
 using PTLRuntime.NETScript;
 using System.Threading;
 using System;
-using System.IO;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Linq;
-using PTLRuntime.NETScript.Settings;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Reflection;
-using System.Runtime.Serialization;
 
 namespace TradeTweet
 {
@@ -19,7 +11,6 @@ namespace TradeTweet
     public partial class TradeTweet : Form, IExternalComponent, ITradeComponent
     {
         ToolTip tip; 
-        TwittwerService ts;
         ConnectionPanel connectionPanel;
         EnterPinPanel enterPinPanel;
         CancellationToken ct;
@@ -42,11 +33,11 @@ namespace TradeTweet
 
             Settings.LoadSettings();
 
-            ts = AutoTweet.Run(PlatformEngine);
+            AutoTweet.Run(PlatformEngine);
 
             noticePanel = new NoticeP2(this);
 
-            ts.onAuthorized = (s1, s2) => {
+            AutoTweet.twitService.onAuthorized = (s1, s2) => {
                 Settings.ast = s1;
                 Settings.atn = s2;
             };
@@ -86,14 +77,14 @@ namespace TradeTweet
 
         private void OnLogout()
         {
-            ts.Disconnect();
+            AutoTweet.twitService.Disconnect();
             Settings.ClearSettings();
             StartPlugin();
         }
 
         private void OnConnect()
         {
-            Response resp = ts.Connect();
+            Response resp = AutoTweet.twitService.Connect();
 
             if (resp.Failed)
             {
@@ -111,7 +102,7 @@ namespace TradeTweet
 
         private void OnPinEntered(string pin)
         {
-            var resp = ts.SetToken(pin);
+            var resp = AutoTweet.twitService.SetToken(pin);
 
             if (resp.Failed)
             {

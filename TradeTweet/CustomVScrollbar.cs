@@ -148,7 +148,6 @@ namespace TradeTweet
             }
         }
 
-
         protected override void OnPaint(PaintEventArgs e)
         {
             Draw(e);
@@ -171,7 +170,6 @@ namespace TradeTweet
             int nSpanHeight = (int)fSpanHeight;
 
             int nTop = moThumbTop;
-            //nTop += 1;
 
             e.Graphics.FillRectangle(Brushes.DimGray, new Rectangle(1, nTop, this.Width - 2, nSpanHeight));
         }

@@ -132,39 +132,51 @@ namespace TradeTweet
 
     static class AutoTweet
     {
-        public static bool isRunning { get { return ts != null && ts.Connected && PlatformEngine != null; } }
-        static TwittwerService ts;
+        static int instancceCount = 0;
+
+        public static bool isRunning { get { return twitService != null && twitService.Connected && PlatformEngine != null; } }
+
+        public static TwittwerService twitService;
         static CancellationToken ct;
         static CancellationTokenSource cts;
 
         static internal NETSDK PlatformEngine;
         public static Action<string, EventType> OnAutoTweetSend = null;
-        public static Action<string, Response, EventType> OnAutoTweetRespond = null;
+        public static Action<TwitMessage, Response> OnAutoTweetRespond = null;
 
-        public static TwittwerService Run(NETSDK engine)
+
+        public static void Run(NETSDK engine)
         {
-            if (isRunning) return ts;
+            instancceCount++;
+
+            if (instancceCount > 1) return;
 
             cts = new CancellationTokenSource();
             ct = cts.Token;
 
             PlatformEngine = engine;
 
-            ts = new TwittwerService(Settings.ast, Settings.atn);
+            twitService = new TwittwerService(Settings.ast, Settings.atn);
 
             PlatformEngine.Orders.OrderAdded += Orders_OrderAdded;
             PlatformEngine.Orders.OrderRemoved += Orders_OrderRemoved;
             PlatformEngine.Positions.PositionAdded += Positions_PositionAdded;
             PlatformEngine.Positions.PositionRemoved += Positions_PositionRemoved;
-
-            return ts;
         }
 
         public static void Stop()
         {
-          //  LinkEvents(true);
-            ts.Disconnect();
-            ts = null;
+            if (!isRunning) return;
+
+            instancceCount--;
+
+            if (instancceCount == 0)
+            {
+                PlatformEngine.Orders.OrderAdded -= Orders_OrderAdded;
+                PlatformEngine.Orders.OrderRemoved -= Orders_OrderRemoved;
+                PlatformEngine.Positions.PositionAdded -= Positions_PositionAdded;
+                PlatformEngine.Positions.PositionRemoved -= Positions_PositionRemoved;
+            }
         }
 
         public static void LinkEvents(bool unlinkAll = false)
@@ -212,18 +224,18 @@ namespace TradeTweet
             }
         }
 
-        private static async void SendAutoTweet(string text, EventType type)
+        private static async void SendAutoTweet(TwitMessage msg)
         {
-            if (ts == null || !ts.Connected)
+            if (twitService == null || !twitService.Connected)
                 return;
 
             if(OnAutoTweetSend != null)
-                OnAutoTweetSend.Invoke("Sending...", type);
+                OnAutoTweetSend.Invoke("Sending...", msg.EventType);
 
-            var resp = await ts.SendTweetAsync(new Twitt { Text = text, Media = null }, null, ct);
+            var resp = await twitService.SendTweetAsync(new Twitt { Text = msg.Message, Media = null }, null, ct);
 
             if(OnAutoTweetRespond != null)
-                OnAutoTweetRespond.Invoke(text, resp, type);
+                OnAutoTweetRespond.Invoke(msg, resp);
         }
 
         private static void Positions_PositionRemoved(Position obj)
@@ -236,7 +248,9 @@ namespace TradeTweet
 
             if (text == subText) return;
 
-            SendAutoTweet(subText, EventType.PositionClosed);
+            var msg = new TwitMessage() { Message = subText, EventType = EventType.PositionClosed, Time = obj.CloseTime };
+
+            SendAutoTweet(msg);
         }
 
         private static void Positions_PositionAdded(Position obj)
@@ -249,7 +263,9 @@ namespace TradeTweet
 
             if (text == subText) return;
 
-            SendAutoTweet(subText, EventType.PositionOpened);
+            var msg = new TwitMessage() { Message = subText, EventType = EventType.PositionOpened, Time = obj.OpenTime };
+
+            SendAutoTweet(msg);
         }
 
         private static void Orders_OrderRemoved(Order obj)
@@ -262,7 +278,9 @@ namespace TradeTweet
 
             if (text == subText) return;
 
-            SendAutoTweet(subText, EventType.OrderCancelled);
+            var msg = new TwitMessage() { Message = subText, EventType = EventType.OrderCancelled, Time = obj.CloseTime };
+
+            SendAutoTweet(msg);
         }
 
         private static void Orders_OrderAdded(Order obj)
@@ -276,12 +294,16 @@ namespace TradeTweet
 
             if (text == subText) return;
 
-            SendAutoTweet(subText, EventType.OrderPlaced);
+            var msg = new TwitMessage() { Message = subText, EventType = EventType.OrderPlaced, Time = obj.Time };
+
+            SendAutoTweet(msg);
         }
 
         public static string PositionMessage(this string value, EventOperation op, Position obj)
         {
             string delimiter = "_";
+            List<string> list = new List<string>();
+
             foreach (EventItem item in op.Items.Keys)
             {
                 if (!op.Items[item].Checked) continue;
@@ -311,22 +333,19 @@ namespace TradeTweet
                     case EventItem.id:
                         part = "#"+obj.Id;
                         break;
-                    default:
-                        break;
                 }
 
-                part = string.Join(delimiter, part);
-
-                if (value.Length + part.Length <= 140)
-                    value += part;
+                list.Add(part);
             }
 
-            return value;
+            return value + string.Join(delimiter, list);
         }
 
         public static string OrderMessage(this string value, EventOperation op, Order obj)
         {
             string delimiter = "_";
+            List<string> list = new List<string>();
+
             foreach (EventItem item in op.Items.Keys)
             {
                 if (!op.Items[item].Checked) continue;
@@ -363,13 +382,10 @@ namespace TradeTweet
                         break;
                 }
 
-                part = string.Join(delimiter, part);
-
-                if (value.Length + part.Length <= 140)
-                    value += part;
+                list.Add(part);
             }
 
-            return value;
+            return value + string.Join(delimiter, list);
         }
 
     }

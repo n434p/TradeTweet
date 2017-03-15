@@ -50,25 +50,25 @@ namespace TradeTweet
                     break;
             }
 
-            await Task.Run(
-                    async () =>
+            if (ParentWindow.IsHandleCreated)
+            {
+                ParentWindow.Invoke((MethodInvoker)delegate
+                {
+                    this.Visible = true;
+                });
+
+                await Task.Delay(miliseconds).ContinueWith((task) =>
+                {
+
+                    ParentWindow.Invoke((MethodInvoker)delegate
                     {
-                        ParentWindow.Invoke((MethodInvoker)delegate
-                        {
-                            this.Visible = true;
-                        });
-
-                        await Task.Delay(miliseconds).ContinueWith((task) =>
-                        {
-                            if (callback != null)
-                                callback.Invoke();
-                        });
-
-                        ParentWindow.Invoke((MethodInvoker)delegate
-                        {
-                            this.Visible = false;
-                        });
+                        this.Visible = false;
                     });
+
+                    if (callback != null)
+                        callback.Invoke();
+                });
+            }   
         }
     }
 }

@@ -24,51 +24,64 @@ namespace TradeTweet
             crossLabel.Visible = false;
         }
 
-        internal virtual void ShowNotice(string message, NoticeType type = NoticeType.Info, EventType evType = EventType.Empty, Action callback = null)
+        internal void ShowNotice(TwitMessage msg, Action callback = null)
         {
             NoticeP notice = new NoticeP(ParentWindow);
-            notice.noticeText.Text = message.Replace("#PTMC_platform","").Replace('\n',' ');
-            notice.removeable = type == NoticeType.Error;
+            notice.noticeText.Text = msg.Message.Replace("#PTMC_platform\n","").TrimStart(' ');
+            notice.removeable = msg.NoticeType == NoticeType.Error;
+            notice.label1.Text = msg.FormattedTime;
+
+            notice.Dock = DockStyle.Top;
 
             if (notice.removeable)
             {
                 notice.mouseMoved = mouseMoved;
             }
 
-            if (evType == EventType.Empty)
-            switch (type)
+            if (msg.EventType == EventType.Empty)
+                switch (msg.NoticeType)
+                {
+                    case NoticeType.Info:
+                        notice.statusPic.Image = Properties.Resources.TradeTweet_09;
+                        break;
+                    case NoticeType.Error:
+                        notice.statusPic.Image = Properties.Resources.TradeTweet_10;
+                        break;
+                    case NoticeType.Success:
+                        notice.statusPic.Image = Properties.Resources.TradeTweet_11;
+                        break;
+                }
+
+            switch (msg.EventType)
             {
-                case NoticeType.Info:
-                    notice.statusPic.Image = Properties.Resources.TradeTweet_09;
+                case EventType.OrderPlaced:
+                    notice.statusPic.Image = (msg.NoticeType == NoticeType.Error)? Resources.open_order_red: Resources.open_order_green;
                     break;
-                case NoticeType.Error:
-                    notice.statusPic.Image = Properties.Resources.TradeTweet_10;
+                case EventType.OrderCancelled:
+                    notice.statusPic.Image = (msg.NoticeType == NoticeType.Error) ? Resources.close_order_red : Resources.close_order_green;
                     break;
-                case NoticeType.Success:
-                    notice.statusPic.Image = Properties.Resources.TradeTweet_11;
+                case EventType.PositionClosed:
+                    notice.statusPic.Image = (msg.NoticeType == NoticeType.Error) ? Resources.close_pos_red : Resources.close_pos_green;
+                    break;
+                case EventType.PositionOpened:
+                    notice.statusPic.Image = (msg.NoticeType == NoticeType.Error) ? Resources.open_pos_red : Resources.open_pos_green;
                     break;
             }
 
-            switch (evType)
+            if (ParentWindow.IsHandleCreated)
             {
-                case EventType.OrderPlaced:
-                    notice.statusPic.Image = (type == NoticeType.Error)? Resources.open_order_red: Resources.open_order_green;
-                    break;
-                case EventType.OrderCancelled:
-                    notice.statusPic.Image = (type == NoticeType.Error) ? Resources.close_order_red : Resources.close_order_green;
-                    break;
-                case EventType.PositionClosed:
-                    notice.statusPic.Image = (type == NoticeType.Error) ? Resources.close_pos_red : Resources.close_pos_green;
-                    break;
-                case EventType.PositionOpened:
-                    notice.statusPic.Image = (type == NoticeType.Error) ? Resources.open_pos_red : Resources.open_pos_green;
-                    break;
-            }
-            
-            ParentWindow.Invoke((MethodInvoker)delegate
-            {
-                ParentWindow.Controls.Add(notice);
-            });       
+                ParentWindow.Invoke((MethodInvoker)delegate
+                {
+                    //    int i = 1;
+                    //    foreach (Control item in ParentWindow.Controls)
+                    //    {
+                    //        ParentWindow.Controls.SetChildIndex(item, i++);
+                    //    }
+
+                    ParentWindow.Controls.Add(notice);
+                    //    ParentWindow.Controls.SetChildIndex(notice, 0);
+                });
+            }  
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -90,7 +103,7 @@ namespace TradeTweet
         {
             if (!removeable) return;
 
-            if (this.ClientRectangle.Contains(this.PointToClient(Cursor.Position)))
+            if (tableLayoutPanel1.ClientRectangle.Contains(this.PointToClient(Cursor.Position)))
             {
                 crossLabel.Visible = true;
                 this.BackColor = Color.Black;
@@ -102,32 +115,20 @@ namespace TradeTweet
             }
         }
 
-        private void noticeText_MouseLeave(object sender, EventArgs e)
+        internal class DoubleBufferedTableLP : TableLayoutPanel
+        {
+            public DoubleBufferedTableLP():base()
+            {
+                DoubleBuffered = true;
+            }
+        }
+
+        private void tableLayoutPanel1_MouseEnter(object sender, EventArgs e)
         {
             RefreshState();
         }
 
-        private void NoticeP_MouseLeave(object sender, EventArgs e)
-        {
-            RefreshState();
-        }
-
-        private void noticeText_MouseEnter(object sender, EventArgs e)
-        {
-            RefreshState();
-        }
-
-        private void NoticeP_MouseEnter(object sender, EventArgs e)
-        {
-            RefreshState();
-        }
-
-        private void crossLabel_MouseLeave(object sender, EventArgs e)
-        {
-            RefreshState();
-        }
-
-        private void crossLabel_MouseEnter(object sender, EventArgs e)
+        private void tableLayoutPanel1_MouseLeave(object sender, EventArgs e)
         {
             RefreshState();
         }
