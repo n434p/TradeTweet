@@ -13,7 +13,7 @@
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            AutoTweet.Stop();
+            AutoTweet.Stop(this);
 
             if (disposing && (components != null))
             {

@@ -56,7 +56,7 @@ namespace TradeTweet
             this.picPanelBase = new System.Windows.Forms.Panel();
             this.label15 = new System.Windows.Forms.Label();
             this.picPanelContainer = new System.Windows.Forms.Label();
-            this.scrollHistContainer = new TPanel.CustomPanel();
+            this.scrollHistContainer = new TPanel.HistoryPanelContainer();
             this.gridPanel.SuspendLayout();
             this.headerPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.avatar)).BeginInit();
@@ -475,7 +475,7 @@ namespace TradeTweet
         private System.Windows.Forms.Panel separatorLine;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label2;
-        private CustomPanel scrollHistContainer;
+        private HistoryPanelContainer scrollHistContainer;
     }
 
 

@@ -33,7 +33,7 @@ namespace TradeTweet
 
             Settings.LoadSettings();
 
-            AutoTweet.Run(PlatformEngine);
+            AutoTweet.Run(this);
 
             noticePanel = new NoticeP2(this);
 

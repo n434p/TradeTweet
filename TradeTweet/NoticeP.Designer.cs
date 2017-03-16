@@ -57,8 +57,8 @@
             // 
             this.crossLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.crossLabel.Image = ((System.Drawing.Image)(resources.GetObject("crossLabel.Image")));
-            this.crossLabel.Location = new System.Drawing.Point(379, 5);
-            this.crossLabel.Margin = new System.Windows.Forms.Padding(0, 5, 5, 0);
+            this.crossLabel.Location = new System.Drawing.Point(376, 5);
+            this.crossLabel.Margin = new System.Windows.Forms.Padding(0, 5, 8, 0);
             this.crossLabel.Name = "crossLabel";
             this.crossLabel.Size = new System.Drawing.Size(16, 16);
             this.crossLabel.TabIndex = 1;
@@ -92,7 +92,7 @@
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(400, 25);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(400, 64);
             this.tableLayoutPanel1.TabIndex = 4;
             this.tableLayoutPanel1.MouseEnter += new System.EventHandler(this.tableLayoutPanel1_MouseEnter);
             this.tableLayoutPanel1.MouseLeave += new System.EventHandler(this.tableLayoutPanel1_MouseLeave);
@@ -119,7 +119,7 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "NoticeP";
-            this.Size = new System.Drawing.Size(400, 25);
+            this.Size = new System.Drawing.Size(400, 64);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);

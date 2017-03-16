@@ -115,7 +115,7 @@ namespace TradeTweet
             }
         }
 
-        internal class DoubleBufferedTableLP : TableLayoutPanel
+        public class DoubleBufferedTableLP : TableLayoutPanel
         {
             public DoubleBufferedTableLP():base()
             {

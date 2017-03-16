@@ -132,7 +132,7 @@ namespace TradeTweet
 
     static class AutoTweet
     {
-        static int instancceCount = 0;
+        static List<TradeTweet> instances = new List<TradeTweet>();
 
         public static bool isRunning { get { return twitService != null && twitService.Connected && PlatformEngine != null; } }
 
@@ -144,19 +144,38 @@ namespace TradeTweet
         public static Action<string, EventType> OnAutoTweetSend = null;
         public static Action<TwitMessage, Response> OnAutoTweetRespond = null;
 
+        static bool reconnection = false;
 
-        public static void Run(NETSDK engine)
+        public static void Run(TradeTweet instance)
         {
-            instancceCount++;
+            if (instances.Contains(instance))
+            {
+                if (!reconnection)
+                {
+                    PlatformEngine = instance.PlatformEngine;
 
-            if (instancceCount > 1) return;
+                    PlatformEngine.Orders.OrderAdded += Orders_OrderAdded;
+                    PlatformEngine.Orders.OrderRemoved += Orders_OrderRemoved;
+                    PlatformEngine.Positions.PositionAdded += Positions_PositionAdded;
+                    PlatformEngine.Positions.PositionRemoved += Positions_PositionRemoved;
+
+                    reconnection = true;
+                }
+                return;
+            }
+
+            reconnection = false;
+
+            instances.Add(instance);
+
+            if (instances.Count > 1) return;
 
             cts = new CancellationTokenSource();
             ct = cts.Token;
 
-            PlatformEngine = engine;
-
             twitService = new TwittwerService(Settings.ast, Settings.atn);
+
+            PlatformEngine = instance.PlatformEngine;
 
             PlatformEngine.Orders.OrderAdded += Orders_OrderAdded;
             PlatformEngine.Orders.OrderRemoved += Orders_OrderRemoved;
@@ -164,13 +183,13 @@ namespace TradeTweet
             PlatformEngine.Positions.PositionRemoved += Positions_PositionRemoved;
         }
 
-        public static void Stop()
+        public static void Stop(TradeTweet instance)
         {
             if (!isRunning) return;
 
-            instancceCount--;
+            instances.Remove(instance);
 
-            if (instancceCount == 0)
+            if (instances.Count == 0)
             {
                 PlatformEngine.Orders.OrderAdded -= Orders_OrderAdded;
                 PlatformEngine.Orders.OrderRemoved -= Orders_OrderRemoved;

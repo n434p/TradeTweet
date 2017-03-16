@@ -33,6 +33,8 @@ namespace TradeTweet
         public event EventHandler ThumbMoving = null;
         public event EventHandler ValueChanged = null;
 
+        public int ThumbHeight { get { return GetThumbHeight(); } }
+
         private int GetThumbHeight()
         {
             int nTrackHeight = (this.Height - 2);
@@ -44,8 +46,6 @@ namespace TradeTweet
                 nThumbHeight = 0;
             }
 
-            Debug.Print("ThumbHeight: " + nThumbHeight);
-
             return nThumbHeight;
         }
 
@@ -55,6 +55,8 @@ namespace TradeTweet
             SetStyle(ControlStyles.ResizeRedraw, true);
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             SetStyle(ControlStyles.DoubleBuffer, true);
+
+            BackColor = Color.Transparent;
 
             //base.MinimumSize = new Size(this.Width, 2 + GetThumbHeight());
         }
@@ -99,7 +101,6 @@ namespace TradeTweet
             get { return moMaximum; }
             set
             {
-                Debug.Print("Maximum: " + moMaximum + " -> " + value);
                 moMaximum = value;
                 Invalidate();
             }
