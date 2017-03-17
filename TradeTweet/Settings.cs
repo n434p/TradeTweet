@@ -132,114 +132,84 @@ namespace TradeTweet
 
     static class AutoTweet
     {
-        static List<TradeTweet> instances = new List<TradeTweet>();
+        static Dictionary<TradeTweet, bool> instances = new Dictionary<TradeTweet, bool>();
 
         public static bool isRunning { get { return twitService != null && twitService.Connected && PlatformEngine != null; } }
 
         public static TwittwerService twitService;
         static CancellationToken ct;
-        static CancellationTokenSource cts;
+        static CancellationTokenSource cts = new CancellationTokenSource();
 
         static internal NETSDK PlatformEngine;
         public static Action<string, EventType> OnAutoTweetSend = null;
         public static Action<TwitMessage, Response> OnAutoTweetRespond = null;
 
-        static bool reconnection = false;
-
         public static void Run(TradeTweet instance)
         {
-            if (instances.Contains(instance))
+            // unsubscribe
+            SubscribingEngine(false);
+
+            // refresh connection flags
+            foreach (var inst in instances.Keys.ToList())
             {
-                if (!reconnection)
-                {
-                    PlatformEngine = instance.PlatformEngine;
-
-                    PlatformEngine.Orders.OrderAdded += Orders_OrderAdded;
-                    PlatformEngine.Orders.OrderRemoved += Orders_OrderRemoved;
-                    PlatformEngine.Positions.PositionAdded += Positions_PositionAdded;
-                    PlatformEngine.Positions.PositionRemoved += Positions_PositionRemoved;
-
-                    reconnection = true;
-                }
-                return;
+                instances[inst] = false;
             }
 
-            reconnection = false;
+            instances[instance] = true;
 
-            instances.Add(instance);
-
-            if (instances.Count > 1) return;
-
-            cts = new CancellationTokenSource();
             ct = cts.Token;
 
-            twitService = new TwittwerService(Settings.ast, Settings.atn);
+            // set twitt service
+            if(twitService == null)
+                twitService = new TwittwerService(Settings.ast, Settings.atn);
 
             PlatformEngine = instance.PlatformEngine;
 
-            PlatformEngine.Orders.OrderAdded += Orders_OrderAdded;
-            PlatformEngine.Orders.OrderRemoved += Orders_OrderRemoved;
-            PlatformEngine.Positions.PositionAdded += Positions_PositionAdded;
-            PlatformEngine.Positions.PositionRemoved += Positions_PositionRemoved;
+            SubscribingEngine(true);
         }
 
         public static void Stop(TradeTweet instance)
         {
+            // nothing to stop?
             if (!isRunning) return;
 
+            var isConnectionKeeper = instances[instance];
             instances.Remove(instance);
 
+            // need to redelegate connection keeper? 
+            if (instances.Count > 0 && isConnectionKeeper)
+            {
+                instances[instances.Keys.First()] = true;
+
+                PlatformEngine = instance.PlatformEngine;
+
+                SubscribingEngine(true);
+            }
+
+            // completely unsubscribing
             if (instances.Count == 0)
+            {
+                SubscribingEngine(false);
+            }
+        }
+
+        static void SubscribingEngine(bool status)
+        {
+            if (PlatformEngine == null) return;
+
+            if (status)
+            {
+                PlatformEngine.Orders.OrderAdded += Orders_OrderAdded;
+                PlatformEngine.Orders.OrderRemoved += Orders_OrderRemoved;
+                PlatformEngine.Positions.PositionAdded += Positions_PositionAdded;
+                PlatformEngine.Positions.PositionRemoved += Positions_PositionRemoved;
+            }
+            else
             {
                 PlatformEngine.Orders.OrderAdded -= Orders_OrderAdded;
                 PlatformEngine.Orders.OrderRemoved -= Orders_OrderRemoved;
                 PlatformEngine.Positions.PositionAdded -= Positions_PositionAdded;
                 PlatformEngine.Positions.PositionRemoved -= Positions_PositionRemoved;
-            }
-        }
-
-        public static void LinkEvents(bool unlinkAll = false)
-        {
-            foreach (EventType type in Settings.Set.Keys)
-            {
-                bool check = (unlinkAll) ? false : Settings.Set[type].Active;
-
-                if (check)
-                {
-                    switch (type)
-                    {
-                        case EventType.OrderPlaced:
-                            PlatformEngine.Orders.OrderAdded += Orders_OrderAdded;
-                            break;
-                        case EventType.OrderCancelled:
-                            PlatformEngine.Orders.OrderRemoved += Orders_OrderRemoved;
-                            break;
-                        case EventType.PositionOpened:
-                            PlatformEngine.Positions.PositionAdded += Positions_PositionAdded;
-                            break;
-                        case EventType.PositionClosed:
-                            PlatformEngine.Positions.PositionRemoved += Positions_PositionRemoved;
-                            break;
-                    }
-                }
-                else
-                {
-                    switch (type)
-                    {
-                        case EventType.OrderPlaced:
-                            PlatformEngine.Orders.OrderAdded -= Orders_OrderAdded;
-                            break;
-                        case EventType.OrderCancelled:
-                            PlatformEngine.Orders.OrderRemoved -= Orders_OrderRemoved;
-                            break;
-                        case EventType.PositionOpened:
-                            PlatformEngine.Positions.PositionAdded -= Positions_PositionAdded;
-                            break;
-                        case EventType.PositionClosed:
-                            PlatformEngine.Positions.PositionRemoved -= Positions_PositionRemoved;
-                            break;
-                    }
-                }
             }
         }
 
