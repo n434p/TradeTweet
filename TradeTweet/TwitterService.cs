@@ -57,7 +57,7 @@ namespace TradeTweet
             var timeSpan = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             var oauth_timestamp = Convert.ToInt64(timeSpan.TotalSeconds).ToString();
 
-            string headerMemberName = (string.IsNullOrEmpty(token)) ? "oauth_verifier" : "status";
+            string headerMemberName = (!string.IsNullOrEmpty(token)) ? "oauth_verifier" : "status";
             var oauth_token = (string.IsNullOrEmpty(token)) ? this.oauth_token : token;
 
             string baseString = null;
@@ -413,7 +413,7 @@ namespace TradeTweet
             {
                 resp.Failed = true;
                 resp.Text = "Bad PIN code!";
-                Disconnect();
+                EraseCridentials();
                 return resp;
             }
 
@@ -608,7 +608,7 @@ namespace TradeTweet
             }
         }
 
-        public void Disconnect()
+        public void EraseCridentials()
         {
             oauth_token = "";
             oauth_token_secret = "";

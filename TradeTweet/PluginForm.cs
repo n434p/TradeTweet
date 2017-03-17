@@ -78,7 +78,7 @@ namespace TradeTweet
 
         private void OnLogout()
         {
-            AutoTweet.twitService.Disconnect();
+            AutoTweet.twitService.EraseCridentials();
 
             Settings.ClearSettings(true);
             
@@ -108,6 +108,7 @@ namespace TradeTweet
 
             if (resp.Failed)
             {
+                AutoTweet.twitService.EraseCridentials();
                 ShowNotice("Pin error!",2000, ReturnToConnect);
                 return;
             }

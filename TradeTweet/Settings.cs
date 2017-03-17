@@ -30,6 +30,7 @@ namespace TradeTweet
         static Settings()
         {
             ClearSettings(false);
+            SS.i = 1;
         }
 
         public static void ClearSettings(bool withFlush)
@@ -130,6 +131,12 @@ namespace TradeTweet
         }
     }
 
+    static class SS
+    {
+        public static Dictionary<TradeTweet, bool> instances = new Dictionary<TradeTweet, bool>();
+        public static int i = 0; 
+    }
+
     static class AutoTweet
     {
         static Dictionary<TradeTweet, bool> instances = new Dictionary<TradeTweet, bool>();
@@ -171,7 +178,7 @@ namespace TradeTweet
         public static void Stop(TradeTweet instance)
         {
             // nothing to stop?
-            if (!isRunning) return;
+            if (!isRunning || instances.Count == 0) return;
 
             var isConnectionKeeper = instances[instance];
             instances.Remove(instance);
