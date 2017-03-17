@@ -13,6 +13,7 @@ namespace TradeTweet
             InitializeComponent();
 
             ParentWindow = control;
+            ParentWindow.Controls.Add(this);
             Visible = false;
         }
 

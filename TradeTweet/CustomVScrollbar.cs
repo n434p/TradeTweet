@@ -41,15 +41,14 @@ namespace TradeTweet
             float fThumbHeight = ((float)LargeChange / (float)Maximum) * nTrackHeight;
             int nThumbHeight = (int)fThumbHeight;
 
-            if (nThumbHeight > nTrackHeight)
-            {
-                nThumbHeight = 0;
-            }
+            this.Width = (nThumbHeight < nTrackHeight) ? basicWidth: 0;
 
             return nThumbHeight;
         }
 
-        public CustomVScrollbar()
+        int basicWidth = 0;
+
+        public CustomVScrollbar(int width)
         {
             InitializeComponent();
             SetStyle(ControlStyles.ResizeRedraw, true);
@@ -57,7 +56,7 @@ namespace TradeTweet
             SetStyle(ControlStyles.DoubleBuffer, true);
 
             BackColor = Color.Transparent;
-
+            basicWidth = width;
             //base.MinimumSize = new Size(this.Width, 2 + GetThumbHeight());
         }
 

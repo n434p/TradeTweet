@@ -57,8 +57,8 @@ namespace TradeTweet
             var timeSpan = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             var oauth_timestamp = Convert.ToInt64(timeSpan.TotalSeconds).ToString();
 
-            string headerMemberName = (token != "") ? "oauth_verifier" : "status";
-            var oauth_token = (token == "") ? this.oauth_token : token;
+            string headerMemberName = (string.IsNullOrEmpty(token)) ? "oauth_verifier" : "status";
+            var oauth_token = (string.IsNullOrEmpty(token)) ? this.oauth_token : token;
 
             string baseString = null;
 
@@ -389,6 +389,11 @@ namespace TradeTweet
             var response = SendPOSTRequest(empty, request_url);
 
             OauthMembers set = new OauthMembers(response.Text);
+
+            if (response.Failed)
+            {
+                return response;
+            }
 
             // oauth token
             this.oauth_token = set.oauth_token;

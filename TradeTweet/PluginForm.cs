@@ -40,6 +40,7 @@ namespace TradeTweet
             AutoTweet.twitService.onAuthorized = (s1, s2) => {
                 Settings.ast = s1;
                 Settings.atn = s2;
+                Settings.SaveSettings();
             };
 
             if (!AutoTweet.isRunning)
@@ -78,8 +79,9 @@ namespace TradeTweet
         private void OnLogout()
         {
             AutoTweet.twitService.Disconnect();
-            Settings.ClearSettings();
-            StartPlugin();
+
+            Settings.ClearSettings(true);
+            
         }
 
         private void OnConnect()
@@ -88,7 +90,7 @@ namespace TradeTweet
 
             if (resp.Failed)
             {
-                ShowNotice("Connection error!");
+                ShowNotice(resp.Text);
                 return;
             }
 

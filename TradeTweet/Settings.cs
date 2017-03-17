@@ -5,10 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace TradeTweet
 {
@@ -32,16 +29,19 @@ namespace TradeTweet
 
         static Settings()
         {
-            ClearSettings();
+            ClearSettings(false);
         }
 
-        public static void ClearSettings()
+        public static void ClearSettings(bool withFlush)
         {
             ast = ""; //822113440844148738-s7MLex2gcSFKxzKZfBDwcwJqvJYk0LA";
             atn = ""; //8UYP6Ahmn5GjJXkr0bN3Jy2XmKBX8jT3Slxk8EhzLCEmO";
             autoTweet = false;
             Set = new Dictionary<EventType, EventOperation>();
-            key = "default_set05";
+            key = "default_set333";
+
+            if (withFlush)
+                SaveSettings();
 
             Refresh();
         }
@@ -106,8 +106,8 @@ namespace TradeTweet
 
             if (ts != null)
             {
-                ast = ts.ast;
-                atn = ts.atn;
+                ast = string.IsNullOrEmpty(ts.ast) ? "" : ts.ast;
+                atn = string.IsNullOrEmpty(ts.atn) ? "" : ts.atn;
                 autoTweet = ts.autoTweet;
                 Set = ts.Set;
                 key = ts.key;

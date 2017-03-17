@@ -606,8 +606,10 @@ namespace TradeTweet
 
         internal class HistoryPanelContainer : DoubleBufferedPanel
         {
+            const int SCROLL_WIDTH = 6;
+
             public HistoryPanel panel = new HistoryPanel();
-            CustomVScrollbar scrollB = new CustomVScrollbar();
+            CustomVScrollbar scrollB = new CustomVScrollbar(SCROLL_WIDTH);
 
             public HistoryPanelContainer(): base()
             {
@@ -619,7 +621,7 @@ namespace TradeTweet
                 scrollB.Maximum = 100;
                 scrollB.Minimum = 0;
                 scrollB.Name = "scroll";
-                scrollB.Size = new System.Drawing.Size(6, 150);
+                scrollB.Size = new System.Drawing.Size(SCROLL_WIDTH, 150);
                 scrollB.SmallChange = 1;
                 scrollB.TabIndex = 0;
                 scrollB.Value = 0;
@@ -660,8 +662,8 @@ namespace TradeTweet
                 scrollB.Maximum = h;
                 scrollB.LargeChange = h / scrollB.Height + scrollB.Height;
 
-                //scrollB.Visible = scrollB.ThumbHeight != 0;
-
+                scrollB.Visible = scrollB.ThumbHeight != 0;
+                scrollB.Invalidate();
                 //panel.AutoScrollMinSize = new Size(0, panel.PreferredSize.Height);
 
                 //panel.VerticalScroll.Enabled = true;
