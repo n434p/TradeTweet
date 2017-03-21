@@ -653,7 +653,7 @@ namespace TradeTweet
             {
                 panel.AutoScrollPosition = new Point(0, scrollB.Value);
                 scrollB.Invalidate();
-                Application.DoEvents();
+                //Application.DoEvents();
             }
 
             void needRescrolling()
@@ -663,14 +663,13 @@ namespace TradeTweet
                 scrollB.LargeChange = h / scrollB.Height + scrollB.Height;
 
                 scrollB.Visible = scrollB.ThumbHeight != 0;
-                scrollB.Invalidate();
-                //panel.AutoScrollMinSize = new Size(0, panel.PreferredSize.Height);
 
-                //panel.VerticalScroll.Enabled = true;
-                //panel.VerticalScroll.Visible = false;
-                //panel.VerticalScroll.Minimum = 0;
-                //panel.VerticalScroll.Maximum = h;
-
+                if (scrollB.Visible)
+                {
+                    // scroll to the bottom message
+                    scrollB.Value = h;
+                    ScrollB_ThumbMoving(null, EventArgs.Empty);
+                }
             }
 
             internal void RefreshState()

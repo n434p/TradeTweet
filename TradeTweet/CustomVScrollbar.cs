@@ -140,9 +140,9 @@ namespace TradeTweet
                         float fValue = fPerc * (Maximum - LargeChange);
                         moValue = (int)fValue;
 
-                        Application.DoEvents();
+                        //Application.DoEvents();
 
-                        Invalidate();
+                        //Invalidate();
                     }
                 }
             }

@@ -36,6 +36,8 @@ namespace TradeTweet
             AutoTweet.Run(this);
 
             noticePanel = new NoticeP2(this);
+            noticePanel.Dock = DockStyle.Top;
+
 
             AutoTweet.twitService.onAuthorized = (s1, s2) => {
                 Settings.ast = s1;

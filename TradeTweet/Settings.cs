@@ -30,7 +30,6 @@ namespace TradeTweet
         static Settings()
         {
             ClearSettings(false);
-            SS.i = 1;
         }
 
         public static void ClearSettings(bool withFlush)
@@ -129,12 +128,6 @@ namespace TradeTweet
             [DataMember]
             public string ast;
         }
-    }
-
-    static class SS
-    {
-        public static Dictionary<TradeTweet, bool> instances = new Dictionary<TradeTweet, bool>();
-        public static int i = 0; 
     }
 
     static class AutoTweet
