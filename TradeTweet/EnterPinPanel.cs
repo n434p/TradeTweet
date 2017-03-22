@@ -29,6 +29,9 @@ namespace TradeTweet
 
             this.Dock = DockStyle.Fill;
 
+            connectBtn.Enabled = false;
+
+
             connectBtn.Click += (o, e) =>
             {
                 connectBtn.Enabled = false;
@@ -37,7 +40,22 @@ namespace TradeTweet
                     OnPinEntered.Invoke(maskedPin.Text);
             };
 
+            connectBtn.MouseEnter += (o, e) =>
+            {
+                connectBtn.BackgroundImage = Properties.Resources.TradeTweet_27;
+            };
+
+            connectBtn.MouseLeave += (o, e) =>
+            {
+                connectBtn.BackgroundImage = Properties.Resources.TradeTweet_26;
+            };
+
             maskedPin.GotFocus += MaskedPin_GotFocus;
+
+            maskedPin.Enter += (o, e) =>
+            {
+                maskedPin.Select(0, 0);
+            };
 
             maskedPin.TextChanged += (o, e) =>
             {

@@ -137,7 +137,6 @@ namespace TradeTweet
         public static bool isRunning { get { return twitService != null && twitService.Connected && PlatformEngine != null; } }
 
         public static TwittwerService twitService;
-        static CancellationToken ct;
         static CancellationTokenSource cts = new CancellationTokenSource();
 
         static internal NETSDK PlatformEngine;
@@ -157,8 +156,6 @@ namespace TradeTweet
 
             instances[instance] = true;
 
-            ct = cts.Token;
-
             // set twitt service
             if(twitService == null)
                 twitService = new TwittwerService(Settings.ast, Settings.atn);
@@ -170,8 +167,14 @@ namespace TradeTweet
 
         public static void Stop(TradeTweet instance)
         {
+            // instatnce is in connection state - erase TwitService data(request token)
+            if (!isRunning && twitService != null)
+            {
+                twitService.EraseCridentials();
+            }
+
             // nothing to stop?
-            if (!isRunning || instances.Count == 0) return;
+            if (instances.Count == 0) return;
 
             var isConnectionKeeper = instances[instance];
             instances.Remove(instance);
@@ -189,7 +192,10 @@ namespace TradeTweet
             // completely unsubscribing
             if (instances.Count == 0)
             {
+                cts.Cancel();
                 SubscribingEngine(false);
+                // renew cancellation token
+                cts = new CancellationTokenSource();
             }
         }
 
@@ -221,7 +227,7 @@ namespace TradeTweet
             if(OnAutoTweetSend != null)
                 OnAutoTweetSend.Invoke("Sending...", msg.EventType);
 
-            var resp = await twitService.SendTweetAsync(new Twitt { Text = msg.Message, Media = null }, null, ct);
+            var resp = await twitService.SendTweetAsync(new Twitt { Text = msg.Message, Media = null }, null, cts.Token);
 
             if(OnAutoTweetRespond != null)
                 OnAutoTweetRespond.Invoke(msg, resp);

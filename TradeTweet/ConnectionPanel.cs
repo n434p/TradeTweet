@@ -28,6 +28,17 @@ namespace TradeTweet
                 if (OnConnect != null)
                     OnConnect.Invoke();
             };
+
+            connectBtn.MouseEnter += (o, e) =>
+            {
+                connectBtn.BackgroundImage = Properties.Resources.TradeTweet_15;
+            };
+
+            connectBtn.MouseLeave += (o, e) =>
+            {
+                connectBtn.BackgroundImage = Properties.Resources.TradeTweet_14;
+            };
+
         }
     }
 }

@@ -412,7 +412,7 @@ namespace TradeTweet
             if (oauth_verifier == null)
             {
                 resp.Failed = true;
-                resp.Text = "Bad PIN code!";
+                resp.Text = "Wrong PIN!";
                 EraseCridentials();
                 return resp;
             }

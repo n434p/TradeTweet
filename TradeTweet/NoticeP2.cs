@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -7,11 +8,12 @@ namespace TradeTweet
     public partial class NoticeP2 : UserControl
     {
         Control ParentWindow;
+        CancellationToken ct;
 
-        public NoticeP2(Control control)
+        public NoticeP2(Control control, CancellationToken token)
         {
             InitializeComponent();
-
+            ct = token;
             ParentWindow = control;
             ParentWindow.Controls.Add(this);
             Visible = false;
@@ -58,17 +60,21 @@ namespace TradeTweet
                     this.Visible = true;
                 });
 
-                await Task.Delay(miliseconds).ContinueWith((task) =>
+                await Task.Delay(miliseconds,ct).ContinueWith((task) =>
                 {
+                    if (ct.IsCancellationRequested)
+                    {
+                        return;
+                    }
 
                     ParentWindow.Invoke((MethodInvoker)delegate
                     {
                         this.Visible = false;
                     });
-
+                
                     if (callback != null)
                         callback.Invoke();
-                });
+                }, ct);
             }   
         }
     }

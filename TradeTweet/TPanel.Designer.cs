@@ -193,7 +193,6 @@ namespace TradeTweet
             this.accountName.Name = "accountName";
             this.accountName.Size = new System.Drawing.Size(64, 14);
             this.accountName.TabIndex = 3;
-            this.accountName.Text = "nazar_ptmc";
             // 
             // panel3
             // 

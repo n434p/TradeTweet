@@ -86,7 +86,6 @@ namespace TradeTweet
             this.connectBtn.FlatAppearance.MouseDownBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
             this.connectBtn.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
             this.connectBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.connectBtn.Image = global::TradeTweet.Properties.Resources.TradeTweet_14;
             this.connectBtn.Location = new System.Drawing.Point(140, 95);
             this.connectBtn.Name = "connectBtn";
             this.connectBtn.Size = new System.Drawing.Size(121, 30);

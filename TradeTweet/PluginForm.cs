@@ -13,8 +13,10 @@ namespace TradeTweet
         ToolTip tip; 
         ConnectionPanel connectionPanel;
         EnterPinPanel enterPinPanel;
-        CancellationToken ct;
         NoticeP2 noticePanel;
+
+        CancellationTokenSource cts = new CancellationTokenSource();
+        CancellationToken ct;
 
         const string LOGIN = "Login";
         const string LOGOUT = "Logout";
@@ -35,9 +37,8 @@ namespace TradeTweet
 
             AutoTweet.Run(this);
 
-            noticePanel = new NoticeP2(this);
+            noticePanel = new NoticeP2(this, ct);
             noticePanel.Dock = DockStyle.Top;
-
 
             AutoTweet.twitService.onAuthorized = (s1, s2) => {
                 Settings.ast = s1;
@@ -64,26 +65,21 @@ namespace TradeTweet
 
         private TPanel CreateTweetPanel()
         {
-            var tt = new TPanel();
-            tt.TweetPanel(PlatformEngine);
+            var twitPanel = new TPanel();
 
-            tt.NoticeSubscribing();
+            twitPanel.Padding = new Padding(0);
+            twitPanel.Margin = new Padding(0);
+            twitPanel.Dock = DockStyle.Fill;
 
-            tt.Padding = new Padding(0);
-            tt.Margin = new Padding(0);
-            tt.Dock = DockStyle.Fill;
+            twitPanel.OnLogout = OnLogout;
 
-            tt.OnLogout = OnLogout;
-
-            return tt;
+            return twitPanel;
         }
 
         private void OnLogout()
         {
             AutoTweet.twitService.EraseCridentials();
-
             Settings.ClearSettings(true);
-            
         }
 
         private void OnConnect()
@@ -111,7 +107,7 @@ namespace TradeTweet
             if (resp.Failed)
             {
                 AutoTweet.twitService.EraseCridentials();
-                ShowNotice("Pin error!",2000, ReturnToConnect);
+                ShowNotice("Wrong PIN!", 2000, ReturnToConnect);
                 return;
             }
 
@@ -129,10 +125,6 @@ namespace TradeTweet
             });
         }
 
-        private void Ts_NewEvents(object sender, System.EventArgs e)
-        {
-            
-        }
 
         #region IExternalComponent
         public Icon IconImage
@@ -165,7 +157,6 @@ namespace TradeTweet
         {
             if (PlatformEngine != null)
             {
-                CancellationTokenSource cts = new CancellationTokenSource();
                 //cts.CancelAfter(5000);
                 ct = cts.Token;
 
