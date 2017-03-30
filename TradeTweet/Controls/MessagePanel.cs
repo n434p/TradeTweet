@@ -8,7 +8,7 @@ namespace TradeTweet
 {
     enum NoticeType { Info, Error, Success}
 
-    public partial class NoticeP : UserControl
+    public partial class MessagePanel : UserControl
     {
         Control ParentWindow;
         public Action mouseMoved;
@@ -16,7 +16,7 @@ namespace TradeTweet
         public bool Removeable { get { return removeable; } }
         bool removeable = false;
 
-        public NoticeP(Control attachTo)
+        public MessagePanel(Control attachTo)
         {
             InitializeComponent();
             DoubleBuffered = true;
@@ -26,7 +26,7 @@ namespace TradeTweet
 
         internal void ShowNotice(TwitMessage msg, Action callback = null)
         {
-            NoticeP notice = new NoticeP(ParentWindow);
+            MessagePanel notice = new MessagePanel(ParentWindow);
             notice.noticeText.Text = msg.Message.Replace("#PTMC_platform\n","").TrimStart(' ');
             notice.removeable = msg.NoticeType == NoticeType.Error;
             notice.label1.Text = msg.FormattedTime;

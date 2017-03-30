@@ -12,6 +12,21 @@
     <AssemblyName>TradeTweet</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -71,17 +86,14 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Commons, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Users\developer\AppData\Roaming\ProtraderMCTest\Commons.dll</HintPath>
+    <Reference Include="Commons">
+      <HintPath>C:\Users\developer\AppData\Roaming\ProtraderMCTest\Commons.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Users\developer\AppData\Roaming\ProtraderMCTest\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>C:\Users\developer\AppData\Roaming\ProtraderMCTest\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="PTLRuntime, Version=1.0.6289.25582, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Users\developer\AppData\Roaming\ProtraderMCTest\PTLRuntime.dll</HintPath>
+    <Reference Include="PTLRuntime">
+      <HintPath>C:\Users\developer\AppData\Roaming\ProtraderMCTest\PTLRuntime.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -96,36 +108,36 @@
     <!--our libs-->
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AutoSettings.cs">
+    <Compile Include="Controls\AutoSettings.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="AutoSettings.Designer.cs">
+    <Compile Include="Controls\AutoSettings.Designer.cs">
       <DependentUpon>AutoSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomVScrollbar.cs">
+    <Compile Include="Controls\CustomVScrollbar.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="CustomVScrollbar.Designer.cs">
+    <Compile Include="Controls\CustomVScrollbar.Designer.cs">
       <DependentUpon>CustomVScrollbar.cs</DependentUpon>
     </Compile>
-    <Compile Include="EnterPinPanel.cs">
+    <Compile Include="Controls\EnterPinPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="EnterPinPanel.Designer.cs">
+    <Compile Include="Controls\EnterPinPanel.Designer.cs">
       <DependentUpon>EnterPinPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="EventOperation.cs" />
-    <Compile Include="NoticeP.cs">
+    <Compile Include="Controls\MessagePanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="NoticeP.Designer.cs">
-      <DependentUpon>NoticeP.cs</DependentUpon>
+    <Compile Include="Controls\MessagePanel.Designer.cs">
+      <DependentUpon>MessagePanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="NoticeP2.cs">
+    <Compile Include="Controls\NoticePanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="NoticeP2.Designer.cs">
-      <DependentUpon>NoticeP2.cs</DependentUpon>
+    <Compile Include="Controls\NoticePanel.Designer.cs">
+      <DependentUpon>NoticePanel.cs</DependentUpon>
     </Compile>
     <Compile Include="PicturePanel.cs">
       <SubType>Component</SubType>
@@ -143,33 +155,33 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
-    <Compile Include="TPanel.cs">
+    <Compile Include="Controls\TweetPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="TPanel.Designer.cs">
-      <DependentUpon>TPanel.cs</DependentUpon>
+    <Compile Include="Controls\TweetPanel.Designer.cs">
+      <DependentUpon>TweetPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="TwitMessage.cs" />
     <Compile Include="TwitterService.cs" />
-    <Compile Include="ConnectionPanel.cs">
+    <Compile Include="Controls\ConnectionPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ConnectionPanel.Designer.cs">
+    <Compile Include="Controls\ConnectionPanel.Designer.cs">
       <DependentUpon>ConnectionPanel.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="AutoSettings.resx">
+    <EmbeddedResource Include="Controls\AutoSettings.resx">
       <DependentUpon>AutoSettings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="EnterPinPanel.resx">
+    <EmbeddedResource Include="Controls\EnterPinPanel.resx">
       <DependentUpon>EnterPinPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NoticeP.resx">
-      <DependentUpon>NoticeP.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\MessagePanel.resx">
+      <DependentUpon>MessagePanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NoticeP2.resx">
-      <DependentUpon>NoticeP2.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\NoticePanel.resx">
+      <DependentUpon>NoticePanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="PluginForm.resx">
       <DependentUpon>PluginForm.cs</DependentUpon>
@@ -178,11 +190,11 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="ConnectionPanel.resx">
+    <EmbeddedResource Include="Controls\ConnectionPanel.resx">
       <DependentUpon>ConnectionPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TPanel.resx">
-      <DependentUpon>TPanel.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\TweetPanel.resx">
+      <DependentUpon>TweetPanel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -380,10 +392,22 @@
   <ItemGroup>
     <None Include="Resources\unselect.png" />
   </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties NETType="IExternalComponent" Symbol="&lt;property name=&quot;Symbol&quot; value=&quot;&quot; type=&quot;55&quot; group=&quot;1.Data&quot; /&gt;" TFInfo="&lt;property name=&quot;TFInfo&quot; value=&quot;Time - 1m&quot; type=&quot;-175&quot; group=&quot;General&quot; TFInfoValue=&quot;&amp;lt;?xml version=&amp;quot;1.0&amp;quot;?&amp;gt;&amp;lt;TimeFrameInfo&amp;gt;&amp;lt;Period&amp;gt;1&amp;lt;/Period&amp;gt;&amp;lt;HistoryType&amp;gt;0&amp;lt;/HistoryType&amp;gt;&amp;lt;ChartDataType&amp;gt;Default&amp;lt;/ChartDataType&amp;gt;&amp;lt;AdditionalKey&amp;gt;&amp;lt;/AdditionalKey&amp;gt;&amp;lt;/TimeFrameInfo&amp;gt;&quot; /&gt;" Range="&lt;property name=&quot;Range&quot; value=&quot;3&quot; type=&quot;185&quot; group=&quot;1.Data&quot; /&gt;" StartTime="&lt;property name=&quot;StartTime&quot; value=&quot;636223679990000000&quot; type=&quot;5&quot; group=&quot;1.Data&quot; /&gt;" StopTime="&lt;property name=&quot;StopTime&quot; value=&quot;636232319990000000&quot; type=&quot;5&quot; group=&quot;1.Data&quot; /&gt;" HistoryType="&lt;property name=&quot;HistoryType&quot; value=&quot;0&quot; type=&quot;185&quot; group=&quot;1.Data&quot; /&gt;" Modelling_x0020_shema="&lt;property name=&quot;Modelling shema&quot; value=&quot;1m - O H L C&quot; type=&quot;3&quot; group=&quot;2.Algorythm&quot; /&gt;" Balance_x002C__x0020_USD="&lt;property name=&quot;Balance, USD&quot; value=&quot;10000&quot; type=&quot;1&quot; group=&quot;3.Risk/money manager&quot; min=&quot;1&quot; max=&quot;999999999999&quot; /&gt;" Commission_x0020_by="&lt;property name=&quot;Commission by&quot; value=&quot;False&quot; type=&quot;185&quot; group=&quot;3.Risk/money manager&quot; /&gt;" Brokerage_x0020_commission_x002C__x0020_USD="&lt;property name=&quot;Brokerage commission, USD&quot; value=&quot;0&quot; type=&quot;1&quot; group=&quot;3.Risk/money manager&quot; min=&quot;0&quot; max=&quot;999999999999&quot; /&gt;" Latency="&lt;property name=&quot;Latency&quot; value=&quot;0&quot; type=&quot;0&quot; group=&quot;3.Risk/money manager&quot; min=&quot;0&quot; /&gt;" Netting="&lt;property name=&quot;Netting&quot; value=&quot;False&quot; type=&quot;4&quot; group=&quot;3.Risk/money manager&quot; /&gt;" OnlyMainSession="&lt;property name=&quot;OnlyMainSession&quot; value=&quot;False&quot; type=&quot;4&quot; group=&quot;3.Risk/money manager&quot; /&gt;" />
+      <UserProperties NETType="IExternalComponent" Symbol="&lt;property name=&quot;Symbol&quot; value=&quot;EUR/USD:FX Route&quot; type=&quot;55&quot; group=&quot;1.Data&quot; /&gt;" TFInfo="&lt;property name=&quot;TFInfo&quot; value=&quot;Time - 1m&quot; type=&quot;-175&quot; group=&quot;General&quot; TFInfoValue=&quot;&amp;lt;?xml version=&amp;quot;1.0&amp;quot;?&amp;gt;&amp;lt;TimeFrameInfo&amp;gt;&amp;lt;Period&amp;gt;1&amp;lt;/Period&amp;gt;&amp;lt;HistoryType&amp;gt;0&amp;lt;/HistoryType&amp;gt;&amp;lt;ChartDataType&amp;gt;Default&amp;lt;/ChartDataType&amp;gt;&amp;lt;AdditionalKey&amp;gt;&amp;lt;/AdditionalKey&amp;gt;&amp;lt;/TimeFrameInfo&amp;gt;&quot; /&gt;" Range="&lt;property name=&quot;Range&quot; value=&quot;3&quot; type=&quot;185&quot; group=&quot;1.Data&quot; /&gt;" StartTime="&lt;property name=&quot;StartTime&quot; value=&quot;636223679990000000&quot; type=&quot;5&quot; group=&quot;1.Data&quot; /&gt;" StopTime="&lt;property name=&quot;StopTime&quot; value=&quot;636232319990000000&quot; type=&quot;5&quot; group=&quot;1.Data&quot; /&gt;" HistoryType="&lt;property name=&quot;HistoryType&quot; value=&quot;0&quot; type=&quot;185&quot; group=&quot;1.Data&quot; /&gt;" Modelling_x0020_shema="&lt;property name=&quot;Modelling shema&quot; value=&quot;1m - O H L C&quot; type=&quot;3&quot; group=&quot;2.Algorythm&quot; /&gt;" Balance_x002C__x0020_USD="&lt;property name=&quot;Balance, USD&quot; value=&quot;10000&quot; type=&quot;1&quot; group=&quot;3.Risk/money manager&quot; min=&quot;1&quot; max=&quot;999999999999&quot; /&gt;" Commission_x0020_by="&lt;property name=&quot;Commission by&quot; value=&quot;False&quot; type=&quot;185&quot; group=&quot;3.Risk/money manager&quot; /&gt;" Brokerage_x0020_commission_x002C__x0020_USD="&lt;property name=&quot;Brokerage commission, USD&quot; value=&quot;0&quot; type=&quot;1&quot; group=&quot;3.Risk/money manager&quot; min=&quot;0&quot; max=&quot;999999999999&quot; /&gt;" Latency="&lt;property name=&quot;Latency&quot; value=&quot;0&quot; type=&quot;0&quot; group=&quot;3.Risk/money manager&quot; min=&quot;0&quot; /&gt;" Netting="&lt;property name=&quot;Netting&quot; value=&quot;False&quot; type=&quot;4&quot; group=&quot;3.Risk/money manager&quot; /&gt;" OnlyMainSession="&lt;property name=&quot;OnlyMainSession&quot; value=&quot;False&quot; type=&quot;4&quot; group=&quot;3.Risk/money manager&quot; /&gt;" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

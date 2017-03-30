@@ -2,7 +2,7 @@
 
 namespace TradeTweet
 {
-    partial class TPanel
+    partial class TweetPanel
     {
         /// <summary> 
         /// Required designer variable.
@@ -56,7 +56,7 @@ namespace TradeTweet
             this.picPanelBase = new System.Windows.Forms.Panel();
             this.label15 = new System.Windows.Forms.Label();
             this.picPanelContainer = new System.Windows.Forms.Label();
-            this.scrollHistContainer = new TPanel.HistoryPanelContainer();
+            this.scrollHistContainer = new TweetPanel.HistoryPanelContainer();
             this.gridPanel.SuspendLayout();
             this.headerPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.avatar)).BeginInit();

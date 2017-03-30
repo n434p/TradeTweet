@@ -1,6 +1,6 @@
 ﻿namespace TradeTweet
 {
-    partial class NoticeP
+    partial class MessagePanel
     {
         /// <summary> 
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NoticeP));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MessagePanel));
             this.noticeText = new System.Windows.Forms.Label();
             this.crossLabel = new System.Windows.Forms.Label();
             this.statusPic = new System.Windows.Forms.Label();

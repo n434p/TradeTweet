@@ -5,12 +5,12 @@ using System.Windows.Forms;
 
 namespace TradeTweet
 {
-    public partial class NoticeP2 : UserControl
+    public partial class NoticePanel : UserControl
     {
         Control ParentWindow;
         CancellationToken ct;
 
-        public NoticeP2(Control control, CancellationToken token)
+        public NoticePanel(Control control, CancellationToken token)
         {
             InitializeComponent();
             ct = token;

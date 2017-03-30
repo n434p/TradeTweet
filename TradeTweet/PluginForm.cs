@@ -13,7 +13,7 @@ namespace TradeTweet
         ToolTip tip; 
         ConnectionPanel connectionPanel;
         EnterPinPanel enterPinPanel;
-        NoticeP2 noticePanel;
+        NoticePanel noticePanel;
 
         CancellationTokenSource cts = new CancellationTokenSource();
         CancellationToken ct;
@@ -37,7 +37,7 @@ namespace TradeTweet
 
             AutoTweet.Run(this);
 
-            noticePanel = new NoticeP2(this, ct);
+            noticePanel = new NoticePanel(this, ct);
             noticePanel.Dock = DockStyle.Top;
 
             AutoTweet.twitService.onAuthorized = (s1, s2) => {
@@ -63,9 +63,9 @@ namespace TradeTweet
             noticePanel.ShowNotice(text,delay,NoticeType.Error,EventType.Empty,callback);
         }
 
-        private TPanel CreateTweetPanel()
+        private TweetPanel CreateTweetPanel()
         {
-            var twitPanel = new TPanel();
+            var twitPanel = new TweetPanel();
 
             twitPanel.Padding = new Padding(0);
             twitPanel.Margin = new Padding(0);

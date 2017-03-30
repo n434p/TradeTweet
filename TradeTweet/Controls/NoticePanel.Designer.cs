@@ -1,6 +1,6 @@
 ﻿namespace TradeTweet
 {
-    partial class NoticeP2
+    partial class NoticePanel
     {
         /// <summary> 
         /// Required designer variable.

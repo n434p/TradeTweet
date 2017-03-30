@@ -233,6 +233,8 @@ namespace TradeTweet
                 OnAutoTweetRespond.Invoke(msg, resp);
         }
 
+
+
         private static void Positions_PositionRemoved(Position obj)
         {
             if (!Settings.autoTweet) return;

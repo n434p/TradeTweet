@@ -1,26 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Data;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using PTLRuntime.NETScript;
 using TradeTweet.Properties;
 using PTLRuntime.NETScript.Application;
-using System.Diagnostics;
 
 namespace TradeTweet
 {
-    internal partial class TPanel : UserControl
+    internal partial class TweetPanel : UserControl
     {
         ToolTip tip;
         AutoSettings settingsPanel;
         PicturePanel picPanel;
-        NoticeP noticePanel;
-        NoticeP2 nnnPanel;
+        MessagePanel messagePanel;
+        NoticePanel noticePanel;
 
         System.Threading.CancellationTokenSource ctss;
         System.Threading.CancellationToken ct;
@@ -32,7 +28,7 @@ namespace TradeTweet
         const int MAX_TWEET_LENGTH = 140;
         const string ENTER_TWEET = "Type here...";
         const string BTN_TEXT = "Tweet";
-        const int statusPanelHeight = 40;
+        const int STATUS_PANEL_HEIGHT = 40;
         const int CARD_ZIZE = 64;
         const int MARGIN = 5;
         const int MAX_CARDS = 4;
@@ -63,7 +59,7 @@ namespace TradeTweet
         }
         bool so = false;
 
-        public TPanel()
+        public TweetPanel()
         {
             InitializeComponent();
 
@@ -89,12 +85,12 @@ namespace TradeTweet
             avatar.BackgroundImage = AutoTweet.twitService.User.avatar;
             avatar.BackgroundImageLayout = ImageLayout.Zoom;
 
-            noticePanel = new NoticeP(scrollHistContainer.panel);
-            noticePanel.mouseMoved += () => scrollHistContainer.RefreshState(); 
+            messagePanel = new MessagePanel(scrollHistContainer.panel);
+            messagePanel.mouseMoved += () => scrollHistContainer.RefreshState(); 
 
-            nnnPanel = new NoticeP2(this, ct);
-            this.Controls.Add(nnnPanel);
-            nnnPanel.BringToFront();
+            noticePanel = new NoticePanel(this, ct);
+            this.Controls.Add(noticePanel);
+            noticePanel.BringToFront();
 
             settingsPanel = new AutoSettings();
             settingsPanel.Visible = false;
@@ -169,17 +165,14 @@ namespace TradeTweet
                 settingsPanel.BringToFront();
             }
 
-            if (nnnPanel != null)
+            if (noticePanel != null)
             {
-                nnnPanel.Location = new Point(headerPanel.Left+3, headerPanel.Bottom+3);
+                noticePanel.Location = new Point(headerPanel.Left+3, headerPanel.Bottom+3);
             }
         }
 
         private async Task<Response> OnTweet()
         {
-            ToggleTweetButton();
-            nnnPanel.ShowNotice("Sending...");
-
             List<Task<Response>> list = new List<Task<Response>>();
 
             foreach (var img in images.Values)
@@ -205,12 +198,6 @@ namespace TradeTweet
 
             var ttt = await AutoTweet.twitService.SendTweetAsync(new Twitt { Text = Status, Media = media }, mediaString, ct);
 
-            var msg = new TwitMessage() { Message = Status, Time = DateTime.UtcNow };
-
-            ResponseNotice(msg, ttt);
-
-            ToggleTweetButton();
-
             return ttt;
         }
 
@@ -226,7 +213,7 @@ namespace TradeTweet
                 msg.Message = resp.Text;
             }
 
-            noticePanel.ShowNotice(msg);
+            messagePanel.ShowNotice(msg);
         }
 
         private void logoutLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -237,10 +224,19 @@ namespace TradeTweet
 
         private async void SendTweetAsync()
         {
+            ToggleTweetButton();
+
+            noticePanel.ShowNotice("Sending...");
+
             var rrr = await OnTweet();
+
+            ToggleTweetButton();
 
             if (!rrr.Failed)
             {
+                var msg = new TwitMessage() { Message = Status, Time = DateTime.UtcNow };
+                ResponseNotice(msg, rrr);
+
                 tweetText.Text = "";
                 picPanel.Clear();
                 images.Clear();
@@ -284,7 +280,7 @@ namespace TradeTweet
             if (!Settings.Set.Values.Any(v => v.Active))
             {
                 AutoTweetFlag = false;
-                nnnPanel.ShowNotice("There is no events to tweet!",1000);
+                noticePanel.ShowNotice("There is no events to tweet!",1000);
                 return;
             }
 
@@ -293,12 +289,12 @@ namespace TradeTweet
             // Save settings
             Settings.OnSettingsChange();
 
-            nnnPanel.ShowNotice((Settings.autoTweet) ? "AutoTweet Enabled!" : "AutoTweet Disabled!", 1000, NoticeType.Info);
+            noticePanel.ShowNotice((Settings.autoTweet) ? "AutoTweet Enabled!" : "AutoTweet Disabled!", 1000, NoticeType.Info);
         }
 
         private void ShowInfoNotice(string text, EventType type)
         {
-            nnnPanel.ShowNotice(text, 1000, NoticeType.Info, type);
+            noticePanel.ShowNotice(text, 1000, NoticeType.Info, type);
         }
     
         private void addImageBtn_Click(object sender, EventArgs e)
@@ -341,7 +337,7 @@ namespace TradeTweet
                 return;
             }
 
-            nnnPanel.ShowNotice("Only 4 pics are allowed to tweet!", 1000, NoticeType.Info);
+            noticePanel.ShowNotice("Only 4 pics are allowed to tweet!", 1000, NoticeType.Info);
         }
 
         void MakeScreen(PictureCard c = null)
@@ -649,7 +645,7 @@ namespace TradeTweet
 
             internal void RefreshState()
             {
-                foreach (NoticeP item in panel.Controls)
+                foreach (MessagePanel item in panel.Controls)
                 {
                     item.RefreshRemoveabled();
                 }
