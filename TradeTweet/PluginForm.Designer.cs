@@ -14,7 +14,7 @@
         protected override void Dispose(bool disposing)
         {
             cts.Cancel();
-            AutoTweet.Stop(this);
+            TweetManager.Stop(this);
 
             if (disposing && (components != null))
             {

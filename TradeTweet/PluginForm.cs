@@ -35,18 +35,18 @@ namespace TradeTweet
 
             Settings.LoadSettings();
 
-            AutoTweet.Run(this);
+            TweetManager.Run(this);
 
             noticePanel = new NoticePanel(this, ct);
             noticePanel.Dock = DockStyle.Top;
 
-            AutoTweet.twitService.onAuthorized = (s1, s2) => {
+            TweetManager.twitService.onAuthorized = (s1, s2) => {
                 Settings.ast = s1;
                 Settings.atn = s2;
                 Settings.SaveSettings();
             };
 
-            if (!AutoTweet.isRunning)
+            if (!TweetManager.isRunning)
             {
                 connectionPanel = new ConnectionPanel();
                 connectionPanel.OnConnect = OnConnect;
@@ -78,13 +78,13 @@ namespace TradeTweet
 
         private void OnLogout()
         {
-            AutoTweet.twitService.EraseCridentials();
+            TweetManager.twitService.EraseCridentials();
             Settings.ClearSettings(true);
         }
 
         private void OnConnect()
         {
-            Response resp = AutoTweet.twitService.Connect();
+            Response resp = TweetManager.twitService.Connect();
 
             if (resp.Failed)
             {
@@ -102,11 +102,11 @@ namespace TradeTweet
 
         private void OnPinEntered(string pin)
         {
-            var resp = AutoTweet.twitService.SetToken(pin);
+            var resp = TweetManager.twitService.SetToken(pin);
 
             if (resp.Failed)
             {
-                AutoTweet.twitService.EraseCridentials();
+                TweetManager.twitService.EraseCridentials();
                 ShowNotice("Wrong PIN!", 2000, ReturnToConnect);
                 return;
             }

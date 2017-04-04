@@ -81,8 +81,8 @@ namespace TradeTweet
             picPanel = new PicturePanel();
             picPanelContainer.Controls.Add(picPanel);
 
-            accountName.Text = AutoTweet.twitService.User.screen_name;
-            avatar.BackgroundImage = AutoTweet.twitService.User.avatar;
+            accountName.Text = TweetManager.twitService.User.screen_name;
+            avatar.BackgroundImage = TweetManager.twitService.User.avatar;
             avatar.BackgroundImageLayout = ImageLayout.Zoom;
 
             messagePanel = new MessagePanel(scrollHistContainer.panel);
@@ -107,8 +107,8 @@ namespace TradeTweet
             ctss = new System.Threading.CancellationTokenSource();
             ct = ctss.Token;
 
-            AutoTweet.OnAutoTweetSend += ShowInfoNotice;
-            AutoTweet.OnAutoTweetRespond += ResponseNotice;
+            TweetMessenger.OnAutoTweetSend += ShowInfoNotice;
+            TweetMessenger.OnAutoTweetRespond += ResponseNotice;
 
             /// set notice panel location
             RelocationPanels();
@@ -177,7 +177,7 @@ namespace TradeTweet
 
             foreach (var img in images.Values)
             {
-                list.Add(AutoTweet.twitService.SendImageAsync(img, ct));
+                list.Add(TweetManager.twitService.SendImageAsync(img, ct));
             }
 
             await Task.WhenAll(list);
@@ -196,7 +196,7 @@ namespace TradeTweet
 
             byte[] media = (string.IsNullOrEmpty(mediaString)) ? null : new byte[1];
 
-            var ttt = await AutoTweet.twitService.SendTweetAsync(new Twitt { Text = Status, Media = media }, mediaString, ct);
+            var ttt = await TweetManager.twitService.SendTweetAsync(new Twitt { Text = Status, Media = media }, mediaString, ct);
 
             return ttt;
         }
