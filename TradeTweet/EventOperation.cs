@@ -30,20 +30,8 @@ namespace TradeTweet
 
     static class EventBuilder
     {
-        internal static Dictionary<EventItem, EventOperationItem> GetDefaultDictionary()
-        {
-            return new Dictionary<EventItem, EventOperationItem>
-            {
-                {EventItem.id, new EventOperationItem() { Name = "Id"} },
-                {EventItem.price, new EventOperationItem() { Name = "Price"} },
-                {EventItem.qty, new EventOperationItem() { Name = "Quantity"} },
-                {EventItem.side, new EventOperationItem() { Name = "Side"} },
-                {EventItem.sl, new EventOperationItem() { Name = "Stoploss"} },
-                {EventItem.symbol, new EventOperationItem() { Name = "Symbol"} },
-                {EventItem.tp, new EventOperationItem() { Name = "TP"} },
-                {EventItem.type, new EventOperationItem() { Name = "Type"} }
-            };
-        }
+        public const string DELIMITER = "_";
+        public const string PTMC_CAPTION = "#PTMC_platform\n";
 
         internal static EventOperation Create(EventType evType)
         {
@@ -54,6 +42,7 @@ namespace TradeTweet
                 case EventType.Empty:
                     break;
                 case EventType.OrderPlaced:
+                    return new OrderPlacedEventOperation();
                     break;
                 case EventType.OrderCancelled:
                     break;
@@ -72,93 +61,81 @@ namespace TradeTweet
     [DataContract]
     abstract class EventOperation
     {
-        public const string DELIMITER = "_";
-        public const string PTMC_CAPTION = "#PTMC_platform\n";
-
         [DataMember]
         internal bool Active;
         [DataMember]
         internal string Name;
-        [DataMember]
-        internal Dictionary<EventItem, EventOperationItem> Items = new Dictionary<EventItem, EventOperationItem>();
 
-        internal abstract string GetMessage();
-        internal abstract System.DateTime GetTime();
+        internal abstract string GetMessage(object obj);
+        internal virtual System.DateTime GetTime<T>(T obj)
+        {
+            return System.DateTime.UtcNow;
+        }
     }
 
     [DataContract]
-    class EventOperationItem
+    class EventOperationItem   
     {
         [DataMember]
         internal string Name;
         [DataMember]
         internal bool Checked;
+
+        internal Func<object,string> MessageText;
+
     }
 
     class OrderPlacedEventOperation : EventOperation
     {
-        internal Order order;
-
         public OrderPlacedEventOperation()
         {
             Name = "Order placed";
-            Items = EventBuilder.GetDefaultDictionary();
+            PopulateItems();
         }
 
-        internal override string GetMessage()
+        internal Dictionary<string, EventOperationItem> Items = new Dictionary<string, EventOperationItem>();
+
+        internal override string GetMessage(object o)
         {
+            Order order = o as Order;
+
             if (order == null)
                 return string.Empty;
 
-            string text = EventOperation.PTMC_CAPTION + order.Type.ToString() + " Order placed:\n";
+            string text = EventBuilder.PTMC_CAPTION + order.Type.ToString() + " "+Name+":\n";
 
             List<string> list = new List<string>();
 
-            foreach (EventItem item in Items.Keys)
+            foreach (EventOperationItem item in Items.Values)
             {
-                if (!Items[item].Checked) continue;
-
-                string part = "";
-
-                switch (item)
-                {
-                    case EventItem.side:
-                        part = order.Side.ToString();
-                        break;
-                    case EventItem.qty:
-                        part = order.Amount.ToString();
-                        break;
-                    case EventItem.symbol:
-                        part = order.Instrument.Symbol.ToString();
-                        break;
-                    case EventItem.type:
-                        part = order.Type.ToString();
-                        break;
-                    case EventItem.price:
-                        part = order.Instrument.FormatPrice(order.Price);
-                        break;
-                    case EventItem.sl:
-                        part = (order.StopLossOrder != null) ? ("SL@" + order.Instrument.FormatPrice(order.StopLossOrder.Price)) : "";
-                        break;
-                    case EventItem.tp:
-                        part = (order.TakeProfitOrder != null) ? ("TP@" + order.Instrument.FormatPrice(order.TakeProfitOrder.Price)) : "";
-                        break;
-                    case EventItem.id:
-                        part = "#" + order.Id;
-                        break;
-                    default:
-                        break;
-                }
-
+                if (!item.Checked) continue;
+                string part = item.MessageText(order);
                 list.Add(part);
             }
 
-            return text + string.Join(EventOperation.DELIMITER, list);
+            return text + string.Join(EventBuilder.DELIMITER, list);
         }
 
-        internal override DateTime GetTime()
+        internal override DateTime GetTime<Order>(Order order)
         {
             return (order != null)? order.Time: DateTime.UtcNow;
+        }
+
+        void PopulateItems()
+        {
+            SetItem("Side", (o) => { return (o as Order).Side.ToString(); });
+            SetItem("Quantity", (o) => { return o.Amount.ToString(); });
+            SetItem("Symbol", (o) => { return o.Instrument.Symbol.ToString(); });
+            SetItem("Type", (o) => { return o.Type.ToString(); });
+            SetItem("Price", (o) => { return o.Instrument.FormatPrice(o.Price); });
+            SetItem("SL", (o) => { return (o.StopLossOrder != null) ? ("SL@" + o.Instrument.FormatPrice(o.StopLossOrder.Price)) : ""; });
+            SetItem("TP", (o) => { return (o.TakeProfitOrder != null) ? ("TP@" + o.Instrument.FormatPrice(o.TakeProfitOrder.Price)) : ""; });
+            SetItem("Id", (o) => { return "#" + o.Id; });
+        }
+
+        internal void SetItem(string name, Func<object, string> text)
+        {
+            Items[name] = new EventOperationItem() { Name = name, MessageText = text };
         }
     }
 
