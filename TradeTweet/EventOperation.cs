@@ -62,6 +62,15 @@ namespace TradeTweet
         internal bool Checked;
 
         internal Func<object,string> MessageText;
+
+        internal Action<bool> Checking;
+
+        public EventOperationItem(string name, bool check = false)
+        {
+            Name = name;
+            Checked = check;
+            Checking = (b) => { Checked = b; };
+        }
     }
 
     class OrderPlacedEventOperation : EventOperation
@@ -71,6 +80,7 @@ namespace TradeTweet
         public OrderPlacedEventOperation()
         {
             rootItem = GetItem(NAME, (o) => { return EventBuilder.PTMC_CAPTION + o.Type.ToString() + " " + NAME + ":\n"; });
+            rootItem.Checking = (b) => { rootItem.Checked = b; };
             PopulateItems();
         }
 
@@ -93,7 +103,9 @@ namespace TradeTweet
          
         internal EventOperationItem GetItem(string name, Func<Order, string> text)
         {
-            return new EventOperationItem() { Name = name, MessageText = (o) => { return text(o as Order); } };
+            var op = new EventOperationItem(name);
+            op.MessageText = (o) => { return text(o as Order); };
+            return op;
         }
     }
 
