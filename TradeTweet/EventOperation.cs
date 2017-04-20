@@ -10,15 +10,11 @@ namespace TradeTweet
         public const string DELIMITER = "_";
         public const string PTMC_CAPTION = "#PTMC_platform\n";
 
-        internal static List<EventOperation> Create()
+        internal static List<EventOperation> EventsList = new List<EventOperation>()
         {
-            List<EventOperation> list = new List<EventOperation>();
-
-            list.Add(new OrderPlacedEventOperation());
-            list.Add(new PositionOpenedEventOperation());
-
-            return list;
-        }
+            new OrderPlacedEventOperation(),
+            new PositionOpenedEventOperation()
+        };
     }
 
     [DataContract]
@@ -27,6 +23,18 @@ namespace TradeTweet
         internal EventOperationItem rootItem;
 
         internal Dictionary<string, EventOperationItem> Items = new Dictionary<string, EventOperationItem>();
+
+        internal Action<string> eventInvoke;
+
+        internal virtual void OnEvent(object obj)
+        {
+            if (eventInvoke != null)
+                eventInvoke.Invoke(GetMessage(obj));
+        }
+
+        internal abstract void Subscribe();
+
+        internal abstract void Unsubscribe();
 
         internal virtual string GetMessage(object o)
         {
@@ -54,14 +62,14 @@ namespace TradeTweet
     }
 
     [DataContract]
-    class EventOperationItem   
+    class EventOperationItem
     {
         [DataMember]
         internal string Name;
         [DataMember]
         internal bool Checked;
 
-        internal Func<object,string> MessageText;
+        internal Func<object, string> MessageText;
 
         internal Action<bool> Checking;
 
@@ -77,16 +85,20 @@ namespace TradeTweet
     {
         const string NAME = "Order placed";
 
+        internal override void Subscribe()
+        {
+            TweetManager.PlatformEngine.Orders.OrderAdded += OnEvent;
+        }
+        internal override void Unsubscribe()
+        {
+            TweetManager.PlatformEngine.Orders.OrderAdded -= OnEvent;
+        }
+
         public OrderPlacedEventOperation()
         {
             rootItem = GetItem(NAME, (o) => { return EventBuilder.PTMC_CAPTION + o.Type.ToString() + " " + NAME + ":\n"; });
             rootItem.Checking = (b) => { rootItem.Checked = b; };
             PopulateItems();
-        }
-
-        internal override DateTime GetTime(object o)
-        {
-            return (o != null)? (o as Order).Time: base.GetTime(o);
         }
 
         void PopulateItems()
@@ -100,12 +112,17 @@ namespace TradeTweet
             Items["TP"] = GetItem("TP", (o) => { return (o.TakeProfitOrder != null) ? ("TP@" + o.Instrument.FormatPrice(o.TakeProfitOrder.Price)) : ""; });
             Items["Id"] = GetItem("Id", (o) => { return "#" + o.Id; });
         }
-         
+
         internal EventOperationItem GetItem(string name, Func<Order, string> text)
         {
             var op = new EventOperationItem(name);
             op.MessageText = (o) => { return text(o as Order); };
             return op;
+        }
+
+        internal override DateTime GetTime(object o)
+        {
+            return (o != null) ? (o as Order).Time : base.GetTime(o);
         }
     }
 
@@ -113,15 +130,20 @@ namespace TradeTweet
     {
         const string NAME = "Position opened";
 
+        internal override void Subscribe()
+        {
+            TweetManager.PlatformEngine.Positions.PositionAdded += OnEvent;
+        }
+
+        internal override void Unsubscribe()
+        {
+            TweetManager.PlatformEngine.Positions.PositionAdded -= OnEvent;
+        }
+
         public PositionOpenedEventOperation()
         {
             rootItem = GetItem(NAME, (o) => { return EventBuilder.PTMC_CAPTION + NAME + ":\n"; });
             PopulateItems();
-        }
-
-        internal override DateTime GetTime(object o)
-        {
-            return (o != null) ? (o as Position).OpenTime : base.GetTime(o);
         }
 
         void PopulateItems()
@@ -137,7 +159,14 @@ namespace TradeTweet
 
         internal EventOperationItem GetItem(string name, Func<Position, string> text)
         {
-            return new EventOperationItem() { Name = name, MessageText = (o) => { return text(o as Position); } };
+            var op = new EventOperationItem(name);
+            op.MessageText = (o) => { return text(o as Position); };
+            return op;
+        }
+
+        internal override DateTime GetTime(object o)
+        {
+            return (o != null) ? (o as Position).OpenTime : base.GetTime(o);
         }
     }
 }

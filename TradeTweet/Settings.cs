@@ -415,7 +415,7 @@ namespace TradeTweet
         public static void Run(TradeTweet instance)
         {
             // unsubscribe
-            SubscribingEngine(false);
+            SubscribingEvents(false);
 
             // refresh connection flags
             foreach (var inst in instances.Keys.ToList())
@@ -431,7 +431,7 @@ namespace TradeTweet
 
             PlatformEngine = instance.PlatformEngine;
 
-            SubscribingEngine(true);
+            SubscribingEvents(true);
         }
 
         public static void Stop(TradeTweet instance)
@@ -455,70 +455,43 @@ namespace TradeTweet
 
                 PlatformEngine = instance.PlatformEngine;
 
-                SubscribingEngine(true);
+                SubscribingEvents(true);
             }
 
             // completely unsubscribing
             if (instances.Count == 0)
             {
                 cts.Cancel();
-                SubscribingEngine(false);
+                SubscribingEvents(false);
                 // renew cancellation token
                 cts = new CancellationTokenSource();
             }
         }
 
-        static void SubscribingEngine(bool status)
+        static void SubscribingEvents(bool status)
         {
             if (PlatformEngine == null) return;
 
-            if (status)
+            foreach (var eventOp in EventBuilder.EventsList)
             {
-                PlatformEngine.Orders.OrderAdded += Orders_OrderAdded;
-                PlatformEngine.Orders.OrderRemoved += Orders_OrderRemoved;
-                PlatformEngine.Positions.PositionAdded += Positions_PositionAdded;
-                PlatformEngine.Positions.PositionRemoved += Positions_PositionRemoved;
-            }
-            else
-            {
-                PlatformEngine.Orders.OrderAdded -= Orders_OrderAdded;
-                PlatformEngine.Orders.OrderRemoved -= Orders_OrderRemoved;
-                PlatformEngine.Positions.PositionAdded -= Positions_PositionAdded;
-                PlatformEngine.Positions.PositionRemoved -= Positions_PositionRemoved;
+                if (status)
+                {
+                    eventOp.Subscribe();
+                }
+                else
+                {
+                    eventOp.Unsubscribe();
+                }
             }
         }
 
-        private static void Positions_PositionRemoved(Position obj)
-        {
-            if (!Settings.autoTweet) return;
+        //private static void Orders_OrderAdded(Order obj)
+        //{
+        //    // skip order's establishing statuses - take only new
+        //    if (!Settings.autoTweet || obj.Status != OrderStatus.New) return;
 
-            TwitMessage msg = TweetMessenger.CreateMessage(EventType.PositionClosed, obj);
-            TweetMessenger.SendAutoTweet(msg);
-        }
-
-        private static void Positions_PositionAdded(Position obj)
-        {
-            if (!Settings.autoTweet) return;
-
-            TwitMessage msg = TweetMessenger.CreateMessage(EventType.PositionOpened, obj);
-            TweetMessenger.SendAutoTweet(msg);
-        }
-
-        private static void Orders_OrderRemoved(Order obj)
-        {
-            if (!Settings.autoTweet) return;
-
-            TwitMessage msg = TweetMessenger.CreateMessage(EventType.OrderCancelled, obj);
-            TweetMessenger.SendAutoTweet(msg);
-        }
-
-        private static void Orders_OrderAdded(Order obj)
-        {
-            // skip order's establishing statuses - take only new
-            if (!Settings.autoTweet || obj.Status != OrderStatus.New) return;
-
-            TwitMessage msg = TweetMessenger.CreateMessage(EventType.OrderPlaced, obj);
-            TweetMessenger.SendAutoTweet(msg);
-        }
+        //    TwitMessage msg = TweetMessenger.CreateMessage(EventType.OrderPlaced, obj);
+        //    TweetMessenger.SendAutoTweet(msg);
+        //}
     }
 }
