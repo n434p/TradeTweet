@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -19,39 +20,15 @@ namespace TradeTweet
             Visible = false;
         }
 
-        internal async void ShowNotice(string message, int miliseconds = 2000, NoticeType type = NoticeType.Info, EventType evType = EventType.Empty, Action callback = null)
+        internal void ShowNotice(string message, Image image, int miliseconds = 2000, EventStatus status = EventStatus.Info, Action callback = null)
         {
-            this.noticeText.Text = message;
+            ShowNotice(new TwitMessage() { Message = message, Image = image, status = status, Time = DateTime.UtcNow }, miliseconds, callback);
+        }
 
-            if (evType == EventType.Empty)
-            switch (type)
-            {
-                case NoticeType.Info:
-                    statusPic.Image = Properties.Resources.TradeTweet_09;
-                    break;
-                case NoticeType.Error:
-                    statusPic.Image = Properties.Resources.TradeTweet_10;
-                    break;
-                case NoticeType.Success:
-                    statusPic.Image = Properties.Resources.TradeTweet_11;
-                    break;
-            }
-
-            switch (evType)
-            {
-                case EventType.OrderPlaced:
-                    statusPic.Image = Properties.Resources.open_order_yellow;
-                    break;
-                case EventType.OrderCancelled:
-                    statusPic.Image = Properties.Resources.close_order_yellow;
-                    break;
-                case EventType.PositionClosed:
-                    statusPic.Image = Properties.Resources.close_pos_yellow;
-                    break;
-                case EventType.PositionOpened:
-                    statusPic.Image = Properties.Resources.open_pos_yellow;
-                    break;
-            }
+        internal async void ShowNotice(TwitMessage msg, int miliseconds = 2000, Action callback = null)
+        {
+            this.noticeText.Text = msg.Message;
+            statusPic.Image = msg.Image;
 
             if (ParentWindow.IsHandleCreated)
             {

@@ -6,7 +6,7 @@ using TradeTweet.Properties;
 
 namespace TradeTweet
 {
-    enum NoticeType { Info, Error, Success}
+    enum EventStatus { Info, Error, Success}
 
     public partial class MessagePanel : UserControl
     {
@@ -27,8 +27,8 @@ namespace TradeTweet
         internal void ShowNotice(TwitMessage msg, Action callback = null)
         {
             MessagePanel notice = new MessagePanel(ParentWindow);
-            notice.noticeText.Text = msg.Message.Replace("#PTMC_platform\n","").TrimStart(' ');
-            notice.removeable = msg.NoticeType == NoticeType.Error;
+            notice.noticeText.Text = msg.Message.Replace(EventBuilder.PTMC_CAPTION,"").TrimStart(' ');
+            notice.removeable = msg.status == EventStatus.Error;
             notice.label1.Text = msg.FormattedTime;
 
             notice.Dock = DockStyle.Top;
@@ -38,35 +38,7 @@ namespace TradeTweet
                 notice.mouseMoved = mouseMoved;
             }
 
-            if (msg.EventType == EventType.Empty)
-                switch (msg.NoticeType)
-                {
-                    case NoticeType.Info:
-                        notice.statusPic.Image = Properties.Resources.TradeTweet_09;
-                        break;
-                    case NoticeType.Error:
-                        notice.statusPic.Image = Properties.Resources.TradeTweet_10;
-                        break;
-                    case NoticeType.Success:
-                        notice.statusPic.Image = Properties.Resources.TradeTweet_11;
-                        break;
-                }
-
-            switch (msg.EventType)
-            {
-                case EventType.OrderPlaced:
-                    notice.statusPic.Image = (msg.NoticeType == NoticeType.Error)? Resources.open_order_red: Resources.open_order_green;
-                    break;
-                case EventType.OrderCancelled:
-                    notice.statusPic.Image = (msg.NoticeType == NoticeType.Error) ? Resources.close_order_red : Resources.close_order_green;
-                    break;
-                case EventType.PositionClosed:
-                    notice.statusPic.Image = (msg.NoticeType == NoticeType.Error) ? Resources.close_pos_red : Resources.close_pos_green;
-                    break;
-                case EventType.PositionOpened:
-                    notice.statusPic.Image = (msg.NoticeType == NoticeType.Error) ? Resources.open_pos_red : Resources.open_pos_green;
-                    break;
-            }
+            notice.statusPic.Image = msg.Image;
 
             if (ParentWindow.IsHandleCreated)
             {

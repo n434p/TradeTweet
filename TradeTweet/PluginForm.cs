@@ -58,9 +58,9 @@ namespace TradeTweet
             }
         }
 
-        public void ShowNotice(string text, int delay = 2000, Action callback = null)
+        public void ShowNotice(string text, Image img, int delay = 2000, Action callback = null)
         {
-            noticePanel.ShowNotice(text,delay,NoticeType.Error,EventType.Empty,callback);
+            noticePanel.ShowNotice(text,img,delay,EventStatus.Error,callback);
         }
 
         private TweetPanel CreateTweetPanel()
@@ -88,7 +88,7 @@ namespace TradeTweet
 
             if (resp.Failed)
             {
-                ShowNotice(resp.Text);
+                ShowNotice(resp.Text, Properties.Resources.TradeTweet_10);
                 return;
             }
 
@@ -107,7 +107,7 @@ namespace TradeTweet
             if (resp.Failed)
             {
                 TweetManager.twitService.EraseCridentials();
-                ShowNotice("Wrong PIN!", 2000, ReturnToConnect);
+                ShowNotice("Wrong PIN!", Properties.Resources.TradeTweet_10, 2000, ReturnToConnect);
                 return;
             }
 

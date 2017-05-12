@@ -1,6 +1,7 @@
 ﻿using PTLRuntime.NETScript;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Runtime.Serialization;
 
 namespace TradeTweet
@@ -15,26 +16,49 @@ namespace TradeTweet
             new OrderPlacedEventOperation(),
             new PositionOpenedEventOperation()
         };
+
+        internal static Action<object, EventOperation> eventInvoke = TweetMessenger.SendAutoTweet;
     }
 
     [DataContract]
     abstract class EventOperation
     {
+        [DataMember]
         internal EventOperationItem rootItem;
 
+        [DataMember]
         internal Dictionary<string, EventOperationItem> Items = new Dictionary<string, EventOperationItem>();
-
-        internal Action<string> eventInvoke;
 
         internal virtual void OnEvent(object obj)
         {
-            if (eventInvoke != null)
-                eventInvoke.Invoke(GetMessage(obj));
+            if (EventBuilder.eventInvoke != null)
+                EventBuilder.eventInvoke.Invoke(obj, this);
         }
 
         internal abstract void Subscribe();
 
         internal abstract void Unsubscribe();
+
+        internal virtual Image GetImage(EventStatus status)
+        {
+            Image img = null;
+            switch (status)
+            {
+                case EventStatus.Info:
+                    img = Properties.Resources.TradeTweet_09;
+                    break;
+                case EventStatus.Error:
+                    img = Properties.Resources.TradeTweet_10;
+                    break;
+                case EventStatus.Success:
+                    img = Properties.Resources.TradeTweet_11;
+                    break;
+                default:
+                    break;
+            }
+
+            return img;
+        }
 
         internal virtual string GetMessage(object o)
         {
@@ -83,12 +107,13 @@ namespace TradeTweet
 
     class OrderPlacedEventOperation : EventOperation
     {
-        const string NAME = "Order placed";
+        internal const string NAME = "Order placed";
 
         internal override void Subscribe()
         {
             TweetManager.PlatformEngine.Orders.OrderAdded += OnEvent;
         }
+
         internal override void Unsubscribe()
         {
             TweetManager.PlatformEngine.Orders.OrderAdded -= OnEvent;
@@ -124,11 +149,32 @@ namespace TradeTweet
         {
             return (o != null) ? (o as Order).Time : base.GetTime(o);
         }
+
+        internal override Image GetImage(EventStatus status)
+        {
+                Image img = null;
+                switch (status)
+                {
+                    case EventStatus.Info:
+                        img = Properties.Resources.open_order_yellow;
+                        break;
+                    case EventStatus.Error:
+                        img = Properties.Resources.open_order_red;
+                        break;
+                    case EventStatus.Success:
+                        img = Properties.Resources.open_order_green;
+                        break;
+                    default:
+                        break;
+                }
+
+                return img;
+        }
     }
 
     class PositionOpenedEventOperation : EventOperation
     {
-        const string NAME = "Position opened";
+        internal const string NAME = "Position opened";
 
         internal override void Subscribe()
         {
@@ -167,6 +213,27 @@ namespace TradeTweet
         internal override DateTime GetTime(object o)
         {
             return (o != null) ? (o as Position).OpenTime : base.GetTime(o);
+        }
+
+        internal override Image GetImage(EventStatus status)
+        {
+                Image img = null;
+                switch (status)
+                {
+                    case EventStatus.Info:
+                        img = Properties.Resources.open_pos_yellow;
+                        break;
+                    case EventStatus.Error:
+                        img = Properties.Resources.open_pos_red;
+                        break;
+                    case EventStatus.Success:
+                        img = Properties.Resources.open_pos_green;
+                        break;
+                    default:
+                        break;
+                }
+
+                return img;
         }
     }
 }

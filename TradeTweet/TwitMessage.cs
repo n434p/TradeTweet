@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,9 +9,9 @@ namespace TradeTweet
 {
     class TwitMessage
     {
+        internal EventStatus status;
         internal string Message;
-        internal NoticeType NoticeType = NoticeType.Info;
-        internal EventType EventType = EventType.Empty;
+        internal Image Image;
         internal DateTime Time;
 
         public string FormattedTime
@@ -20,5 +21,7 @@ namespace TradeTweet
                 return Time.ToLocalTime().ToString("H:mm (dd.MM.yyyy)");
             }
         } 
+
+
     }
 }

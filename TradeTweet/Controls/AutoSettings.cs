@@ -101,33 +101,33 @@ namespace TradeTweet
             settingsTree.SuspendLayout();
             settingsTree.IgnoreClickAction++;
 
-            foreach (TreeNode rootNode in settingsTree.Nodes)
-            {
-                EventType type = (EventType)rootNode.Tag;
+            //foreach (TreeNode rootNode in settingsTree.Nodes)
+            //{
+            //    EventType type = (EventType)rootNode.Tag;
 
-                int count = 0;
+            //    int count = 0;
 
-                foreach (TreeNode node in rootNode.Nodes)
-                {
-                    EventItem item = (EventItem)node.Tag;
+            //    foreach (TreeNode node in rootNode.Nodes)
+            //    {
+            //        EventItem item = (EventItem)node.Tag;
 
-                    node.Checked = Settings.Set[type].Items[item].Checked;
-                    node.StateImageIndex = (node.Checked) ? 1 : 0;
+            //        node.Checked = Settings.Set[type].Items[item].Checked;
+            //        node.StateImageIndex = (node.Checked) ? 1 : 0;
 
-                    if (Settings.Set[type].Items[item].Checked)
-                        count++;
-                }
+            //        if (Settings.Set[type].Items[item].Checked)
+            //            count++;
+            //    }
 
-                rootNode.Checked = count > 0;
+            //    rootNode.Checked = count > 0;
 
-                if (count == rootNode.Nodes.Count)
-                    rootNode.StateImageIndex = 1;
-                else if (count == 0)
-                    rootNode.StateImageIndex = 0;
-                else
-                    rootNode.StateImageIndex = 2;
+            //    if (count == rootNode.Nodes.Count)
+            //        rootNode.StateImageIndex = 1;
+            //    else if (count == 0)
+            //        rootNode.StateImageIndex = 0;
+            //    else
+            //        rootNode.StateImageIndex = 2;
 
-            }
+            //}
             settingsTree.IgnoreClickAction--;
             settingsTree.ResumeLayout();
 
@@ -137,108 +137,108 @@ namespace TradeTweet
         {
             settingsTree.Nodes.Clear();
 
-            foreach (EventType item in Enum.GetValues(typeof(EventType)))
-            {
-                if (item == EventType.Empty) continue;
+            //foreach (EventType item in Enum.GetValues(typeof(EventType)))
+            //{
+            //    if (item == EventType.Empty) continue;
 
-                var list = new List<TreeNode>();
+            //    var list = new List<TreeNode>();
 
-                string rootNodeName = "";
+            //    string rootNodeName = "";
 
-                switch (item)
-                {
-                    case EventType.OrderPlaced:
-                        rootNodeName = "Order placed";
-                        break;
-                    case EventType.OrderCancelled:
-                        rootNodeName = "Order cancelled";
-                        break;
-                    case EventType.PositionOpened:
-                        rootNodeName = "Position opened";
-                        break;
-                    case EventType.PositionClosed:
-                        rootNodeName = "Position closed";
-                        break;
-                    default:
-                        break;
-                }
+            //    switch (item)
+            //    {
+            //        case EventType.OrderPlaced:
+            //            rootNodeName = "Order placed";
+            //            break;
+            //        case EventType.OrderCancelled:
+            //            rootNodeName = "Order cancelled";
+            //            break;
+            //        case EventType.PositionOpened:
+            //            rootNodeName = "Position opened";
+            //            break;
+            //        case EventType.PositionClosed:
+            //            rootNodeName = "Position closed";
+            //            break;
+            //        default:
+            //            break;
+            //    }
 
-                if (!Settings.Set.ContainsKey(item))
-                {
-                    var evenOperation = new EventOperation()
-                    {
-                        Active = false,
-                        Items = new Dictionary<EventItem, EventOperationItem>(),
-                        Name = rootNodeName
-                    };
+            //    if (!Settings.Set.ContainsKey(item))
+            //    {
+            //        var evenOperation = new EventOperation()
+            //        {
+            //            Active = false,
+            //            Items = new Dictionary<EventItem, EventOperationItem>(),
+            //            Name = rootNodeName
+            //        };
 
-                    Settings.Set[item] = evenOperation;
-                }
+            //        Settings.Set[item] = evenOperation;
+            //    }
 
-                foreach (EventItem item2 in Enum.GetValues(typeof(EventItem)))
-                {
+            //    foreach (EventItem item2 in Enum.GetValues(typeof(EventItem)))
+            //    {
 
-                    string nodeName = "";
+            //        string nodeName = "";
 
-                    switch (item2)
-                    {
-                        case EventItem.side:
-                            nodeName = "Side";
-                            break;
-                        case EventItem.qty:
-                            nodeName = "Quantity";
-                            break;
-                        case EventItem.symbol:
-                            nodeName = "Symbol";
-                            break;
-                        case EventItem.type:
-                            nodeName = "Order type";
-                            break;
-                        case EventItem.price:
-                            nodeName = "Open price";
-                            break;
-                        case EventItem.sl:
-                            nodeName = "Stop loss";
-                            break;
-                        case EventItem.tp:
-                            nodeName = "Take profit";
-                            break;
-                        case EventItem.id:
-                            nodeName = "Order Id";
-                            break;
-                        default:
-                            break;
-                    }
+            //        switch (item2)
+            //        {
+            //            case EventItem.side:
+            //                nodeName = "Side";
+            //                break;
+            //            case EventItem.qty:
+            //                nodeName = "Quantity";
+            //                break;
+            //            case EventItem.symbol:
+            //                nodeName = "Symbol";
+            //                break;
+            //            case EventItem.type:
+            //                nodeName = "Order type";
+            //                break;
+            //            case EventItem.price:
+            //                nodeName = "Open price";
+            //                break;
+            //            case EventItem.sl:
+            //                nodeName = "Stop loss";
+            //                break;
+            //            case EventItem.tp:
+            //                nodeName = "Take profit";
+            //                break;
+            //            case EventItem.id:
+            //                nodeName = "Order Id";
+            //                break;
+            //            default:
+            //                break;
+            //        }
 
-                    // skip order type for Position's cases
-                    if ((item == EventType.PositionOpened || item == EventType.PositionClosed) && (item2 == EventItem.type))
-                        continue;
+            //        // skip order type for Position's cases
+            //        if ((item == EventType.PositionOpened || item == EventType.PositionClosed) && (item2 == EventItem.type))
+            //            continue;
 
-                    if (!Settings.Set[item].Items.ContainsKey(item2))
-                    {
-                        EventOperationItem eventItem = new EventOperationItem()
-                        {
-                            Checked = false,
-                            Name = nodeName
-                        };
+            //        if (!Settings.Set[item].Items.ContainsKey(item2))
+            //        {
+            //            EventOperationItem eventItem = new EventOperationItem()
+            //            {
+            //                Checked = false,
+            //                Name = nodeName
+            //            };
 
-                        Settings.Set[item].Items[item2] = eventItem;
-                    }
+            //            Settings.Set[item].Items[item2] = eventItem;
+            //        }
 
-                    TreeNode node = new TreeNode(Settings.Set[item].Items[item2].Name);
-                    //node.Checked = Settings.Set[item].Items[item2].Checked;
-                    node.Tag = item2;
+            //        TreeNode node = new TreeNode(Settings.Set[item].Items[item2].Name);
+            //        //node.Checked = Settings.Set[item].Items[item2].Checked;
+            //        node.Tag = item2;
 
-                    list.Add(node);
-                }
+            //        list.Add(node);
+            //    }
 
-                TreeNode rootNode = new TreeNode(Settings.Set[item].Name, list.ToArray());
-                rootNode.Tag = item;
+            //    TreeNode rootNode = new TreeNode(Settings.Set[item].Name, list.ToArray());
+            //    rootNode.Tag = item;
 
-                //rootNode.Checked = Settings.Set[item].Active;
+            //    //rootNode.Checked = Settings.Set[item].Active;
 
-                settingsTree.Nodes.Add(rootNode);
-            }
+            //    settingsTree.Nodes.Add(rootNode);
+            //}
 
             RefreshTree();
         }
@@ -361,25 +361,25 @@ namespace TradeTweet
 
         internal void RefreshSettings()
         {
-            foreach (TreeNode rootNode in Nodes)
-            {
-                EventType type = (EventType)rootNode.Tag;
+            //foreach (TreeNode rootNode in Nodes)
+            //{
+            //    EventType type = (EventType)rootNode.Tag;
 
-                foreach (TreeNode node in rootNode.Nodes)
-                {
-                    EventItem item = (EventItem)node.Tag;
-                    Settings.Set[type].Items[item].Checked = node.Checked;
-                }
+            //    foreach (TreeNode node in rootNode.Nodes)
+            //    {
+            //        EventItem item = (EventItem)node.Tag;
+            //        Settings.Set[type].Items[item].Checked = node.Checked;
+            //    }
 
-                bool rootChecked = rootNode.StateImageIndex > 0;
+            //    bool rootChecked = rootNode.StateImageIndex > 0;
 
-                if (rootChecked != Settings.Set[type].Active)
-                {
-                    Settings.Set[type].Active = rootChecked;
-                }
-            }
+            //    if (rootChecked != Settings.Set[type].Active)
+            //    {
+            //        Settings.Set[type].Active = rootChecked;
+            //    }
+            //}
 
-            Settings.OnSettingsChange();
+            //Settings.OnSettingsChange();
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)

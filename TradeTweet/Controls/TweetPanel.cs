@@ -201,18 +201,8 @@ namespace TradeTweet
             return ttt;
         }
 
-        void ResponseNotice(TwitMessage msg, Response resp)
+        void ResponseNotice(TwitMessage msg)
         {
-            if (!resp.Failed)
-            {
-                msg.NoticeType = NoticeType.Success;
-            }
-            else
-            {
-                msg.NoticeType = NoticeType.Error;
-                msg.Message = resp.Text;
-            }
-
             messagePanel.ShowNotice(msg);
         }
 
@@ -226,17 +216,21 @@ namespace TradeTweet
         {
             ToggleTweetButton();
 
-            noticePanel.ShowNotice("Sending...");
+            noticePanel.ShowNotice("Sending...", Properties.Resources.TradeTweet_09);
 
             var rrr = await OnTweet();
 
             ToggleTweetButton();
 
+            var status = (rrr.Failed) ? EventStatus.Error : EventStatus.Success;
+            var image = (rrr.Failed) ? Resources.TradeTweet_10 : Resources.TradeTweet_11;
+
+            var msg = new TwitMessage() { Message = Status, Time = DateTime.UtcNow, Image = image, status = status};
+
+            ResponseNotice(msg);
+
             if (!rrr.Failed)
             {
-                var msg = new TwitMessage() { Message = Status, Time = DateTime.UtcNow };
-                ResponseNotice(msg, rrr);
-
                 tweetText.Text = "";
                 picPanel.Clear();
                 images.Clear();
@@ -277,10 +271,10 @@ namespace TradeTweet
 
         private void autoTweetBtn_Click(object sender, EventArgs e)
         {
-            if (!Settings.Set.Values.Any(v => v.Active))
+            if (!EventBuilder.EventsList.Any(ev => ev.rootItem.Checked))
             {
                 AutoTweetFlag = false;
-                noticePanel.ShowNotice("There is no events to tweet!",1000);
+                noticePanel.ShowNotice("There is no events to tweet!", Resources.TradeTweet_09, 1000);
                 return;
             }
 
@@ -289,12 +283,12 @@ namespace TradeTweet
             // Save settings
             Settings.OnSettingsChange();
 
-            noticePanel.ShowNotice((Settings.autoTweet) ? "AutoTweet Enabled!" : "AutoTweet Disabled!", 1000, NoticeType.Info);
+            noticePanel.ShowNotice((Settings.autoTweet) ? "AutoTweet Enabled!" : "AutoTweet Disabled!", Resources.TradeTweet_09, 1000, EventStatus.Info);
         }
 
-        private void ShowInfoNotice(string text, EventType type)
+        private void ShowInfoNotice(TwitMessage msg)
         {
-            noticePanel.ShowNotice(text, 1000, NoticeType.Info, type);
+            noticePanel.ShowNotice(msg, 1000);
         }
     
         private void addImageBtn_Click(object sender, EventArgs e)
@@ -337,7 +331,7 @@ namespace TradeTweet
                 return;
             }
 
-            noticePanel.ShowNotice("Only 4 pics are allowed to tweet!", 1000, NoticeType.Info);
+            noticePanel.ShowNotice("Only 4 pics are allowed to tweet!", Resources.TradeTweet_09, 1000, EventStatus.Info);
         }
 
         void MakeScreen(PictureCard c = null)
