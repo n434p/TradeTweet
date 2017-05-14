@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 
 namespace TradeTweet
@@ -21,6 +23,7 @@ namespace TradeTweet
     }
 
     [DataContract]
+    [KnownType("DerivedTypes")]
     abstract class EventOperation
     {
         [DataMember]
@@ -35,9 +38,21 @@ namespace TradeTweet
                 EventBuilder.eventInvoke.Invoke(obj, this);
         }
 
+        public EventOperation()
+        {
+            PopulateItems();
+        }
+
+        internal abstract void PopulateItems();
+
         internal abstract void Subscribe();
 
         internal abstract void Unsubscribe();
+
+        private static Type[] DerivedTypes()
+        {
+            return Assembly.GetExecutingAssembly().GetTypes().Where(_ => _.IsSubclassOf(typeof(EventOperation))).ToArray();
+        }
 
         internal virtual Image GetImage(EventStatus status)
         {
@@ -90,6 +105,7 @@ namespace TradeTweet
     {
         [DataMember]
         internal string Name;
+
         [DataMember]
         internal bool Checked;
 
@@ -105,6 +121,7 @@ namespace TradeTweet
         }
     }
 
+    [DataContract]
     class OrderPlacedEventOperation : EventOperation
     {
         internal const string NAME = "Order placed";
@@ -119,15 +136,11 @@ namespace TradeTweet
             TweetManager.PlatformEngine.Orders.OrderAdded -= OnEvent;
         }
 
-        public OrderPlacedEventOperation()
+        internal override void PopulateItems()
         {
             rootItem = GetItem(NAME, (o) => { return EventBuilder.PTMC_CAPTION + o.Type.ToString() + " " + NAME + ":\n"; });
             rootItem.Checking = (b) => { rootItem.Checked = b; };
-            PopulateItems();
-        }
 
-        void PopulateItems()
-        {
             Items["Side"] = GetItem("Side", (o) => { return o.Side.ToString(); });
             Items["Quantity"] = GetItem("Quantity", (o) => { return o.Amount.ToString(); });
             Items["Symbol"] = GetItem("Symbol", (o) => { return o.Instrument.Symbol.ToString(); });
@@ -172,6 +185,7 @@ namespace TradeTweet
         }
     }
 
+    [DataContract]
     class PositionOpenedEventOperation : EventOperation
     {
         internal const string NAME = "Position opened";
@@ -186,14 +200,11 @@ namespace TradeTweet
             TweetManager.PlatformEngine.Positions.PositionAdded -= OnEvent;
         }
 
-        public PositionOpenedEventOperation()
+        internal override void PopulateItems()
         {
             rootItem = GetItem(NAME, (o) => { return EventBuilder.PTMC_CAPTION + NAME + ":\n"; });
-            PopulateItems();
-        }
+            rootItem.Checking = (b) => { rootItem.Checked = b; };
 
-        void PopulateItems()
-        {
             Items["Side"] = GetItem("Side", (o) => { return o.Side.ToString(); });
             Items["Quantity"] = GetItem("Quantity", (o) => { return o.Amount.ToString(); });
             Items["Symbol"] = GetItem("Symbol", (o) => { return o.Instrument.Symbol.ToString(); });

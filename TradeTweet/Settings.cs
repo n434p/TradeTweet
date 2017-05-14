@@ -111,6 +111,11 @@ namespace TradeTweet
                 autoTweet = ts.autoTweet;
                 Set = ts.Set;
                 key = ts.key;
+
+                foreach (var item in Set)
+                {
+                    item.PopulateItems();
+                }
             }
         }
 
