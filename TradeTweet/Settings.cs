@@ -18,7 +18,7 @@ namespace TradeTweet
         static internal Color mainBackColor = Color.DimGray;
         static internal int btnHeight = 35;
 
-        static internal List<EventOperation> Set;
+        static internal Dictionary<string,EventOperation> Set;
         static internal string key;
         static internal bool autoTweet;
         static internal string atn;
@@ -37,7 +37,7 @@ namespace TradeTweet
             ast = ""; //822113440844148738-s7MLex2gcSFKxzKZfBDwcwJqvJYk0LA";
             atn = ""; //8UYP6Ahmn5GjJXkr0bN3Jy2XmKBX8jT3Slxk8EhzLCEmO";
             autoTweet = false;
-            Set = new List<EventOperation>();
+            Set = new Dictionary<string, EventOperation>();
             key = "default_set133";
 
             if (withFlush)
@@ -109,13 +109,9 @@ namespace TradeTweet
                 ast = string.IsNullOrEmpty(ts.ast) ? "" : ts.ast;
                 atn = string.IsNullOrEmpty(ts.atn) ? "" : ts.atn;
                 autoTweet = ts.autoTweet;
-                Set = ts.Set;
                 key = ts.key;
 
-                foreach (var item in Set)
-                {
-                    item.PopulateItems();
-                }
+                EventManager.RefreshListStates(ts.Set);
             }
         }
 
@@ -123,7 +119,7 @@ namespace TradeTweet
         class TradeTweetSettings
         {
             [DataMember]
-            public List<EventOperation> Set;
+            public Dictionary<string,EventOperation> Set;
             [DataMember]
             public string key;
             [DataMember]
@@ -260,7 +256,7 @@ namespace TradeTweet
         {
             if (PlatformEngine == null) return;
 
-            foreach (var eventOp in EventBuilder.EventsList)
+            foreach (var eventOp in EventManager.EventsList.Values)
             {
                 if (status)
                 {

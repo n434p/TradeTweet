@@ -271,7 +271,7 @@ namespace TradeTweet
 
         private void autoTweetBtn_Click(object sender, EventArgs e)
         {
-            if (!EventBuilder.EventsList.Any(ev => ev.rootItem.Checked))
+            if (!EventManager.EventsList.Any(ev => ev.Value.rootItem.Checked))
             {
                 AutoTweetFlag = false;
                 noticePanel.ShowNotice("There is no events to tweet!", Resources.TradeTweet_09, 1000);

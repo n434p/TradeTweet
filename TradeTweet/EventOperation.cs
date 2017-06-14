@@ -8,16 +8,32 @@ using System.Runtime.Serialization;
 
 namespace TradeTweet
 {
-    static class EventBuilder
+    static class EventManager
     {
         public const string DELIMITER = "_";
         public const string PTMC_CAPTION = "#PTMC_platform\n";
 
-        internal static List<EventOperation> EventsList = new List<EventOperation>()
+        internal static Dictionary<string,EventOperation> EventsList = new Dictionary<string, EventOperation>()
         {
-            new OrderPlacedEventOperation(),
-            new PositionOpenedEventOperation()
+            {OrderPlacedEventOperation.NAME, new OrderPlacedEventOperation() },
+            {PositionOpenedEventOperation.NAME, new PositionOpenedEventOperation() }
         };
+
+        internal static void RefreshListStates(Dictionary<string,EventOperation> list)
+        {
+            foreach (var operation in list.Keys)
+            {
+                if (!EventsList.Keys.Contains(operation))
+                    continue;
+
+                EventsList[operation].rootItem.Checked = list[operation].rootItem.Checked;
+
+                foreach (var key in EventsList[operation].Items.Keys)
+                {
+                    EventsList[operation].Items[key].Checked = list[operation].Items[key].Checked;
+                } 
+            }
+        }
 
         internal static Action<object, EventOperation> eventInvoke = TweetMessenger.SendAutoTweet;
     }
@@ -34,8 +50,8 @@ namespace TradeTweet
 
         internal virtual void OnEvent(object obj)
         {
-            if (EventBuilder.eventInvoke != null)
-                EventBuilder.eventInvoke.Invoke(obj, this);
+            if (EventManager.eventInvoke != null)
+                EventManager.eventInvoke.Invoke(obj, this);
         }
 
         public EventOperation()
@@ -91,13 +107,14 @@ namespace TradeTweet
                 list.Add(part);
             }
 
-            return text + string.Join(EventBuilder.DELIMITER, list);
+            return text + string.Join(EventManager.DELIMITER, list);
         }
 
         internal virtual System.DateTime GetTime(object obj)
         {
             return System.DateTime.UtcNow;
         }
+
     }
 
     [DataContract]
@@ -138,7 +155,7 @@ namespace TradeTweet
 
         internal override void PopulateItems()
         {
-            rootItem = GetItem(NAME, (o) => { return EventBuilder.PTMC_CAPTION + o.Type.ToString() + " " + NAME + ":\n"; });
+            rootItem = GetItem(NAME, (o) => { return EventManager.PTMC_CAPTION + o.Type.ToString() + " " + NAME + ":\n"; });
             rootItem.Checking = (b) => { rootItem.Checked = b; };
 
             Items["Side"] = GetItem("Side", (o) => { return o.Side.ToString(); });
@@ -202,7 +219,7 @@ namespace TradeTweet
 
         internal override void PopulateItems()
         {
-            rootItem = GetItem(NAME, (o) => { return EventBuilder.PTMC_CAPTION + NAME + ":\n"; });
+            rootItem = GetItem(NAME, (o) => { return EventManager.PTMC_CAPTION + NAME + ":\n"; });
             rootItem.Checking = (b) => { rootItem.Checked = b; };
 
             Items["Side"] = GetItem("Side", (o) => { return o.Side.ToString(); });

@@ -101,33 +101,33 @@ namespace TradeTweet
             settingsTree.SuspendLayout();
             settingsTree.IgnoreClickAction++;
 
-            //foreach (TreeNode rootNode in settingsTree.Nodes)
-            //{
-            //    EventType type = (EventType)rootNode.Tag;
+            foreach (TreeNode rootNode in settingsTree.Nodes)
+            {
+                EventOperationItem op = (EventOperationItem)rootNode.Tag;
 
-            //    int count = 0;
+                int count = 0;
 
-            //    foreach (TreeNode node in rootNode.Nodes)
-            //    {
-            //        EventItem item = (EventItem)node.Tag;
+                foreach (TreeNode node in rootNode.Nodes)
+                {
+                    EventOperationItem item = (EventOperationItem)node.Tag;
 
-            //        node.Checked = Settings.Set[type].Items[item].Checked;
-            //        node.StateImageIndex = (node.Checked) ? 1 : 0;
+                    node.Checked = item.Checked;
+                    node.StateImageIndex = (node.Checked) ? 1 : 0;
 
-            //        if (Settings.Set[type].Items[item].Checked)
-            //            count++;
-            //    }
+                    if (item.Checked)
+                        count++;
+                }
 
-            //    rootNode.Checked = count > 0;
+                rootNode.Checked = count > 0;
 
-            //    if (count == rootNode.Nodes.Count)
-            //        rootNode.StateImageIndex = 1;
-            //    else if (count == 0)
-            //        rootNode.StateImageIndex = 0;
-            //    else
-            //        rootNode.StateImageIndex = 2;
+                if (count == rootNode.Nodes.Count)
+                    rootNode.StateImageIndex = 1;
+                else if (count == 0)
+                    rootNode.StateImageIndex = 0;
+                else
+                    rootNode.StateImageIndex = 2;
 
-            //}
+            }
             settingsTree.IgnoreClickAction--;
             settingsTree.ResumeLayout();
 
@@ -136,6 +136,22 @@ namespace TradeTweet
         void DrawTree()
         {
             settingsTree.Nodes.Clear();
+
+            foreach (var listItem in EventManager.EventsList.Values)
+            {
+                TreeNode rootNode = new TreeNode(listItem.rootItem.Name);
+                rootNode.Tag = listItem.rootItem;
+                rootNode.Checked = listItem.rootItem.Checked;
+
+                foreach (var item in listItem.Items.Values)
+                {
+                    TreeNode node = new TreeNode(item.Name);
+                    node.Tag = item;
+                    node.Checked = item.Checked;
+                    rootNode.Nodes.Add(node);
+                }
+            }
+
 
             //foreach (EventType item in Enum.GetValues(typeof(EventType)))
             //{
@@ -361,25 +377,25 @@ namespace TradeTweet
 
         internal void RefreshSettings()
         {
-            //foreach (TreeNode rootNode in Nodes)
-            //{
-            //    EventType type = (EventType)rootNode.Tag;
+            foreach (TreeNode rootNode in Nodes)
+            {
+                EventType type = (EventType)rootNode.Tag;
 
-            //    foreach (TreeNode node in rootNode.Nodes)
-            //    {
-            //        EventItem item = (EventItem)node.Tag;
-            //        Settings.Set[type].Items[item].Checked = node.Checked;
-            //    }
+                foreach (TreeNode node in rootNode.Nodes)
+                {
+                    EventItem item = (EventItem)node.Tag;
+                    Settings.Set[type].Items[item].Checked = node.Checked;
+                }
 
-            //    bool rootChecked = rootNode.StateImageIndex > 0;
+                bool rootChecked = rootNode.StateImageIndex > 0;
 
-            //    if (rootChecked != Settings.Set[type].Active)
-            //    {
-            //        Settings.Set[type].Active = rootChecked;
-            //    }
-            //}
+                if (rootChecked != Settings.Set[type].Active)
+                {
+                    Settings.Set[type].Active = rootChecked;
+                }
+            }
 
-            //Settings.OnSettingsChange();
+            Settings.OnSettingsChange();
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)

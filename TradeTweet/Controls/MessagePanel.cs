@@ -27,7 +27,7 @@ namespace TradeTweet
         internal void ShowNotice(TwitMessage msg, Action callback = null)
         {
             MessagePanel notice = new MessagePanel(ParentWindow);
-            notice.noticeText.Text = msg.Message.Replace(EventBuilder.PTMC_CAPTION,"").TrimStart(' ');
+            notice.noticeText.Text = msg.Message.Replace(EventManager.PTMC_CAPTION,"").TrimStart(' ');
             notice.removeable = msg.status == EventStatus.Error;
             notice.label1.Text = msg.FormattedTime;
 

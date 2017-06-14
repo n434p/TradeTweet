@@ -33,7 +33,7 @@ namespace TradeTweet
 
             tip = new ToolTip();
 
-            Settings.Set = EventBuilder.EventsList;
+            Settings.Set = EventManager.EventsList;
 
             Settings.SaveSettings();
 
